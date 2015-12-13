@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace YunoCad
 {
-    public class Class1
+    public class YunoCad
     {
     }
 }

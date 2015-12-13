@@ -10,7 +10,7 @@ namespace YunoCadTest
         [TestMethod]
         public void TestMethod1()
         {
-            var a = new Class1();
+            var a = new YunoCad.YunoCad();
         }
     }
 }
