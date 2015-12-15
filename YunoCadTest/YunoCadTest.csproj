@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MGDSNet">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Informatix\MicroGDS 10.0\Custom\MGDSNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>

@@ -8,9 +8,10 @@ namespace YunoCadTest
     public class UnitTest1
     {
         [TestMethod]
-        public void TestMethod1()
+        public void SessionStartExit()
         {
-            var a = new YunoCad.YunoCad();
+            var session = Session.Start();
+            session.Exit(Informatix.MGDS.Save.DoNotSave, Informatix.MGDS.Save.DoNotSave);
         }
     }
 }
