@@ -18,18 +18,18 @@ namespace YunoCad
 
         public static Session Any { get; } = new Session(Informatix.MGDS.Conversation.AnySession);
 
-        public int SessionID { get; }
+        public int ID { get; }
 
         protected Session(int sessionID)
         {
-            SessionID = sessionID;
+            ID = sessionID;
         }
 
         public void Exit(Save drawing = Save.Prompt, Save preference = Save.Prompt)
         {
             using (var c = new Informatix.MGDS.Conversation())
             {
-                c.Start(SessionID, Conversation.DefaultTimeoutMs);
+                c.Start(ID, Conversation.DefaultTimeoutMs);
                 Cad.Exit(drawing, preference);
             }
         }
@@ -45,7 +45,7 @@ namespace YunoCad
             {
                 using (var c = new Informatix.MGDS.Conversation())
                 {
-                    c.Start(session.SessionID, timeoutMs);
+                    c.Start(session.ID, timeoutMs);
                     action();
                 }
             });
@@ -72,7 +72,7 @@ namespace YunoCad
             {
                 using (var c = new Informatix.MGDS.Conversation())
                 {
-                    c.Start(session.SessionID, timeoutMs);
+                    c.Start(session.ID, timeoutMs);
                     return func();
                 }
             });
