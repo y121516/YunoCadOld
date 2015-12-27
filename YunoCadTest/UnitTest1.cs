@@ -49,5 +49,19 @@ namespace YunoCadTest
 
             session.Exit(Informatix.MGDS.Save.DoNotSave, Informatix.MGDS.Save.DoNotSave);
         }
+        [TestMethod]
+        public void DocumentForEachTest()
+        {
+            var session = Session.Start();
+
+            Document.ForEach((docID) =>
+            {
+                var docName = "";
+                Informatix.MGDS.Cad.DocActivate(out docName);
+            });
+
+
+            session.Exit(Informatix.MGDS.Save.DoNotSave, Informatix.MGDS.Save.DoNotSave);
+        }
     }
 }
