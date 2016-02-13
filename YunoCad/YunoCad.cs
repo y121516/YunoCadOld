@@ -7,90 +7,172 @@ using Informatix.MGDS;
 
 namespace YunoCad
 {
-    public class Session
+    /// <summary>
+    /// セッション (実行中の MicroGDS のプロセス) を表すクラス。
+    /// </summary>
+    public class Session : IEquatable<Session>
     {
-        public const int DefaultTimeoutMs = 30 * 1000;
+        public const int DefaultTimeoutMillisecond = 30 * 1000;
 
-        public static Session Start(StartFileType fileType = StartFileType.MAN, int timeoutMs = DefaultTimeoutMs)
+        public static Session Start(StartFileType fileType = StartFileType.MAN, int timeoutMillisecond = DefaultTimeoutMillisecond)
         {
-            return new Session(Cad.StartMicroGDS(fileType, timeoutMs));
+            return new Session(Cad.StartMicroGDS(fileType, timeoutMillisecond));
         }
 
         public static Session Any { get; } = new Session(Informatix.MGDS.Conversation.AnySession);
 
+        public static int Count
+        {
+            get
+            {
+                return Cad.GetSessionCount();
+            }
+        }
+
+        public static IEnumerable<Session> Sessions
+        {
+            get
+            {
+                var maxSessionIDs = Count;
+                var sessionIDArray = new int[maxSessionIDs];
+                Cad.GetSessionIDs(sessionIDArray, maxSessionIDs);
+                return sessionIDArray.Select(session => new Session(session));
+            }
+        }
+
         public int ID { get; }
 
-        protected Session(int sessionID)
+        public Session(int sessionID)
         {
             ID = sessionID;
         }
 
-        public void Exit(Save drawing = Save.Prompt, Save preference = Save.Prompt)
+        bool IEquatable<Session>.Equals(Session other)
+        {
+            if (other == null) return false;
+            return ID.Equals(other.ID);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Session);
+        }
+
+        public override int GetHashCode()
+        {
+            return ID;
+        }
+
+        public static bool operator ==(Session a, Session b) => a?.Equals(b) ?? false;
+        public static bool operator !=(Session a, Session b) => !(a == b);
+
+        public void Exit(Save drawing = Save.Prompt, Save preference = Save.Prompt, int conversationTimeoutMillisecond = Conversation.DefaultTimeoutMillisecond)
         {
             using (var c = new Informatix.MGDS.Conversation())
             {
-                c.Start(ID, Conversation.DefaultTimeoutMs);
+                c.Start(ID, conversationTimeoutMillisecond);
                 Cad.Exit(drawing, preference);
             }
         }
     }
 
-    public class Conversation
+    /// <summary>
+    /// MicroGDS との通信を表すクラス。
+    /// 同期通信と非同期通信の両方をサポートします。
+    /// ただし非同期通信を行う場合は、通信終了前に呼び出し元スレッドが終了してしまわないようにする必要があります。
+    /// これは MicroGDS .NET Custom Application Support DLL（mgdsnet.dll）の制限です。
+    /// 呼び出し元スレッドで Task.Wait や Task.Result を呼び出すことで、呼び出し元スレッドで通信終了を待てます。
+    /// </summary>
+    public static class Conversation
     {
-        public const int DefaultTimeoutMs = 5 * 1000;
+        public const int DefaultTimeoutMillisecond = 5 * 1000;
 
-        public static Task Start(Session session, int timeoutMs, Action action)
+        public static void Start(this Session session, int timeoutMillisecond, Action action)
         {
-            return Task.Run(() =>
+            using (var c = new Informatix.MGDS.Conversation())
             {
-                using (var c = new Informatix.MGDS.Conversation())
-                {
-                    c.Start(session.ID, timeoutMs);
-                    action();
-                }
-            });
+                c.Start(session.ID, timeoutMillisecond);
+                action();
+            }
         }
 
-        public static Task Start(Session session, Action action)
+        public static void Start(this Session session, Action action)
         {
-            return Start(session, DefaultTimeoutMs, action);
+            Start(session, DefaultTimeoutMillisecond, action);
         }
 
-        public static Task Start(int timeoutMs, Action action)
+        public static void Start(int timeoutMillisecond, Action action)
         {
-            return Start(Session.Any, timeoutMs, action);
+            Start(Session.Any, timeoutMillisecond, action);
         }
 
-        public static Task Start(Action action)
+        public static void Start(Action action)
         {
-            return Start(Session.Any, action);
+            Start(Session.Any, action);
         }
 
-        public static Task<TResult> Start<TResult>(Session session, int timeoutMs, Func<TResult> func)
+        public static TResult Start<TResult>(this Session session, int timeoutMillisecond, Func<TResult> func)
         {
-            return Task.Run(() =>
+            using (var c = new Informatix.MGDS.Conversation())
             {
-                using (var c = new Informatix.MGDS.Conversation())
-                {
-                    c.Start(session.ID, timeoutMs);
-                    return func();
-                }
-            });
+                c.Start(session.ID, timeoutMillisecond);
+                return func();
+            }
         }
 
-        public static Task<TResult> Start<TResult>(Session session, Func<TResult> func)
+        public static TResult Start<TResult>(this Session session, Func<TResult> func)
         {
-            return Start(session, DefaultTimeoutMs, func);
+            return Start(session, DefaultTimeoutMillisecond, func);
         }
 
-        public static Task<TResult> Start<TResult>(int timeoutMs, Func<TResult> func)
+        public static TResult Start<TResult>(int timeoutMillisecond, Func<TResult> func)
         {
-            return Start(Session.Any, timeoutMs, func);
+            return Start(Session.Any, timeoutMillisecond, func);
         }
 
-        public static Task<TResult> Start<TResult>(Func<TResult> func)
+        public static TResult Start<TResult>(Func<TResult> func)
         {
             return Start(Session.Any, func);
+        }
+
+        public static Task StartAsync(Session session, int timeoutMillisecond, Action action)
+        {
+            return Task.Run(() => Start(session, timeoutMillisecond, action));
+        }
+
+        public static Task StartAsync(Session session, Action action)
+        {
+            return StartAsync(session, DefaultTimeoutMillisecond, action);
+        }
+
+        public static Task StartAsync(int timeoutMillisecond, Action action)
+        {
+            return StartAsync(Session.Any, timeoutMillisecond, action);
+        }
+
+        public static Task StartAsync(Action action)
+        {
+            return StartAsync(Session.Any, action);
+        }
+
+        public static Task<TResult> StartAsync<TResult>(Session session, int timeoutMillisecond, Func<TResult> func)
+        {
+            return Task.Run(() => Start(session, timeoutMillisecond, func));
+        }
+
+        public static Task<TResult> StartAsync<TResult>(Session session, Func<TResult> func)
+        {
+            return StartAsync(session, DefaultTimeoutMillisecond, func);
+        }
+
+        public static Task<TResult> StartAsync<TResult>(int timeoutMillisecond, Func<TResult> func)
+        {
+            return StartAsync(Session.Any, timeoutMillisecond, func);
+        }
+
+        public static Task<TResult> StartAsync<TResult>(Func<TResult> func)
+        {
+            return StartAsync(Session.Any, func);
         }
     }
 
@@ -171,5 +253,5 @@ namespace YunoCad
         {
             ID = docID;
         }
-   }
+    }
 }
