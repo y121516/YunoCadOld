@@ -1,67 +1,307 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MGDS = Informatix.MGDS;
 using YunoCad;
 
 namespace YunoCadTest
 {
     [TestClass]
-    public class UnitTest1
+    public class SessionTest
     {
-        [TestMethod]
-        public void SessionStartExit()
+        IEnumerable<Session> prevSessions;
+
+        [TestInitialize]
+        public void Initialize()
         {
-            var session = Session.Start();
-            session.Exit(Informatix.MGDS.Save.DoNotSave, Informatix.MGDS.Save.DoNotSave);
+            prevSessions = Session.Sessions;
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            foreach (var session in Session.Sessions.Except(prevSessions)) session.DontSaveExit();
         }
 
         [TestMethod]
-        public void SessionConverseActionTest()
+        public void IDTest()
         {
-            var session = Session.Start();
+            Assert.AreEqual(Session.Any.ID, MGDS.Conversation.AnySession);
+            Assert.AreEqual(new Session(1).ID, 1);
+            Assert.AreEqual(new Session(2).ID, 2);
+        }
 
-            int result = 0;
-            Conversation.Start(session, 1000, (() => { result = 1; })).Wait();
-            Assert.AreEqual(1, result);
-            Conversation.Start(session, (() => { result = 2; ; })).Wait();
-            Assert.AreEqual(2, result);
-            Conversation.Start(1000, (() => { result = 3; })).Wait();
-            Assert.AreEqual(3, result);
-            Conversation.Start((() => { result = 4; })).Wait();
-            Assert.AreEqual(4, result);
+        public void EqualsSessionTest(Session x, Session y, Session z)
+        {
+            Assert.IsTrue(x.Equals(x));
+            Assert.AreEqual(x.Equals(y), y.Equals(x));
+            if (x.Equals(y) && y.Equals(z)) Assert.IsTrue(x.Equals(z));
+            var a = x.Equals(y);
+            var b = x.Equals(y);
+            Assert.AreEqual(a, b);
+            Assert.IsFalse(x.Equals(null));
+        }
 
-            session.Exit(Informatix.MGDS.Save.DoNotSave, Informatix.MGDS.Save.DoNotSave);
+        public void EqualsObjectTest(object x, object y, object z)
+        {
+            Assert.IsTrue(x.Equals(x));
+            Assert.AreEqual(x.Equals(y), y.Equals(x));
+            if (x.Equals(y) && y.Equals(z)) Assert.IsTrue(x.Equals(z));
+            var a = x.Equals(y);
+            var b = x.Equals(y);
+            Assert.AreEqual(a, b);
+            Assert.IsFalse(x.Equals(null));
+        }
+
+        public void EqualsTest(Session x, Session y, Session z)
+        {
+            EqualsSessionTest(x, y, z);
+            EqualsObjectTest(x, y, z);
         }
 
         [TestMethod]
-        public void SessionConverseFuncTest()
+        public void EqualsTest()
         {
-            var session = Session.Start();
-
-            int result;
-            result = Conversation.Start(session, 1000, () => 1).Result;
-            Assert.AreEqual(1, result);
-            result = Conversation.Start(session, () => 2).Result;
-            Assert.AreEqual(2, result);
-            result = Conversation.Start(1000, () => 3).Result;
-            Assert.AreEqual(3, result);
-            result = Conversation.Start(() => 4).Result;
-            Assert.AreEqual(4, result);
-
-            session.Exit(Informatix.MGDS.Save.DoNotSave, Informatix.MGDS.Save.DoNotSave);
-        }
-        [TestMethod]
-        public void DocumentForEachTest()
-        {
-            var session = Session.Start();
-
-            Document.ForEach((docID) =>
+            var x = new Session(1);
             {
-                var docName = "";
-                Informatix.MGDS.Cad.DocActivate(out docName);
-            });
+                var y = x;
+                {
+                    var z = x;
+                    EqualsTest(x, y, z);
+                }
+                {
+                    var z = new Session(1);
+                    EqualsTest(x, y, z);
+                }
+                {
+                    var z = new Session(2);
+                    EqualsTest(x, y, z);
+                }
+            }
+            {
+                var y = new Session(1);
+                {
+                    var z = x;
+                    EqualsTest(x, y, z);
+                }
+                {
+                    var z = y;
+                    EqualsTest(x, y, z);
+                }
+                {
+                    var z = new Session(1);
+                    EqualsTest(x, y, z);
+                }
+                {
+                    var z = new Session(2);
+                    EqualsTest(x, y, z);
+                }
+            }
+            {
+                var y = new Session(2);
+                {
+                    var z = x;
+                    EqualsTest(x, y, z);
+                }
+                {
+                    var z = y;
+                    EqualsTest(x, y, z);
+                }
+                {
+                    var z = new Session(1);
+                    EqualsTest(x, y, z);
+                }
+                {
+                    var z = new Session(2);
+                    EqualsTest(x, y, z);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void OperatorEqualTest()
+        {
+            {
+                var a = (Session)null;
+                {
+                    var b = (Session)null;
+                    Assert.IsTrue(a == b);
+                    Assert.IsFalse(a != b);
+                }
+                {
+                    var b = new Session(1);
+                    Assert.IsFalse(a == b);
+                    Assert.IsTrue(a != b);
+                }
+            }
+            {
+                var a = new Session(1);
+                {
+                    var b = (Session)null;
+                    Assert.IsFalse(a == b);
+                    Assert.IsTrue(a != b);
+                }
+                {
+                    var b = new Session(1);
+                    Assert.IsTrue(a == b);
+                    Assert.IsFalse(a != b);
+                }
+                {
+                    var b = new Session(2);
+                    Assert.IsFalse(a == b);
+                    Assert.IsTrue(a != b);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void GetHashCodeTest()
+        {
+            var a = new Session(1);
+            var b = a;
+            Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
+            b = new Session(1);
+            Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
+            b = new Session(2);
+            Assert.AreNotEqual(a.GetHashCode(), b.GetHashCode());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(MGDS.Cad.CadException))]
+        public void StartFailTest()
+        {
+            var session = Session.Start(timeoutMillisecond: 0);
+            session.DontSaveExit();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(MGDS.Cad.CadException))]
+        public void SessionStartExitTest()
+        {
+            var session = Session.Start();
+            session.DontSaveExit();
+            try
+            {
+                session.DontSaveExit();
+            }
+            catch (MGDS.ApiException ex)
+            {
+                var eo = ex.ErrorOccurred(MGDS.AppErrorType.MGDS, MGDS.AppError.CommSetupFail);
+                Assert.IsTrue(eo);
+                throw;
+            }
+        }
+
+        [TestMethod]
+        public void SessionsTest()
+        {
+            var sessions = new Session[] {
+                Session.Start(),
+                Session.Start(MGDS.StartFileType.DXF),
+                Session.Start(timeoutMillisecond: 50 * 1000),
+                Session.Start(MGDS.StartFileType.DWG, 50 * 1000)
+            };
+            CollectionAssert.IsSubsetOf(sessions, Session.Sessions.ToArray());
+        }
+    }
+
+    [TestClass]
+    public class ConversationTest
+    {
+        Session session;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            session = Session.Start();
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            session.DontSaveExit();
+        }
+
+        [TestMethod]
+        public void ConverseTest()
+        {
+            int result = 0;
+
+            Conversation.Converse(session, 1000, _ => result = 1);
+            Assert.AreEqual(1, result);
+
+            Conversation.Converse(session, _ => result = 2);
+            Assert.AreEqual(2, result);
+
+            Conversation.Converse(1000, _ => result = 3);
+            Assert.AreEqual(3, result);
+
+            Conversation.Converse(_ => result = 4);
+            Assert.AreEqual(4, result);
+
+            session.Converse(1000, _ => result = 5);
+            Assert.AreEqual(5, result);
+
+            session.Converse(_ => result = 6);
+            Assert.AreEqual(6, result);
 
 
-            session.Exit(Informatix.MGDS.Save.DoNotSave, Informatix.MGDS.Save.DoNotSave);
+            result = Conversation.Converse(session, 1000, _ => 1);
+            Assert.AreEqual(1, result);
+
+            result = Conversation.Converse(session, _ => 2);
+            Assert.AreEqual(2, result);
+
+            result = Conversation.Converse(1000, _ => 3);
+            Assert.AreEqual(3, result);
+
+            result = Conversation.Converse(_ => 4);
+            Assert.AreEqual(4, result);
+
+            result = session.Converse(1000, _ => 5);
+            Assert.AreEqual(5, result);
+
+            result = session.Converse(_ => result = 6);
+            Assert.AreEqual(6, result);
+            
+
+            Conversation.ConverseAsync(session, 1000, _ => result = 1).Wait();
+            Assert.AreEqual(1, result);
+
+            Conversation.ConverseAsync(session, _ => result = 2).Wait();
+            Assert.AreEqual(2, result);
+
+            Conversation.ConverseAsync(1000, _ => result = 3).Wait();
+            Assert.AreEqual(3, result);
+
+            Conversation.ConverseAsync(_ => result = 4).Wait();
+            Assert.AreEqual(4, result);
+
+            session.ConverseAsync(1000, _ => result = 5).Wait();
+            Assert.AreEqual(5, result);
+
+            session.ConverseAsync(_ => result = 6).Wait();
+            Assert.AreEqual(6, result);
+
+
+            result = Conversation.ConverseAsync(session, 1000, _ => 1).Result;
+            Assert.AreEqual(1, result);
+
+            result = Conversation.ConverseAsync(session, _ => 2).Result;
+            Assert.AreEqual(2, result);
+
+            result = Conversation.ConverseAsync(1000, _ => 3).Result;
+            Assert.AreEqual(3, result);
+
+            result = Conversation.ConverseAsync(_ => 4).Result;
+            Assert.AreEqual(4, result);
+
+            result = session.ConverseAsync(1000, _ => 5).Result;
+            Assert.AreEqual(5, result);
+
+            result = session.ConverseAsync(_ => result = 6).Result;
+            Assert.AreEqual(6, result);
         }
     }
 }
