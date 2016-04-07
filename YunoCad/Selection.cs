@@ -32,7 +32,7 @@ namespace YunoCad
             }
         }
 
-        void AddHelper(IEnumerable<object> collection)
+        void AddImpl(IEnumerable<object> collection)
         {
             foreach (var item in collection)
             {
@@ -51,13 +51,13 @@ namespace YunoCad
         public void Add(IEnumerable<CurrentObject> currentObjects)
         {
             Cad.SelectObject();
-            AddHelper(currentObjects);
+            AddImpl(currentObjects);
         }
 
         public void Add(IEnumerable<CurrentPrimitive> currentPrimitives)
         {
             Cad.SelectPrim();
-            AddHelper(currentPrimitives);
+            AddImpl(currentPrimitives);
         }
 
         public void Align()
@@ -81,7 +81,7 @@ namespace YunoCad
             Cad.DeleteSelection();
         }
 
-        public void Deselect()
+        public void DeselectAll()
         {
             Cad.DeselectAll();
         }

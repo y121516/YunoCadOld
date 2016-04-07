@@ -27,31 +27,13 @@ namespace YunoCad
         public int ObjectLink => _PriTriple.vlink;
         public int PrimitiveLink => _PriTriple.plink;
 
-        public override string ToString() => $"{_PriTriple}";
+        public override string ToString() => _PriTriple.ToString();
 
         public Object ParentObject => new Object(_PriTriple.llink, _PriTriple.vlink);
 
         public void Delete()
         {
             Cad.DeletePrimitive(_PriTriple.llink, _PriTriple.vlink, _PriTriple.plink);
-        }
-
-        static Cad.PriTriple[] SelectedImpl(int nPrims)
-        {
-            var primArray = new Cad.PriTriple[nPrims];
-            Cad.GetPriSelections(nPrims, primArray);
-            return primArray;
-        }
-
-        // 多くても atMostPrimitives のプリミティブを列挙
-        public static Cad.PriTriple[] Selected(int atMostPrimitives)
-        {
-            return SelectedImpl(Math.Min(atMostPrimitives, Cad.GetNumSelPrim()));
-        }
-
-        public static Cad.PriTriple[] Selected()
-        {
-            return SelectedImpl(Cad.GetNumSelPrim());
         }
 
         public CurrentPrimitive ToCurrent()
@@ -202,6 +184,20 @@ namespace YunoCad
         public void FormattedText(string text, string options = DefaultSetFormattedTextOptions)
         {
             Cad.CurPriFormattedText(text, options);
+        }
+
+        public string Text
+        {
+            get
+            {
+                var text = "";
+                Cad.GetCurPriText(out text);
+                return text;
+            }
+            set
+            {
+                Cad.CurPriText(value);
+            }
         }
     }
 

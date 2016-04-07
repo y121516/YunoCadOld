@@ -212,4 +212,58 @@ namespace YunoCad
             WordList = wordList;
         }
     }
+
+    public class ReferenceLevelMnemonic
+    {
+        const char FirstLetter = 'R';
+
+        public string Name { get; }
+
+        public ReferenceLevelMnemonic(string mnemonicName)
+        {
+            Name = $"{FirstLetter}{mnemonicName}";
+        }
+
+        public override string ToString()
+        {
+            return Name.ToString();
+        }
+    }
+
+    public class LayerLevelMnemonic { }
+    public class ObjectLevelMnemonic { }
+    public class WndLevelMnemonic { }
+
+    public class CurrentObjectAttribute
+    {
+        public static CurrentObjectAttribute Instance { get; } = new CurrentObjectAttribute();
+
+        CurrentObjectAttribute() { }
+
+        public string this[ReferenceLevelMnemonic mnemonic]
+        {
+            get
+            {
+                var attr = "";
+                Cad.GetAttVal(mnemonic.ToString(), out attr);
+                return attr;
+            }
+            set
+            {
+                Cad.AttVal(mnemonic.ToString(), value);
+            }
+        }
+
+        public string this[string mnemonic]
+        {
+            get
+            {
+                return this[new ReferenceLevelMnemonic(mnemonic)];
+            }
+            set
+            {
+                this[new ReferenceLevelMnemonic(mnemonic)] = value;
+            }
+        }
+    }
 }

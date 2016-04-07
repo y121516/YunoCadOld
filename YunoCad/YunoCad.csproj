@@ -51,6 +51,7 @@
     <Compile Include="Phase.cs" />
     <Compile Include="Primitive.cs" />
     <Compile Include="Selection.cs" />
+    <Compile Include="Snap.cs" />
     <Compile Include="YunoCad.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

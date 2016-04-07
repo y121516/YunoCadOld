@@ -14,10 +14,33 @@ namespace YunoCad
 
         CurrentObject() { }
 
+        public static CurrentObject Get()
+        {
+            try
+            {
+                Cad.GetCurObjLink();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            return Instance;
+        }
 
-        public static int Link { get { return Cad.GetCurObjLink(); } }
+        public Object Link
+        {
+            get
+            {
+                var lay = Cad.GetCurLayLink();
+                var obj = Cad.GetCurObjLink();
+                return new Object(lay, obj);
+            }
+        }
 
-        public static string Name
+        public int LayerLink => Cad.GetCurLayLink();
+        public int ObjectLink => Cad.GetCurObjLink();
+
+        public string Name
         {
             get
             {
@@ -33,9 +56,10 @@ namespace YunoCad
         {
             Cad.ResetObject();
         }
+
+        public CurrentObjectAttribute Attribute { get; } = CurrentObjectAttribute.Instance;
     }
 
-    // todo: ObjectScanArea, ObjectScanLayer, ObjectScanPoly, ObjectScanPrimPoly, ObjectScanVolume などのオーバーロードを追加する。
     public struct Object
     {
         Cad.ObjPair _ObjPair;
@@ -51,28 +75,22 @@ namespace YunoCad
             _ObjPair.vlink = objectLink;
         }
 
-        static Cad.ObjPair[] SelectedImpl(int nObjs)
-        {
-            var objArray = new Cad.ObjPair[nObjs];
-            Cad.GetObjSelections(nObjs, objArray);
-            return objArray;
-        }
+        public int LayerLink => _ObjPair.llink;
+        public int ObjectLink => _ObjPair.vlink;
 
-        // 多くても atMostObjects のオブジェクトを列挙
-        public static Cad.ObjPair[] Selected(int atMostObjects)
-        {
-            return SelectedImpl(Math.Min(atMostObjects, Cad.GetNumSelObj()));
-        }
+        public override string ToString()=> _ObjPair.ToString();
 
-        public static Cad.ObjPair[] Selected()
+        public CurrentObject ToCurrent()
         {
-            return SelectedImpl(Cad.GetNumSelObj());
+            Cad.CurObject(_ObjPair.llink, _ObjPair.vlink);
+            return CurrentObject.Instance;
         }
 
         public class Objects
         {
             const string DefaultScanEH = "E";
 
+            // todo: ObjectScanArea, ObjectScanLayer, ObjectScanPoly, ObjectScanPrimPoly, ObjectScanVolume などのオーバーロードを追加する。
             // カレントのウィンドウ定義内でのみよびだせるとよい
             public IEnumerable<CurrentObject> Scan(string scanEH = DefaultScanEH)
             {
