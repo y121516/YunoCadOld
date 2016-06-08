@@ -42,6 +42,12 @@ namespace YunoCad
             return GetCurrentPrimitive();
         }
 
+        public SetPrimitive Set()
+        {
+            Cad.SetPrimitive(_PriTriple.llink, _PriTriple.vlink, _PriTriple.plink);
+            return new SetPrimitive();
+        }
+
         static CurrentPrimitive GetCurrentPrimitive()
         {
             var priType = "";
@@ -79,6 +85,35 @@ namespace YunoCad
                         yield return GetCurrentPrimitive();
                     } while (Cad.PrimNext());
                 }
+            }
+        }
+    }
+
+    // 設定プリミティブ
+    public class SetPrimitive
+    {
+        public SetPrimitive()
+        {
+
+        }
+
+        public int Colour
+        {
+            get { return Cad.GetSetColour(); }
+            set { Cad.SetColour(value); }
+        }
+
+        public Tuple<int, int, int, int, int> ColourEx
+        {
+            get
+            {
+                int colourIndex, red, green, blue, alpha;
+                Cad.GetSetColourEx(out colourIndex, out red, out green, out blue, out alpha);
+                return Tuple.Create(colourIndex, red, green, blue, alpha);
+            }
+            set
+            {
+                Cad.SetColourEx(value.Item1, value.Item2, value.Item3, value.Item4, value.Item5);
             }
         }
     }
