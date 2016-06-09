@@ -1,5 +1,4 @@
-﻿using System;
-using static Informatix.MGDS.Cad;
+﻿using static Informatix.MGDS.Cad;
 
 namespace YunoCad
 {
@@ -29,9 +28,17 @@ namespace YunoCad
 
         public void RestoreState() => RestoreMenuState();
 
-        public Command this[string menuName]
+        public MenuItem this[string menuName]
         {
-            get { return new Command(menuName); }
+            get { return new MenuItem(menuName); }
         }
+
+        public void Add(Command command)
+        {
+            AddMenuCommand(command.MenuName, command.CommandLine);
+        }
+
+        public void Insert(string insertBeforeMenuName, Command commandLine)
+            => InsertMenuCommand(insertBeforeMenuName, commandLine.MenuName, commandLine.CommandLine);
     }
 }

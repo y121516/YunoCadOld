@@ -49,6 +49,7 @@
     <Compile Include="Document.cs" />
     <Compile Include="Layer.cs" />
     <Compile Include="Menu.cs" />
+    <Compile Include="MenuItem.cs" />
     <Compile Include="Mnemonic.cs" />
     <Compile Include="Object.cs" />
     <Compile Include="Phase.cs" />

@@ -1,31 +1,14 @@
-﻿using static Informatix.MGDS.Cad;
-
-namespace YunoCad
+﻿namespace YunoCad
 {
     public class Command
     {
-        string MenuName = "";
+        public string MenuName { get; } = "";
+        public string CommandLine { get; } = "";
 
-        internal Command(string menuName) { MenuName = menuName; }
-
-        public void Add(string commandLine) => AddMenuCommand(MenuName, commandLine);
-
-        public void Enable(bool enable) => EnableMenuCommand(MenuName, enable);
-
-        public bool Checked
+        internal Command(string menuName, string commandLine)
         {
-            get
-            {
-                bool isChecked;
-                GetCheckMenuCommand(out isChecked, MenuName);
-                return isChecked;
-            }
-            set { SetCheckMenuCommand(MenuName, value); }
+            MenuName = menuName;
+            CommandLine = commandLine;
         }
-
-        void Insert(string insertBeforeMenuName, string commandLine)
-            => InsertMenuCommand(insertBeforeMenuName, MenuName, commandLine);
-
-        public void Remove() => RemoveMenuCommand(MenuName);
     }
 }
