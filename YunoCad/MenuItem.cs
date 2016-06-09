@@ -26,7 +26,5 @@ namespace YunoCad
             }
             set { SetCheckMenuCommand(MenuName, value); }
         }
-
-        public void Remove() => RemoveMenuCommand(MenuName);
     }
 }

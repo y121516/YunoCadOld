@@ -34,11 +34,11 @@ namespace YunoCad
         }
 
         public void Add(Command command)
-        {
-            AddMenuCommand(command.MenuName, command.CommandLine);
-        }
+            => AddMenuCommand(command.MenuName, command.CommandLine);
 
         public void Insert(string insertBeforeMenuName, Command commandLine)
             => InsertMenuCommand(insertBeforeMenuName, commandLine.MenuName, commandLine.CommandLine);
+
+        public void Remove(string menuName) => RemoveMenuCommand(menuName);
     }
 }
