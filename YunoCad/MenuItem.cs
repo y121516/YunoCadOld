@@ -6,7 +6,7 @@ namespace YunoCad
     {
         public string MenuName { get; } = "";
 
-        public MenuItem(string menuName) { MenuName = MenuName; }
+        public MenuItem(string menuName) { MenuName = menuName; }
 
         public bool Enabled
         {

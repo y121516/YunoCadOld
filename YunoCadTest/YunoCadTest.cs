@@ -264,7 +264,7 @@ namespace YunoCadTest
 
             result = session.Converse(_ => result = 6);
             Assert.AreEqual(6, result);
-            
+
 
             Conversation.ConverseAsync(session, 1000, _ => result = 1).Wait();
             Assert.AreEqual(1, result);
@@ -302,6 +302,31 @@ namespace YunoCadTest
 
             result = session.ConverseAsync(_ => result = 6).Result;
             Assert.AreEqual(6, result);
+        }
+
+    }
+
+    [TestClass]
+    public class MenuTest
+    {
+        [TestMethod]
+        public void MenuItemTest()
+        {
+            Session.Any.Converse(cs =>
+            {
+                var menuName = @"{/pa}&ParentMenuName\&ChildMenuName";
+                var command = new Command(menuName, @"cmd.exe");
+
+                cs.Menu.Add(command);
+                Assert.AreEqual(@"{/pa}&ParentMenuName\&ChildMenuName", cs.Menu[menuName].MenuName);
+
+                Assert.AreEqual(false, cs.Menu[menuName].Checked);
+                cs.Menu[menuName].Checked = true;
+                Assert.AreEqual(true, cs.Menu[menuName].Checked);
+
+                cs.Menu[menuName].Enabled = true;
+                cs.Menu[menuName].Enabled = false;
+            });
         }
     }
 }
