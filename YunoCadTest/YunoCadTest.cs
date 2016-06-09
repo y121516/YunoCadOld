@@ -329,4 +329,27 @@ namespace YunoCadTest
             });
         }
     }
+
+    [TestClass]
+    public class AliasTest
+    {
+        [TestMethod]
+        public void Test()
+        {
+            Session.Any.Converse(cs =>
+            {
+                foreach (var doc in cs.Documents.Scan().Take(1))
+                {
+                    var aliases = doc.Activate().Resynch().Aliases;
+                    aliases.DefaultAlias(MGDS.AliasName.Layer).Name = "";
+                    var name = aliases.DefaultAlias(MGDS.AliasName.Layer).Name;
+
+                    var alias = new Alias(MGDS.AliasName.Layer, name);
+                    aliases.Add(alias, new AliasInfo(@"C:\Windows\Temp"));
+                    var info = aliases[alias];
+                    aliases[alias] = info;
+                }
+            });
+        }
+    }
 }
