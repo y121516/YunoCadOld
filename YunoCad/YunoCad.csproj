@@ -44,15 +44,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command.cs" />
+    <Compile Include="ConversingSession.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="Layer.cs" />
+    <Compile Include="Menu.cs" />
     <Compile Include="Mnemonic.cs" />
     <Compile Include="Object.cs" />
     <Compile Include="Phase.cs" />
     <Compile Include="Primitive.cs" />
     <Compile Include="Selection.cs" />
+    <Compile Include="Session.cs" />
     <Compile Include="Snap.cs" />
-    <Compile Include="YunoCad.cs" />
+    <Compile Include="Conversation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

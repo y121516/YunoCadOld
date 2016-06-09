@@ -55,7 +55,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CadUnitTest.cs" />
-    <Compile Include="YunoCad.cs" />
+    <Compile Include="YunoCadTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
