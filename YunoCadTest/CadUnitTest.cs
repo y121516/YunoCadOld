@@ -127,8 +127,10 @@ namespace MGDSNetDllTest
                 {
                     ThrowsCadException(AppError.RequiresSelection, () => AlignSelection());
                     // OK
+                    Assert.AreEqual(0, GetNumSelPrim());
                     CreateText("AlignSelectionTest", Origin);
                     AlignSelection();
+                    Assert.AreEqual(1, GetNumSelPrim());
                 }
             });
         }
@@ -534,7 +536,11 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void CreateMANFileTest() { Assert.Fail("Not implemented"); }
         [TestMethod]
-        public void CreateObjectTest() { Assert.Fail("Not implemented"); }
+        public void CreateObjectTest()
+        {
+            // CreateObject を呼び出すと、カレントのレイヤとカレントのオブジェクトが設定されます。
+            Assert.Fail("Not implemented");
+        }
         [TestMethod]
         public void CreatePhaseTest() { Assert.Fail("Not implemented"); }
         [TestMethod]

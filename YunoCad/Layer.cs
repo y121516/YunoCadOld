@@ -19,6 +19,10 @@ namespace YunoCad
                 Cad.GetCurLayName(out name);
                 return name;
             }
+            set
+            {
+                Cad.CurLayName(value);
+            }
         }
     }
 

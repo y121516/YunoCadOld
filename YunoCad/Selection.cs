@@ -60,9 +60,10 @@ namespace YunoCad
             AddImpl(currentPrimitives);
         }
 
-        public void Align()
+        public Selection Align()
         {
             Cad.AlignSelection();
+            return Instance;
         }
 
         // clipboard

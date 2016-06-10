@@ -352,4 +352,21 @@ namespace YunoCadTest
             });
         }
     }
+    
+    [TestClass]
+    public class SetObjectTest
+    {
+        [TestMethod]
+        public void Test()
+        {
+            Session.Any.Converse(cs =>
+            {
+                foreach (var d in cs.Documents.Scan().Take(1))
+                {
+                    var doc = d.Activate().Resynch();
+                    
+                }
+            });
+        }
+    }
 }

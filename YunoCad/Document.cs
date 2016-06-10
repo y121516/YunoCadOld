@@ -118,13 +118,7 @@ namespace YunoCad
             return Cad.DocClose(drawingSave);
         }
 
-        public DocViewType ViewType
-        {
-            get
-            {
-                return Cad.DocGetViewType();
-            }
-        }
+        public DocViewType ViewType => Cad.DocGetViewType();
 
         public System.Windows.Forms.DialogResult Save()
         {
@@ -229,18 +223,39 @@ namespace YunoCad
         public IEnumerable<Object> SelectedObjects()
             => SelectedObjectsImpl(Cad.GetNumSelObj());
 
-        IEnumerable<Primitive> SelectedPrimitivesImpl(int nPrims)
+        Cad.PriTriple[] SelectedPrimitivesImpl(int nPrims)
         {
             var primArray = new Cad.PriTriple[nPrims];
             Cad.GetPriSelections(nPrims, primArray);
-            return primArray.Select(pri => new Primitive(pri));
+            return primArray;
         }
 
-        public IEnumerable<Primitive> SelectedPrimitives(int atMostPrimitives)
+        public Cad.PriTriple[] SelectedPrimitives(int atMostPrimitives)
             => SelectedPrimitivesImpl(Math.Min(atMostPrimitives, Cad.GetNumSelPrim()));
 
-        public IEnumerable<Primitive> SelectedPrimitives()
+        public Cad.PriTriple[] SelectedPrimitives()
             => SelectedPrimitivesImpl(Cad.GetNumSelPrim());
+
+
+        public int Colour
+        {
+            get { return Cad.GetSetColour(); }
+            set { Cad.SetColour(value); }
+        }
+
+        public Tuple<int, int, int, int, int> ColourEx
+        {
+            get
+            {
+                int colourIndex, red, green, blue, alpha;
+                Cad.GetSetColourEx(out colourIndex, out red, out green, out blue, out alpha);
+                return Tuple.Create(colourIndex, red, green, blue, alpha);
+            }
+            set
+            {
+                Cad.SetColourEx(value.Item1, value.Item2, value.Item3, value.Item4, value.Item5);
+            }
+        }
     }
 
     /// <summary>

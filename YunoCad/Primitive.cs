@@ -4,54 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Informatix.MGDS;
+using static Informatix.MGDS.Cad;
 
 namespace YunoCad
 {
-    public struct Primitive
+    public static class Primitive
     {
-        Cad.PriTriple _PriTriple;
+        public static PriTriple Create(int layerLink, int objectLink, int primitiveLink) => new PriTriple(layerLink, objectLink, primitiveLink);
+        public static PriTriple Create(ObjPair objPair, int primitiveLink) => new PriTriple(objPair.llink, objPair.vlink, primitiveLink);
 
-        public Primitive(Cad.PriTriple priTriple)
-        {
-            _PriTriple = priTriple;
-        }
+        public static ObjPair ParentObject(this PriTriple priTriple) => new ObjPair(priTriple.llink, priTriple.vlink);
 
-        public Primitive(int layerLink, int objectLink, int primitiveLink)
-        {
-            _PriTriple.llink = layerLink;
-            _PriTriple.vlink = objectLink;
-            _PriTriple.plink = primitiveLink;
-        }
+        public static void Delete(this PriTriple priTriple) => DeletePrimitive(priTriple.llink, priTriple.vlink, priTriple.plink);
 
-        public int LayerLink => _PriTriple.llink;
-        public int ObjectLink => _PriTriple.vlink;
-        public int PrimitiveLink => _PriTriple.plink;
-
-        public override string ToString() => _PriTriple.ToString();
-
-        public Object ParentObject => new Object(_PriTriple.llink, _PriTriple.vlink);
-
-        public void Delete()
-        {
-            Cad.DeletePrimitive(_PriTriple.llink, _PriTriple.vlink, _PriTriple.plink);
-        }
-
-        public CurrentPrimitive ToCurrent()
-        {
-            Cad.CurPrimitive(_PriTriple.llink, _PriTriple.vlink, _PriTriple.plink);
-            return GetCurrentPrimitive();
-        }
-
-        public SetPrimitive Set()
-        {
-            Cad.SetPrimitive(_PriTriple.llink, _PriTriple.vlink, _PriTriple.plink);
-            return new SetPrimitive();
-        }
-
-        static CurrentPrimitive GetCurrentPrimitive()
+        public static CurrentPrimitive GetCurrentPrimitive()
         {
             var priType = "";
-            Cad.GetCurPriType(out priType);
+            GetCurPriType(out priType);
             switch (priType)
             {
                 case "CLUMP MESH": return CurrentClumpMeshPrimitive.Instance;
@@ -67,53 +36,38 @@ namespace YunoCad
             }
         }
 
-        public class Primitives
+        public static CurrentPrimitive makeCurrent(this PriTriple priTriple)
         {
-            internal static Primitives Instance { get; } = new Primitives();
+            CurPrimitive(priTriple.llink, priTriple.vlink, priTriple.plink);
+            return GetCurrentPrimitive();
+        }
 
-            Primitives() { }
-
-            const string DefaultScanEH = "E";
-
-            //カレントのレイヤ、オブジェクトは変更されません。カレントオブジェクトがアセンブリオブジェクトの場合は、プリミティブは返されません。
-            public IEnumerable<CurrentPrimitive> Scan(string scanEH = DefaultScanEH)
-            {
-                if (Cad.PrimScan(scanEH))
-                {
-                    do
-                    {
-                        yield return GetCurrentPrimitive();
-                    } while (Cad.PrimNext());
-                }
-            }
+        public static void Set(this PriTriple priTriple)
+        {
+            SetPrimitive(priTriple.llink, priTriple.vlink, priTriple.plink);
+            return; // TODO:
         }
     }
 
-    // 設定プリミティブ
-    public class SetPrimitive
+
+
+    public class Primitives
     {
-        public SetPrimitive()
-        {
+        internal static Primitives Instance { get; } = new Primitives();
 
-        }
+        Primitives() { }
 
-        public int Colour
-        {
-            get { return Cad.GetSetColour(); }
-            set { Cad.SetColour(value); }
-        }
+        const string DefaultScanEH = "E";
 
-        public Tuple<int, int, int, int, int> ColourEx
+        //カレントのレイヤ、オブジェクトは変更されません。カレントオブジェクトがアセンブリオブジェクトの場合は、プリミティブは返されません。
+        public IEnumerable<CurrentPrimitive> Scan(string scanEH = DefaultScanEH)
         {
-            get
+            if (Cad.PrimScan(scanEH))
             {
-                int colourIndex, red, green, blue, alpha;
-                Cad.GetSetColourEx(out colourIndex, out red, out green, out blue, out alpha);
-                return Tuple.Create(colourIndex, red, green, blue, alpha);
-            }
-            set
-            {
-                Cad.SetColourEx(value.Item1, value.Item2, value.Item3, value.Item4, value.Item5);
+                do
+                {
+                    yield return Primitive.GetCurrentPrimitive();
+                } while (Cad.PrimNext());
             }
         }
     }
@@ -124,14 +78,14 @@ namespace YunoCad
 
         internal CurrentPrimitive() { }
 
-        public Primitive Link
+        public PriTriple Link
         {
             get
             {
                 var lay = Cad.GetCurLayLink();
                 var obj = Cad.GetCurObjLink();
                 var pri = Cad.GetCurPriLink();
-                return new Primitive(lay, obj, pri);
+                return new PriTriple(lay, obj, pri);
             }
         }
 
@@ -247,9 +201,9 @@ namespace YunoCad
             Cad.CurPriBreak(atPos);
         }
 
-        public void Glue(Primitive otherPrimitive)
+        public void Glue(PriTriple otherPrimitive)
         {
-            Cad.CurPriGlue(otherPrimitive.LayerLink, otherPrimitive.ObjectLink, otherPrimitive.PrimitiveLink);
+            Cad.CurPriGlue(otherPrimitive.llink, otherPrimitive.vlink, otherPrimitive.plink);
         }
 
         public double Length

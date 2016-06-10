@@ -50,7 +50,7 @@ namespace YunoCad
             }
         }
 
-        public Primitive.Primitives Primitives { get; } = Primitive.Primitives.Instance;
+        public Primitives Primitives { get; } = Primitives.Instance;
 
         public void ResetObject()
         {

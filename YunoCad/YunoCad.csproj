@@ -57,6 +57,8 @@
     <Compile Include="Primitive.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Session.cs" />
+    <Compile Include="SetLayer.cs" />
+    <Compile Include="SetObject.cs" />
     <Compile Include="Snap.cs" />
     <Compile Include="Conversation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
