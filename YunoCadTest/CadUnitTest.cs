@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Informatix.MGDS;
 using static Informatix.MGDS.Cad;
+using static Informatix.MGDS.AppError;
 
 namespace MGDSNetDllTest
 {
@@ -84,30 +85,30 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void AddMenuCommandTest()
         {
-            ThrowsCadException(AppError.NoConversation, () => AddMenuCommand("", ""));
+            ThrowsCadException(NoConversation, () => AddMenuCommand("", ""));
 
             Converse(() =>
             {
-                ThrowsCadException(AppError.InvalidParameter, () => AddMenuCommand(null, null));
-                ThrowsCadException(AppError.InvalidParameter, () => AddMenuCommand(null, ""));
-                ThrowsCadException(AppError.MenuAddFail, () => AddMenuCommand("", null));
-                ThrowsCadException(AppError.MenuAddFail, () => AddMenuCommand("", ""));
+                ThrowsCadException(InvalidParameter, () => AddMenuCommand(null, null));
+                ThrowsCadException(InvalidParameter, () => AddMenuCommand(null, ""));
+                ThrowsCadException(MenuAddFail, () => AddMenuCommand("", null));
+                ThrowsCadException(MenuAddFail, () => AddMenuCommand("", ""));
             });
         }
 
         [TestMethod]
         public void AliasDefinitionTest()
         {
-            ThrowsCadException(AppError.NoConversation, () => AliasDefinition(AliasName.Layer, "", "", false));
+            ThrowsCadException(NoConversation, () => AliasDefinition(AliasName.Layer, "", "", false));
 
             Converse(() =>
             {
-                ThrowsCadException(AppError.RequiresDocument, () => AliasDefinition(AliasName.Raster, "RasterTestAlias", @"C:\", false));
+                ThrowsCadException(RequiresDocument, () => AliasDefinition(AliasName.Raster, "RasterTestAlias", @"C:\", false));
                 using (var td = new TemporaryDocument())
                 {
-                    ThrowsCadException(AppError.InvalidParameter, () => AliasDefinition(0, "RasterTestAlias", @"C:\", false));
-                    ThrowsCadException(AppError.InvalidParameter, () => AliasDefinition(AliasName.Raster, null, @"C:\", false));
-                    ThrowsCadException(AppError.InvalidParameter, () => AliasDefinition(AliasName.Raster, "RasterTestAlias", null, false));
+                    ThrowsCadException(InvalidParameter, () => AliasDefinition(0, "RasterTestAlias", @"C:\", false));
+                    ThrowsCadException(InvalidParameter, () => AliasDefinition(AliasName.Raster, null, @"C:\", false));
+                    ThrowsCadException(InvalidParameter, () => AliasDefinition(AliasName.Raster, "RasterTestAlias", null, false));
                     // OK
                     AliasDefinition(AliasName.Raster, "", @"C:\test", false);
                     AliasDefinition(AliasName.Raster, "RasterTestAlias", "", false);
@@ -118,14 +119,14 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void AlignSelectionTest()
         {
-            ThrowsCadException(AppError.NoConversation, () => AlignSelection());
+            ThrowsCadException(NoConversation, () => AlignSelection());
 
             Converse(() =>
             {
-                ThrowsCadException(AppError.RequiresDocument, () => AlignSelection());
+                ThrowsCadException(RequiresDocument, () => AlignSelection());
                 using (var td = new TemporaryDocument())
                 {
-                    ThrowsCadException(AppError.RequiresSelection, () => AlignSelection());
+                    ThrowsCadException(RequiresSelection, () => AlignSelection());
                     // OK
                     Assert.AreEqual(0, GetNumSelPrim());
                     CreateText("AlignSelectionTest", Origin);
@@ -141,24 +142,24 @@ namespace MGDSNetDllTest
             var x1 = new Vector(1, 0, 0);
             var x2 = new Vector(2, 0, 0);
 
-            ThrowsCadException(AppError.NoConversation, () => ArcTo(Origin, Origin));
+            ThrowsCadException(NoConversation, () => ArcTo(Origin, Origin));
 
             Converse(() =>
             {
-                ThrowsCadException(AppError.RequiresDocument, () => ArcTo(Origin, Origin));
+                ThrowsCadException(RequiresDocument, () => ArcTo(Origin, Origin));
                 using (var td = new TemporaryDocument())
                 {
                     // 3点のいずれかが同じあるいは非常に近い場合、PointsTooClose になる
-                    MoveTo(Origin); ThrowsCadException(AppError.PointsTooClose, () => ArcTo(Origin, Origin));
-                    MoveTo(Origin); ThrowsCadException(AppError.PointsTooClose, () => ArcTo(Origin, x1));
-                    MoveTo(Origin); ThrowsCadException(AppError.PointsTooClose, () => ArcTo(x1, Origin));
-                    MoveTo(Origin); ThrowsCadException(AppError.PointsTooClose, () => ArcTo(x1, x1));
+                    MoveTo(Origin); ThrowsCadException(PointsTooClose, () => ArcTo(Origin, Origin));
+                    MoveTo(Origin); ThrowsCadException(PointsTooClose, () => ArcTo(Origin, x1));
+                    MoveTo(Origin); ThrowsCadException(PointsTooClose, () => ArcTo(x1, Origin));
+                    MoveTo(Origin); ThrowsCadException(PointsTooClose, () => ArcTo(x1, x1));
 
-                    // 3点が直線状にある場合、ImpossibleConstruct になる
-                    MoveTo(Origin); ThrowsCadException(AppError.ImpossibleConstruct, () => ArcTo(x1, x2));
-                    MoveTo(Origin); ThrowsCadException(AppError.ImpossibleConstruct, () => ArcTo(x2, x1));
+                    // 3点が直線上にある場合、ImpossibleConstruct になる
+                    MoveTo(Origin); ThrowsCadException(ImpossibleConstruct, () => ArcTo(x1, x2));
+                    MoveTo(Origin); ThrowsCadException(ImpossibleConstruct, () => ArcTo(x2, x1));
 
-                    //ThrowsCadException(AppError.GraphicsMoveWarn, () => { /* どうすれば例外を投げるのか不明 */});
+                    //ThrowsCadException(GraphicsMoveWarn, () => { /* どうすれば例外を投げるのか不明 */});
                     //MoveTo(Origin); Assert.AreEqual(1, ArcTo(/* どうすれば 1 を返すのか不明 */));
 
                     // OK
@@ -171,19 +172,19 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void ArrayPathSelTest()
         {
-            ThrowsCadException(AppError.NoConversation, () => ArrayPathSel(Origin, new PriTriple(), Origin, Origin, 0, 0, false));
+            ThrowsCadException(NoConversation, () => ArrayPathSel(Origin, new PriTriple(), Origin, Origin, 0, 0, false));
             Converse(() =>
             {
-                ThrowsCadException(AppError.RequiresDocument, () => ArrayPathSel(Origin, new PriTriple(), Origin, Origin, 0, 0, false));
+                ThrowsCadException(RequiresDocument, () => ArrayPathSel(Origin, new PriTriple(), Origin, Origin, 0, 0, false));
                 using (var td = new TemporaryDocument())
                 {
-                    ThrowsCadException(AppError.RequiresSelection, () => ArrayPathSel(Origin, new PriTriple(), Origin, Origin, 0, 0, false));
+                    ThrowsCadException(RequiresSelection, () => ArrayPathSel(Origin, new PriTriple(), Origin, Origin, 0, 0, false));
                     CreateText("TEST", Origin); var text = GetPriFirstSelection();
                     MoveTo(Origin); LineTo(new Vector(100, 100, 0)); LineTo(new Vector(200, 110, 0)); var line = GetPriFirstSelection();
                     CreateCircle(100, 0, 10);
-                    ThrowsCadException(AppError.InvalidParameter, () => ArrayPathSel(Origin, new PriTriple(), Origin, Origin, 0, 0, false));
-                    ThrowsCadException(AppError.InvalidPriLink, () => ArrayPathSel(Origin, text, Origin, Origin, 0, 0, false));
-                    ThrowsCadException(AppError.ArrayPathFailed, () => ArrayPathSel(Origin, line, Origin, Origin, 0, 0, false));
+                    ThrowsCadException(InvalidParameter, () => ArrayPathSel(Origin, new PriTriple(), Origin, Origin, 0, 0, false));
+                    ThrowsCadException(InvalidPriLink, () => ArrayPathSel(Origin, text, Origin, Origin, 0, 0, false));
+                    ThrowsCadException(ArrayPathFailed, () => ArrayPathSel(Origin, line, Origin, Origin, 0, 0, false));
 
                     // OK
                     ArrayPathSel(Origin, line, Origin, new Vector(200, 110, 0), 9, 0, false);
@@ -196,13 +197,13 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void ArrayPolarSelTest()
         {
-            ThrowsCadException(AppError.NoConversation, () => ArrayPolarSel(Origin, Origin, 0, 0, 0, false, false));
+            ThrowsCadException(NoConversation, () => ArrayPolarSel(Origin, Origin, 0, 0, 0, false, false));
             Converse(() =>
             {
-                ThrowsCadException(AppError.RequiresDocument, () => ArrayPolarSel(Origin, Origin, 0, 0, 0, false, false));
+                ThrowsCadException(RequiresDocument, () => ArrayPolarSel(Origin, Origin, 0, 0, 0, false, false));
                 using (var td = new TemporaryDocument())
                 {
-                    ThrowsCadException(AppError.RequiresSelection, () => ArrayPolarSel(Origin, Origin, 0, 0, 0, false, false));
+                    ThrowsCadException(RequiresSelection, () => ArrayPolarSel(Origin, Origin, 0, 0, 0, false, false));
 
                     // OK
                     // centre は選択図形との相対位置。
@@ -242,13 +243,13 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void ArrayRectSelTest()
         {
-            ThrowsCadException(AppError.NoConversation, () => ArrayRectSel(0, 0, Origin));
+            ThrowsCadException(NoConversation, () => ArrayRectSel(0, 0, Origin));
             Converse(() =>
             {
-                ThrowsCadException(AppError.RequiresDocument, () => ArrayRectSel(0, 0, Origin));
+                ThrowsCadException(RequiresDocument, () => ArrayRectSel(0, 0, Origin));
                 using (var td = new TemporaryDocument())
                 {
-                    ThrowsCadException(AppError.RequiresSelection, () => ArrayRectSel(0, 0, Origin));
+                    ThrowsCadException(RequiresSelection, () => ArrayRectSel(0, 0, Origin));
                     ArrayRectSelTestSub(new[] {
                         Tuple.Create(-1, -1, new Vector(10, 10, 0), 0),
                         Tuple.Create(-1, 0, new Vector(10, 10, 0), 0),
@@ -277,10 +278,10 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void AttDelTest()
         {
-            ThrowsCadException(AppError.NoConversation, () => AttDel(""));
+            ThrowsCadException(NoConversation, () => AttDel(""));
             Converse(() =>
             {
-                ThrowsCadException(AppError.RequiresDocument, () => AttDel(""));
+                ThrowsCadException(RequiresDocument, () => AttDel(""));
                 using (var td = new TemporaryDocument())
                 {
                     MnemDefLV("Wa", AttributeType.Text, 1, 1, 9, "prompt", "");
@@ -289,28 +290,28 @@ namespace MGDSNetDllTest
                     MnemDefLV("Oa", AttributeType.Text, 1, 1, 9, "prompt", "");
                     MnemDefLV("Pa", AttributeType.Text, 1, 1, 9, "prompt", "");
 
-                    ThrowsCadException(AppError.InvalidParameter, () => AttDel(null));
-                    ThrowsCadException(AppError.InvalidMnemName, () => AttDel(""));
-                    ThrowsCadException(AppError.InvalidMnemName, () => AttDel("W"));
-                    ThrowsCadException(AppError.InvalidMnemName, () => AttDel("L"));
-                    ThrowsCadException(AppError.InvalidMnemName, () => AttDel("R"));
-                    ThrowsCadException(AppError.InvalidMnemName, () => AttDel("O"));
-                    ThrowsCadException(AppError.InvalidMnemName, () => AttDel("P"));
+                    ThrowsCadException(InvalidParameter, () => AttDel(null));
+                    ThrowsCadException(InvalidMnemName, () => AttDel(""));
+                    ThrowsCadException(InvalidMnemName, () => AttDel("W"));
+                    ThrowsCadException(InvalidMnemName, () => AttDel("L"));
+                    ThrowsCadException(InvalidMnemName, () => AttDel("R"));
+                    ThrowsCadException(InvalidMnemName, () => AttDel("O"));
+                    ThrowsCadException(InvalidMnemName, () => AttDel("P"));
 
-                    ThrowsCadException(AppError.NothingDeleted, () => AttDel("Wa"));
-                    ThrowsCadException(AppError.NoCurLay, () => AttDel("La"));
-                    ThrowsCadException(AppError.NoCurObj, () => AttDel("Ra"));
-                    ThrowsCadException(AppError.NoCurObj, () => AttDel("Oa"));
-                    ThrowsCadException(AppError.NoCurObj, () => AttDel("Pa"));
+                    ThrowsCadException(NothingDeleted, () => AttDel("Wa"));
+                    ThrowsCadException(NoCurLay, () => AttDel("La"));
+                    ThrowsCadException(NoCurObj, () => AttDel("Ra"));
+                    ThrowsCadException(NoCurObj, () => AttDel("Oa"));
+                    ThrowsCadException(NoCurObj, () => AttDel("Pa"));
 
                     AttVal("Wa", "window");
                     AttDel("Wa");
 
                     CreateLayer("TestLayer", null);
-                    ThrowsCadException(AppError.NothingDeleted, () => AttDel("La"));
-                    ThrowsCadException(AppError.NoCurObj, () => AttDel("Ra"));
-                    ThrowsCadException(AppError.NoCurObj, () => AttDel("Oa"));
-                    ThrowsCadException(AppError.NoCurObj, () => AttDel("Pa"));
+                    ThrowsCadException(NothingDeleted, () => AttDel("La"));
+                    ThrowsCadException(NoCurObj, () => AttDel("Ra"));
+                    ThrowsCadException(NoCurObj, () => AttDel("Oa"));
+                    ThrowsCadException(NoCurObj, () => AttDel("Pa"));
 
                     AttVal("Wa", "window");
                     AttDel("Wa");
@@ -318,9 +319,9 @@ namespace MGDSNetDllTest
                     AttDel("La");
 
                     CreateObject("TestObject", Origin);
-                    ThrowsCadException(AppError.NothingDeleted, () => AttDel("Ra"));
-                    ThrowsCadException(AppError.NothingDeleted, () => AttDel("Oa"));
-                    ThrowsCadException(AppError.NoCurPri, () => AttDel("Pa"));
+                    ThrowsCadException(NothingDeleted, () => AttDel("Ra"));
+                    ThrowsCadException(NothingDeleted, () => AttDel("Oa"));
+                    ThrowsCadException(NoCurPri, () => AttDel("Pa"));
 
                     AttVal("Wa", "window");
                     AttDel("Wa");
@@ -334,7 +335,7 @@ namespace MGDSNetDllTest
                     CreateText("TestPrimitive", Origin);
                     var p = GetPriFirstSelection();
                     CurPrimitive(p.llink, p.vlink, p.plink);
-                    ThrowsCadException(AppError.NothingDeleted, () => AttDel("Pa"));
+                    ThrowsCadException(NothingDeleted, () => AttDel("Pa"));
 
                     AttVal("Wa", "window");
                     AttDel("Wa");
@@ -350,7 +351,7 @@ namespace MGDSNetDllTest
                     AttVal("La", "layer");
                     CurPhaseNum(1);
                     CurPhase("STATE", "INVISIBLE");
-                    AttDel("La"); // AppError.LayNotEditable を投げない
+                    AttDel("La"); // LayNotEditable を投げない
                 }
             });
         }
@@ -358,38 +359,38 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void AttValTest()
         {
-            ThrowsCadException(AppError.NoConversation, () => AttVal("", ""));
+            ThrowsCadException(NoConversation, () => AttVal("", ""));
             Converse(() =>
             {
-                ThrowsCadException(AppError.RequiresDocument, () => AttVal("", ""));
+                ThrowsCadException(RequiresDocument, () => AttVal("", ""));
                 using (var td = new TemporaryDocument())
                 {
-                    ThrowsCadException(AppError.InvalidParameter, () => AttVal(null, null));
-                    ThrowsCadException(AppError.InvalidParameter, () => AttVal("", null));
-                    ThrowsCadException(AppError.InvalidParameter, () => AttVal(null, ""));
-                    ThrowsCadException(AppError.InvalidMnemName, () => AttVal("W", ""));
-                    ThrowsCadException(AppError.InvalidMnemName, () => AttVal("L", ""));
-                    ThrowsCadException(AppError.InvalidMnemName, () => AttVal("O", ""));
-                    ThrowsCadException(AppError.InvalidMnemName, () => AttVal("R", ""));
-                    ThrowsCadException(AppError.InvalidMnemName, () => AttVal("P", ""));
+                    ThrowsCadException(InvalidParameter, () => AttVal(null, null));
+                    ThrowsCadException(InvalidParameter, () => AttVal("", null));
+                    ThrowsCadException(InvalidParameter, () => AttVal(null, ""));
+                    ThrowsCadException(InvalidMnemName, () => AttVal("W", ""));
+                    ThrowsCadException(InvalidMnemName, () => AttVal("L", ""));
+                    ThrowsCadException(InvalidMnemName, () => AttVal("O", ""));
+                    ThrowsCadException(InvalidMnemName, () => AttVal("R", ""));
+                    ThrowsCadException(InvalidMnemName, () => AttVal("P", ""));
 
                     // ニーモニック定義を設定しなくてもエラーにならず自動的に無制限テキストが定義される。
                     AttVal("Wa", "test");
-                    ThrowsCadException(AppError.NoCurLay, () => AttVal("La", ""));
-                    ThrowsCadException(AppError.NoCurObj, () => AttVal("Oa", ""));
-                    ThrowsCadException(AppError.NoCurObj, () => AttVal("Ra", ""));
-                    ThrowsCadException(AppError.NoCurObj, () => AttVal("Pa", ""));
+                    ThrowsCadException(NoCurLay, () => AttVal("La", ""));
+                    ThrowsCadException(NoCurObj, () => AttVal("Oa", ""));
+                    ThrowsCadException(NoCurObj, () => AttVal("Ra", ""));
+                    ThrowsCadException(NoCurObj, () => AttVal("Pa", ""));
 
                     CreateLayer("TestLayer", null);
                     AttVal("La", "layerTest");
-                    ThrowsCadException(AppError.NoCurObj, () => AttVal("Ra", ""));
-                    ThrowsCadException(AppError.NoCurObj, () => AttVal("Oa", ""));
-                    ThrowsCadException(AppError.NoCurObj, () => AttVal("Pa", ""));
+                    ThrowsCadException(NoCurObj, () => AttVal("Ra", ""));
+                    ThrowsCadException(NoCurObj, () => AttVal("Oa", ""));
+                    ThrowsCadException(NoCurObj, () => AttVal("Pa", ""));
 
                     CreateObject("TestObject", Origin);
                     AttVal("Ra", "referenceTest");
                     AttVal("Oa", "objectTest");
-                    ThrowsCadException(AppError.NoCurPri, () => AttVal("Pa", ""));
+                    ThrowsCadException(NoCurPri, () => AttVal("Pa", ""));
 
                     CreateText("TestPrimitive", Origin);
                     var p = GetPriFirstSelection();
@@ -402,11 +403,11 @@ namespace MGDSNetDllTest
                     MnemDefLV("Oa", AttributeType.Text, 1, 1, 9, "prompt", "");
                     MnemDefLV("Pa", AttributeType.Text, 1, 1, 9, "prompt", "");
 
-                    ThrowsCadException(AppError.SetAttDataFail, () => AttVal("Wa", ""));
-                    ThrowsCadException(AppError.SetAttDataFail, () => AttVal("La", ""));
-                    ThrowsCadException(AppError.SetAttDataFail, () => AttVal("Oa", ""));
-                    ThrowsCadException(AppError.SetAttDataFail, () => AttVal("Ra", ""));
-                    ThrowsCadException(AppError.SetAttDataFail, () => AttVal("Pa", ""));
+                    ThrowsCadException(SetAttDataFail, () => AttVal("Wa", ""));
+                    ThrowsCadException(SetAttDataFail, () => AttVal("La", ""));
+                    ThrowsCadException(SetAttDataFail, () => AttVal("Oa", ""));
+                    ThrowsCadException(SetAttDataFail, () => AttVal("Ra", ""));
+                    ThrowsCadException(SetAttDataFail, () => AttVal("Pa", ""));
                 }
             });
         }
@@ -418,10 +419,10 @@ namespace MGDSNetDllTest
             // 通信時にどの設定座標軸を用いるか?
             // AxesResynch 呼び出しで、
             // 通信時に現在アクティブなウィンドウ定義の設定座標軸を用いることができる
-            ThrowsCadException(AppError.NoConversation, () => AxesResynch());
+            ThrowsCadException(NoConversation, () => AxesResynch());
             Converse(() =>
             {
-                ThrowsCadException(AppError.RequiresDocument, () => AxesResynch());
+                ThrowsCadException(RequiresDocument, () => AxesResynch());
                 CreateFile();
                 CreateLayer("default", null);
                 var axes = new Axes();
@@ -783,10 +784,10 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void EchoTest()
         {
-            ThrowsCadException(AppError.NoConversation, () => Echo(""));
+            ThrowsCadException(NoConversation, () => Echo(""));
             Converse(() =>
             {
-                ThrowsCadException(AppError.InvalidParameter, () => Echo(null));
+                ThrowsCadException(InvalidParameter, () => Echo(null));
                 // OK
                 Echo(@"(⋈◍＞◡＜◍)。✧♡");
             });
@@ -1800,10 +1801,10 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void PromptTest()
         {
-            ThrowsCadException(AppError.NoConversation, () => Prompt(""));
+            ThrowsCadException(NoConversation, () => Prompt(""));
             Converse(() =>
             {
-                ThrowsCadException(AppError.InvalidParameter, () => Prompt(null));
+                ThrowsCadException(InvalidParameter, () => Prompt(null));
                 // OK
                 Prompt(@"(⋈◍＞◡＜◍)。✧♡");
             });
