@@ -1796,8 +1796,19 @@ namespace MGDSNetDllTest
         public void PrintTest() { Assert.Fail("Not implemented"); }
         [TestMethod]
         public void PrinterSetupTest() { Assert.Fail("Not implemented"); }
+
         [TestMethod]
-        public void PromptTest() { Assert.Fail("Not implemented"); }
+        public void PromptTest()
+        {
+            ThrowsCadException(AppError.NoConversation, () => Prompt(""));
+            Converse(() =>
+            {
+                ThrowsCadException(AppError.InvalidParameter, () => Prompt(null));
+                // OK
+                Prompt(@"(⋈◍＞◡＜◍)。✧♡");
+            });
+        }
+
         [TestMethod]
         public void QuadFacesTest() { Assert.Fail("Not implemented"); }
         [TestMethod]
