@@ -12,5 +12,7 @@
         public Session Session { get; }
         public Documents Documents { get; } = Documents.Instance;
         public Menu Menu { get; } = Menu.Instance;
+
+        public void Echo(string echoStr) => Informatix.MGDS.Cad.Echo(echoStr);
     }
 }

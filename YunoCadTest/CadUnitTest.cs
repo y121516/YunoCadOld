@@ -779,8 +779,19 @@ namespace MGDSNetDllTest
         public void DrawExtentTest() { Assert.Fail("Not implemented"); }
         [TestMethod]
         public void DrawLastViewTest() { Assert.Fail("Not implemented"); }
+
         [TestMethod]
-        public void EchoTest() { Assert.Fail("Not implemented"); }
+        public void EchoTest()
+        {
+            ThrowsCadException(AppError.NoConversation, () => Echo(""));
+            Converse(() =>
+            {
+                ThrowsCadException(AppError.InvalidParameter, () => Echo(null));
+                // OK
+                Echo(@"(⋈◍＞◡＜◍)。✧♡");
+            });
+        }
+
         [TestMethod]
         public void EllipseTest() { Assert.Fail("Not implemented"); }
         [TestMethod]
