@@ -185,18 +185,12 @@ namespace MGDSNetDllTest
                         ForEachDoc((docID) =>
                         {
                             AliasDefinition(AliasName.Raster, "", @"C:\test", false);
-                            AliasDefinition(AliasName.Raster, "RasterTestAlias", "", true);
                         });
                         ThrowsCadException(InvalidParameter, () =>
                             ForEachDocResynch((docID, docName) =>
                             {
                                 var path = ""; bool expandable;
                                 GetAliasDefinition(AliasName.Raster, "", out path, out expandable);
-                                Assert.AreEqual(@"C:\test", path);
-                                Assert.AreEqual(false, expandable);
-                                GetAliasDefinition(AliasName.Raster, "RasterTestAlias", out path, out expandable);
-                                Assert.AreEqual("", path);
-                                Assert.AreEqual(true, expandable);
                             })
                         );
                     }
@@ -209,18 +203,12 @@ namespace MGDSNetDllTest
                         ForEachDocActive((docID, docName) =>
                         {
                             AliasDefinition(AliasName.Raster, "", @"C:\test", false);
-                            AliasDefinition(AliasName.Raster, "RasterTestAlias", "", true);
                         });
                         ThrowsCadException(InvalidParameter, () =>
                             ForEachDocResynch((docID, docName) =>
                             {
                                 var path = ""; bool expandable;
                                 GetAliasDefinition(AliasName.Raster, "", out path, out expandable);
-                                Assert.AreEqual(@"C:\test", path);
-                                Assert.AreEqual(false, expandable);
-                                GetAliasDefinition(AliasName.Raster, "RasterTestAlias", out path, out expandable);
-                                Assert.AreEqual("", path);
-                                Assert.AreEqual(true, expandable);
                             })
                         );
                     }
