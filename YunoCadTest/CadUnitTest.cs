@@ -3,9 +3,60 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Informatix.MGDS;
 using static Informatix.MGDS.Cad;
 using static Informatix.MGDS.AppError;
+using static MGDSNetDllTest.CadExtension;
 
 namespace MGDSNetDllTest
 {
+    public static class CadExtension
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="action">void action(string docID)</param>
+        public static void ForEachDoc(Action<string> action)
+        {
+            var docID = "";
+            if (DocFirst(out docID)) do action(docID); while (DocNext(out docID));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="action">void action(string docID, string docName)</param>
+        public static void ForEachDocActive(Action<string, string> action)
+        {
+            var docID = "";
+            if (DocFirst(out docID))
+            {
+                var docName = "";
+                do
+                {
+                    DocActivate(out docName);
+                    action(docID, docName);
+                } while (DocNext(out docID));
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="action">void action(string docID, string docName)</param>
+        public static void ForEachDocResynch(Action<string, string> action)
+        {
+            var docID = "";
+            if (DocFirst(out docID))
+            {
+                var docName = "";
+                do
+                {
+                    DocActivate(out docName);
+                    DocResynch();
+                    action(docID, docName);
+                } while (DocNext(out docID));
+            }
+        }
+    }
+
     public static class ApiExceptionExtension
     {
         public static AppError GetAppError(this ApiException ex)
@@ -125,20 +176,75 @@ namespace MGDSNetDllTest
                     ThrowsCadException(InvalidParameter, () => AliasDefinition(0, "RasterTestAlias", @"C:\", false));
                     ThrowsCadException(InvalidParameter, () => AliasDefinition((AliasName)6, "RasterTestAlias", @"C:\", false));
                     ThrowsCadException(InvalidParameter, () => AliasDefinition((AliasName)8, "RasterTestAlias", @"C:\", false));
+                }
 
+                using (var td = new TemporaryDocument())
+                {
+                    using (var td2 = new TemporaryDocument())
                     {
-                        AliasDefinition(AliasName.Raster, "", @"C:\test", false);
-                        var path = ""; bool expandable;
-                        GetAliasDefinition(AliasName.Raster, "", out path, out expandable);
-                        Assert.AreEqual(@"C:\test", path);
-                        Assert.AreEqual(false, expandable);
+                        ForEachDoc((docID) =>
+                        {
+                            AliasDefinition(AliasName.Raster, "", @"C:\test", false);
+                            AliasDefinition(AliasName.Raster, "RasterTestAlias", "", true);
+                        });
+                        ThrowsCadException(InvalidParameter, () =>
+                            ForEachDocResynch((docID, docName) =>
+                            {
+                                var path = ""; bool expandable;
+                                GetAliasDefinition(AliasName.Raster, "", out path, out expandable);
+                                Assert.AreEqual(@"C:\test", path);
+                                Assert.AreEqual(false, expandable);
+                                GetAliasDefinition(AliasName.Raster, "RasterTestAlias", out path, out expandable);
+                                Assert.AreEqual("", path);
+                                Assert.AreEqual(true, expandable);
+                            })
+                        );
                     }
+                }
+
+                using (var td = new TemporaryDocument())
+                {
+                    using (var td2 = new TemporaryDocument())
                     {
-                        AliasDefinition(AliasName.Raster, "RasterTestAlias", "", true);
-                        var path = ""; bool expandable;
-                        GetAliasDefinition(AliasName.Raster, "RasterTestAlias", out path, out expandable);
-                        Assert.AreEqual("", path);
-                        Assert.AreEqual(true, expandable);
+                        ForEachDocActive((docID, docName) =>
+                        {
+                            AliasDefinition(AliasName.Raster, "", @"C:\test", false);
+                            AliasDefinition(AliasName.Raster, "RasterTestAlias", "", true);
+                        });
+                        ThrowsCadException(InvalidParameter, () =>
+                            ForEachDocResynch((docID, docName) =>
+                            {
+                                var path = ""; bool expandable;
+                                GetAliasDefinition(AliasName.Raster, "", out path, out expandable);
+                                Assert.AreEqual(@"C:\test", path);
+                                Assert.AreEqual(false, expandable);
+                                GetAliasDefinition(AliasName.Raster, "RasterTestAlias", out path, out expandable);
+                                Assert.AreEqual("", path);
+                                Assert.AreEqual(true, expandable);
+                            })
+                        );
+                    }
+                }
+
+                using (var td = new TemporaryDocument())
+                {
+                    using (var td2 = new TemporaryDocument())
+                    {
+                        ForEachDocResynch((docID, docName) =>
+                        {
+                            AliasDefinition(AliasName.Raster, "", @"C:\test", false);
+                            AliasDefinition(AliasName.Raster, "RasterTestAlias", "", true);
+                        });
+                        ForEachDocResynch((docID, docName) =>
+                        {
+                            var path = ""; bool expandable;
+                            GetAliasDefinition(AliasName.Raster, "", out path, out expandable);
+                            Assert.AreEqual(@"C:\test", path);
+                            Assert.AreEqual(false, expandable);
+                            GetAliasDefinition(AliasName.Raster, "RasterTestAlias", out path, out expandable);
+                            Assert.AreEqual("", path);
+                            Assert.AreEqual(true, expandable);
+                        });
                     }
                 }
             });
@@ -860,7 +966,13 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void FragmentSelTest() { Assert.Fail("Not implemented"); }
         [TestMethod]
-        public void GetAliasDefinitionTest() { Assert.Fail("Not implemented"); }
+        public void GetAliasDefinitionTest()
+        {
+            // 存在しないエイリアスを指定すると
+            // InvalidParameter [1000] 許容範囲外の引数が関数に指定されました。
+            // を投げる
+            Assert.Fail("Not implemented");
+        }
         [TestMethod]
         public void GetArgTest() { Assert.Fail("Not implemented"); }
         [TestMethod]
