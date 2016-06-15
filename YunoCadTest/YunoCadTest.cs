@@ -318,7 +318,7 @@ namespace YunoCadTest
                 var command = new Command(menuName, @"cmd.exe");
 
                 cs.Menu.Add(command);
-                Assert.AreEqual(@"{/pa}&ParentMenuName\&ChildMenuName", cs.Menu[menuName].MenuName);
+                Assert.AreEqual(@"{/pa}&ParentMenuName\&ChildMenuName", cs.Menu[menuName].Name);
 
                 Assert.AreEqual(false, cs.Menu[menuName].Checked);
                 cs.Menu[menuName].Checked = true;

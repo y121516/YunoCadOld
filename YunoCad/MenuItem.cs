@@ -4,16 +4,13 @@ namespace YunoCad
 {
     public class MenuItem
     {
-        public string MenuName { get; } = "";
+        public string Name { get; } = "";
 
-        public MenuItem(string menuName) { MenuName = menuName; }
+        internal MenuItem(string menuName) { Name = menuName; }
 
         public bool Enabled
         {
-            set
-            {
-                EnableMenuCommand(MenuName, value);
-            }
+            set { EnableMenuCommand(Name, value); }
         }
 
         public bool Checked
@@ -21,10 +18,10 @@ namespace YunoCad
             get
             {
                 bool isChecked;
-                GetCheckMenuCommand(out isChecked, MenuName);
+                GetCheckMenuCommand(out isChecked, Name);
                 return isChecked;
             }
-            set { SetCheckMenuCommand(MenuName, value); }
+            set { SetCheckMenuCommand(Name, value); }
         }
     }
 }

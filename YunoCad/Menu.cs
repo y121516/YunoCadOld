@@ -18,20 +18,14 @@ namespace YunoCad
                 GetPrefMenuCfg(out fileName);
                 return fileName;
             }
-            set
-            {
-                PrefMenuCfg(value);
-            }
+            set { PrefMenuCfg(value); }
         }
 
         public void Load(string fileName, string section) => LoadMenu(fileName, section);
 
         public void RestoreState() => RestoreMenuState();
 
-        public MenuItem this[string menuName]
-        {
-            get { return new MenuItem(menuName); }
-        }
+        public MenuItem this[string menuName] => new MenuItem(menuName);
 
         public void Add(Command command)
             => AddMenuCommand(command.MenuName, command.CommandLine);
