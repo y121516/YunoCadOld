@@ -85,6 +85,9 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void AddMenuCommandTest()
         {
+            ThrowsCadException(InvalidParameter, () => AddMenuCommand(null, null));
+            ThrowsCadException(InvalidParameter, () => AddMenuCommand(null, ""));
+            ThrowsCadException(NoConversation, () => AddMenuCommand("", null));
             ThrowsCadException(NoConversation, () => AddMenuCommand("", ""));
 
             Converse(() =>
@@ -99,16 +102,30 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void AliasDefinitionTest()
         {
+            ThrowsCadException(InvalidParameter, () => AliasDefinition(AliasName.Raster, null, @"C:\", false));
+            ThrowsCadException(InvalidParameter, () => AliasDefinition(AliasName.Raster, "RasterTestAlias", null, false));
+            ThrowsCadException(NoConversation, () => AliasDefinition(0, "RasterTestAlias", @"C:\", false));
+            ThrowsCadException(NoConversation, () => AliasDefinition((AliasName)6, "RasterTestAlias", @"C:\", false));
+            ThrowsCadException(NoConversation, () => AliasDefinition((AliasName)8, "RasterTestAlias", @"C:\", false));
             ThrowsCadException(NoConversation, () => AliasDefinition(AliasName.Layer, "", "", false));
 
             Converse(() =>
             {
+                ThrowsCadException(InvalidParameter, () => AliasDefinition(AliasName.Raster, null, @"C:\", false));
+                ThrowsCadException(InvalidParameter, () => AliasDefinition(AliasName.Raster, "RasterTestAlias", null, false));
+                ThrowsCadException(RequiresDocument, () => AliasDefinition(0, "RasterTestAlias", @"C:\", false));
+                ThrowsCadException(RequiresDocument, () => AliasDefinition((AliasName)6, "RasterTestAlias", @"C:\", false));
+                ThrowsCadException(RequiresDocument, () => AliasDefinition((AliasName)8, "RasterTestAlias", @"C:\", false));
                 ThrowsCadException(RequiresDocument, () => AliasDefinition(AliasName.Raster, "RasterTestAlias", @"C:\", false));
+
                 using (var td = new TemporaryDocument())
                 {
-                    ThrowsCadException(InvalidParameter, () => AliasDefinition(0, "RasterTestAlias", @"C:\", false));
                     ThrowsCadException(InvalidParameter, () => AliasDefinition(AliasName.Raster, null, @"C:\", false));
                     ThrowsCadException(InvalidParameter, () => AliasDefinition(AliasName.Raster, "RasterTestAlias", null, false));
+                    ThrowsCadException(InvalidParameter, () => AliasDefinition(0, "RasterTestAlias", @"C:\", false));
+                    ThrowsCadException(InvalidParameter, () => AliasDefinition((AliasName)6, "RasterTestAlias", @"C:\", false));
+                    ThrowsCadException(InvalidParameter, () => AliasDefinition((AliasName)8, "RasterTestAlias", @"C:\", false));
+
                     // OK
                     AliasDefinition(AliasName.Raster, "", @"C:\test", false);
                     AliasDefinition(AliasName.Raster, "RasterTestAlias", "", false);
