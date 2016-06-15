@@ -126,9 +126,20 @@ namespace MGDSNetDllTest
                     ThrowsCadException(InvalidParameter, () => AliasDefinition((AliasName)6, "RasterTestAlias", @"C:\", false));
                     ThrowsCadException(InvalidParameter, () => AliasDefinition((AliasName)8, "RasterTestAlias", @"C:\", false));
 
-                    // OK
-                    AliasDefinition(AliasName.Raster, "", @"C:\test", false);
-                    AliasDefinition(AliasName.Raster, "RasterTestAlias", "", false);
+                    {
+                        AliasDefinition(AliasName.Raster, "", @"C:\test", false);
+                        var path = ""; bool expandable;
+                        GetAliasDefinition(AliasName.Raster, "", out path, out expandable);
+                        Assert.AreEqual(@"C:\test", path);
+                        Assert.AreEqual(false, expandable);
+                    }
+                    {
+                        AliasDefinition(AliasName.Raster, "RasterTestAlias", "", true);
+                        var path = ""; bool expandable;
+                        GetAliasDefinition(AliasName.Raster, "RasterTestAlias", out path, out expandable);
+                        Assert.AreEqual("", path);
+                        Assert.AreEqual(true, expandable);
+                    }
                 }
             });
         }
