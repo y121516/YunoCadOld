@@ -36,10 +36,15 @@ namespace YunoCad
             }
         }
 
-        public static CurrentPrimitive makeCurrent(this PriTriple priTriple)
+        public static CurrentPrimitive MakeCurrent(this PriTriple priTriple)
         {
             CurPrimitive(priTriple.llink, priTriple.vlink, priTriple.plink);
             return GetCurrentPrimitive();
+        }
+
+        public static void MakeCurrentPrimitive(this PriTriple priTriple)
+        {
+            CurPriLink(priTriple.plink);
         }
 
         public static void Set(this PriTriple priTriple)
@@ -82,16 +87,16 @@ namespace YunoCad
         {
             get
             {
-                var lay = Cad.GetCurLayLink();
-                var obj = Cad.GetCurObjLink();
-                var pri = Cad.GetCurPriLink();
+                var lay = GetCurLayLink();
+                var obj = GetCurObjLink();
+                var pri = GetCurPriLink();
                 return new PriTriple(lay, obj, pri);
             }
         }
 
-        public int LayerLink => Cad.GetCurLayLink();
-        public int ObjectLink => Cad.GetCurObjLink();
-        public int PrimitiveLink => Cad.GetCurPriLink();
+        public int LayerLink => GetCurLayLink();
+        public int ObjectLink => GetCurObjLink();
+        public int PrimitiveLink => GetCurPriLink();
 
         // 閉じたプリミティブ
         public double Area
@@ -99,7 +104,7 @@ namespace YunoCad
             get
             {
                 double area;
-                Cad.GetCurPriArea(out area);
+                GetCurPriArea(out area);
                 return area;
             }
         }
@@ -109,26 +114,124 @@ namespace YunoCad
             get
             {
                 var lineStyle = "";
-                Cad.GetCurPriLinestyle(out lineStyle);
+                GetCurPriLinestyle(out lineStyle);
                 return lineStyle;
             }
+            set { CurPriLinestyle(value); }
         }
 
+        /// <summary>
+        /// 次のいずれか。
+        /// "CLUMP MESH", "CLUMP SOLID", "TEXT", "LINE", "OLE", "PHOTO", "RASTER", "NONE", "UNKNOWN"
+        /// </summary>
         public string Type
         {
             get
             {
                 var type = "";
-                Cad.GetCurPriType(out type);
+                GetCurPriType(out type);
                 return type;
             }
         }
+
+        public void Move(Vector from, Vector moveTo, bool copy = false, double byScale = 1, double radianRotation = 0)
+            => CurPriMove(copy, from, moveTo, byScale, radianRotation);
+
+        public void Rotate(Vector radianOrient) => CurPriRotate(radianOrient);
 
         public CurrentDocument Reset()
         {
             Cad.ResetPrim();
             return CurrentDocument.Instance;
         }
+
+
+
+        // todo: text primitive only?
+        public double Wrap
+        {
+            get
+            {
+                double wrap;
+                GetCurPriWrap(out wrap);
+                return wrap;
+            }
+            set { CurPriWrap(value); }
+        }
+
+        public bool IsMirroed => IsCurPriMirrored();
+        public bool IsReadOnlyInstance => IsCurPrimReadonly() == Informatix.MGDS.Primitive.ReadOnly;
+        public bool IsSelected => IsCurPriSelected();
+
+        public void Transform(ref Axes from, ref Axes moveTo, bool copy = false)
+            => TransformCurPrimitive(copy, ref from, ref moveTo);
+    }
+
+    public class CurrentLineOrPhotePrimitive : CurrentPrimitive
+    {
+        public void Polyline(int nPoints, Vector[] pointArray)
+            => CurPriPolyline(nPoints, pointArray);
+
+        public void Polyline(int nPoints, Vector[] pointArray, double[] bulgeArray, Vector[] axisArray)
+            => CurPriPolyline(nPoints, pointArray, bulgeArray, axisArray);
+
+        /// <param name="options">"method=vertices" または "method=midpoints"</param>
+        public void SmoothLine(bool copy = false, string options = "method=vertices")
+            => CurPriSmoothLine(copy, options);
+
+        public void Trim(Vector fromPos, Vector toPos)
+            => CurPriTrim(fromPos, toPos);
+
+        public Tuple<double, Vector> GetBulge(int i)
+        {
+            Vector axis;
+            double bulge;
+            GetCurPriBulge(i, out axis, out bulge);
+            return Tuple.Create(bulge, axis);
+        }
+
+        public double Length
+        {
+            get
+            {
+                double length;
+                GetCurPriLen(out length);
+                return length;
+            }
+        }
+
+        public int NumberOfPoints => GetCurPriNP();
+
+        public Vector Pt(int i)
+        {
+            Vector vec;
+            GetCurPriPt(i, out vec);
+            return vec;
+        }
+
+        public Vector[] Pts()
+        {
+            var np = NumberOfPoints;
+            var points = new Vector[np];
+            GetCurPriPts(np, points);
+            return points;
+        }
+
+        public Tuple<Vector[], double[], Vector[]> PolylinePts(int start, int nPoints, Vector[] pointArray, double[] bulgeArray, Vector[] axisArray)
+        {
+            GetPolylinePts(start, nPoints, pointArray, bulgeArray, axisArray);
+            return Tuple.Create(pointArray, bulgeArray, axisArray);
+        }
+
+        /// <param name="whereAdd">頂点を追加する線分（1～）、あるいはVertexAt.Start、VertexAt.Endのいずれか</param>
+        public void VertexAdd(int whereAdd, Vector pos, bool redraw = true)
+            => Cad.VertexAdd(whereAdd, pos, redraw);
+
+        public void VertexDelete(int vertex, bool redraw = true)
+            => Cad.VertexDelete(vertex, redraw);
+
+        public void VertexMove(int vertex, Vector pos, bool redraw = true)
+            => Cad.VertexMove(vertex, pos, redraw);
     }
 
     public class CurrentClumpMeshPrimitive : CurrentPrimitive
@@ -136,6 +239,17 @@ namespace YunoCad
         internal new static CurrentClumpMeshPrimitive Instance { get; } = new CurrentClumpMeshPrimitive();
 
         CurrentClumpMeshPrimitive() { }
+
+        public double Smooth
+        {
+            get
+            {
+                double smooth;
+                GetCurPriSmooth(out smooth);
+                return smooth;
+            }
+            set { CurPriSmooth(value); }
+        }
     }
 
     public class CurrentClumpSolidPrimitive : CurrentPrimitive
@@ -143,6 +257,16 @@ namespace YunoCad
         internal new static CurrentClumpSolidPrimitive Instance { get; } = new CurrentClumpSolidPrimitive();
 
         CurrentClumpSolidPrimitive() { }
+
+        public double Volume
+        {
+            get
+            {
+                double volume;
+                GetCurPriVolume(out volume);
+                return volume;
+            }
+        }
     }
 
     public class CurrentTextPrimitive : CurrentPrimitive
@@ -176,6 +300,51 @@ namespace YunoCad
             Cad.CurPriFormattedText(text, options);
         }
 
+        public Tuple<Axes, double> Axes
+        {
+            get
+            {
+                Axes axes;
+                double yFactor;
+                GetCurPriTextAxes(out axes, out yFactor);
+                return Tuple.Create(axes, yFactor);
+            }
+            set { CurPriTextAxes(value.Item1, value.Item2); }
+        }
+
+        public string TextPropertyDirection()
+        {
+            var value = "";
+            GetCurPriTextProperty("DIRECTION", out value);
+            return value;
+        }
+
+        public string TextPropertyLinestyle()
+        {
+            var value = "";
+            GetCurPriTextProperty("LINESTYLE", out value);
+            return value;
+        }
+
+        public string TextPropertyPoint()
+        {
+            var value = "";
+            GetCurPriTextProperty("POINT", out value);
+            return value;
+        }
+
+        public string TextPropertyJustification()
+        {
+            var value = "";
+            GetCurPriTextProperty("JUSTIFICATION", out value);
+            return value;
+        }
+
+        public void TextProperty(string options)
+        {
+            CurPriTextProperty(options);
+        }
+
         public string Text
         {
             get
@@ -191,60 +360,39 @@ namespace YunoCad
         }
     }
 
-    public class CurrentLinePrimitive : CurrentPrimitive
+    public class CurrentLinePrimitive : CurrentLineOrPhotePrimitive
     {
         internal new static CurrentLinePrimitive Instance { get; } = new CurrentLinePrimitive();
 
         CurrentLinePrimitive() { }
 
-        public void Break(Cad.Vector atPos)
-        {
-            Cad.CurPriBreak(atPos);
-        }
+        public void Break(Vector atPos) => CurPriBreak(atPos);
 
         public void Glue(PriTriple otherPrimitive)
-        {
-            Cad.CurPriGlue(otherPrimitive.llink, otherPrimitive.vlink, otherPrimitive.plink);
-        }
+            => CurPriGlue(otherPrimitive.llink, otherPrimitive.vlink, otherPrimitive.plink);
 
-        public double Length
-        {
-            get
-            {
-                double length;
-                Cad.GetCurPriLen(out length);
-                return length;
-            }
-        }
+        public void Intersect(Vector fromPos, PriTriple otherPrimitive, Vector toPos)
+            => CurPriIntersect(fromPos, otherPrimitive.llink, otherPrimitive.vlink, otherPrimitive.plink, toPos);
 
-        public int NumberOfPoints => Cad.GetCurPriNP();
-
-        public Cad.Vector[] Pts()
-        {
-            var np = NumberOfPoints;
-            var points = new Cad.Vector[np];
-            Cad.GetCurPriPts(np, points);
-            return points;
-        }
+        public void Join(Vector fromPos, PriTriple otherPrimitive, Vector toPos)
+            => CurPriJoin(fromPos, otherPrimitive.llink, otherPrimitive.vlink, otherPrimitive.plink, toPos);
     }
 
-    public class CurrentOlePrimitive : CurrentPrimitive
+    public class CurrentOlePrimitive : CurrentLineOrPhotePrimitive
     {
         internal new static CurrentOlePrimitive Instance { get; } = new CurrentOlePrimitive();
 
         CurrentOlePrimitive() { }
     }
 
-    public class CurrentPhotoPrimitive : CurrentPrimitive
+    public class CurrentPhotoPrimitive : CurrentLineOrPhotePrimitive
     {
         internal new static CurrentPhotoPrimitive Instance { get; } = new CurrentPhotoPrimitive();
 
         CurrentPhotoPrimitive() { }
-
-        public int NumberOfPoints => Cad.GetCurPriNP();
     }
 
-    public class CurrentRasterPrimitive : CurrentPrimitive
+    public class CurrentRasterPrimitive : CurrentLineOrPhotePrimitive
     {
         internal new static CurrentRasterPrimitive Instance { get; } = new CurrentRasterPrimitive();
 
