@@ -78,7 +78,7 @@ namespace YunoCad
         public int LayerLink => _ObjPair.llink;
         public int ObjectLink => _ObjPair.vlink;
 
-        public override string ToString()=> _ObjPair.ToString();
+        public override string ToString() => _ObjPair.ToString();
 
         public CurrentObject ToCurrent()
         {
@@ -89,9 +89,8 @@ namespace YunoCad
         public class Objects
         {
             const string DefaultScanEH = "E";
+            const string DefaultWildcard = "**";
 
-            // todo: ObjectScanArea, ObjectScanLayer, ObjectScanPoly, ObjectScanPrimPoly, ObjectScanVolume などのオーバーロードを追加する。
-            // カレントのウィンドウ定義内でのみよびだせるとよい
             public IEnumerable<CurrentObject> Scan(string scanEH = DefaultScanEH)
             {
                 if (Cad.ObjectScan(scanEH))
@@ -102,6 +101,80 @@ namespace YunoCad
                     } while (Cad.ObjectNext());
                 }
             }
+
+            public IEnumerable<CurrentObject> ScanWildcard(string wildcard, string scanEH = DefaultScanEH)
+            {
+                double extent;
+                Cad.GetExtentSize(out extent);
+                if (Cad.ObjectScanArea(scanEH, wildcard, -extent, extent, extent, -extent))
+                {
+                    do
+                    {
+                        yield return CurrentObject.Instance;
+                    } while (Cad.ObjectNext());
+                }
+            }
+
+            public IEnumerable<CurrentObject> ScanArea(double left, double top, double right, double bottom,
+                string scanEH = DefaultScanEH, string wildcard = DefaultWildcard)
+            {
+                if (Cad.ObjectScanArea(DefaultScanEH, DefaultWildcard, left, top, right, bottom))
+                {
+                    do
+                    {
+                        yield return CurrentObject.Instance;
+                    } while (Cad.ObjectNext());
+                }
+            }
+
+            // TODO: レイヤオブジェクトで呼び出すようにする
+            public IEnumerable<CurrentObject> ScanLayer(int layerLink, ScanMode extentType, Cad.Vector lo, Cad.Vector hi,
+                string scanEH = DefaultScanEH, string wildcard = DefaultWildcard)
+            {
+                if (Cad.ObjectScanLayer(layerLink, scanEH, wildcard, extentType, lo, hi))
+                {
+                    do
+                    {
+                        yield return CurrentObject.Instance;
+                    } while (Cad.ObjectNext());
+                }
+            }
+
+            public IEnumerable<CurrentObject> ScanPoly(ScanPoly scanPoly, string scanEH = DefaultScanEH, string wildcard = DefaultWildcard)
+            {
+                if (Cad.ObjectScanPoly(scanPoly, scanEH, wildcard))
+                {
+                    do
+                    {
+                        yield return CurrentObject.Instance;
+                    } while (Cad.ObjectNext());
+                }
+            }
+
+            public IEnumerable<CurrentObject> ScanPrimPoly(ScanPoly scanPoly, Cad.PriTriple priTriple,
+                string scanEH = DefaultScanEH, string wildcard = DefaultWildcard)
+            {
+                if (Cad.ObjectScanPrimPoly(scanPoly, scanEH, wildcard, priTriple.llink, priTriple.vlink, priTriple.plink))
+                {
+                    do
+                    {
+                        yield return CurrentObject.Instance;
+                    } while (Cad.ObjectNext());
+                }
+            }
+
+            public IEnumerable<CurrentObject> ScanVolume(Cad.Vector pt1, Cad.Vector pt2,
+                string scanEH = DefaultScanEH, string wildcard = DefaultWildcard)
+            {
+                if (Cad.ObjectScanVolume(scanEH, wildcard, pt1, pt2))
+                {
+                    do
+                    {
+                        yield return CurrentObject.Instance;
+                    } while (Cad.ObjectNext());
+                }
+            }
+
         }
     }
 }

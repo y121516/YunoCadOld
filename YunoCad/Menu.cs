@@ -1,4 +1,4 @@
-﻿using static Informatix.MGDS.Cad;
+﻿using Informatix.MGDS;
 
 namespace YunoCad
 {
@@ -8,31 +8,84 @@ namespace YunoCad
 
         Menu() { }
 
-        public int GetFreeEvent(int eventID) => GetFreeMenuEvent(eventID);
+        public int GetFreeEvent(int eventID) => Cad.GetFreeMenuEvent(eventID);
 
         public string PrefCfg
         {
             get
             {
                 var fileName = "";
-                GetPrefMenuCfg(out fileName);
+                Cad.GetPrefMenuCfg(out fileName);
                 return fileName;
             }
-            set { PrefMenuCfg(value); }
+            set { Cad.PrefMenuCfg(value); }
         }
 
-        public void Load(string fileName, string section) => LoadMenu(fileName, section);
+        public void Load(string fileName, string section) => Cad.LoadMenu(fileName, section);
 
-        public void RestoreState() => RestoreMenuState();
+        public void RestoreState() => Cad.RestoreMenuState();
 
-        public MenuItem this[string menuName] => new MenuItem(menuName);
+        public MenuItemState this[MenuItem menuItem] => new MenuItemState(menuItem.Name);
 
-        public void Add(Command command)
-            => AddMenuCommand(command.MenuName, command.CommandLine);
+        public void Add(CommandMenuItem commandMenuItem)
+            => Cad.AddMenuCommand(commandMenuItem.Name, commandMenuItem.CommandLine);
 
-        public void Insert(string insertBeforeMenuName, Command commandLine)
-            => InsertMenuCommand(insertBeforeMenuName, commandLine.MenuName, commandLine.CommandLine);
+        public CommandMenuItem Insert(MenuItem insertBeforeMenuItem, CommandMenuItem commandMenuItem)
+        {
+            Cad.InsertMenuCommand(insertBeforeMenuItem.Name, commandMenuItem.Name, commandMenuItem.CommandLine);
+            var absoluteName = System.Text.RegularExpressions.Regex.Replace(
+                insertBeforeMenuItem.Name,
+                @"^?([^\\]+\\)(?:.*)",
+                @"$1" + commandMenuItem.Name);
+            return new CommandMenuItem(absoluteName, commandMenuItem.CommandLine);
+        }
 
-        public void Remove(string menuName) => RemoveMenuCommand(menuName);
+        public void Remove(MenuItem menuItem) => Cad.RemoveMenuCommand(menuItem.Name);
+    }
+
+    public class MenuItem
+    {
+        public string Name { get; }
+
+        public MenuItem(string name)
+        {
+            Name = name;
+        }
+    }
+
+    public class CommandMenuItem : MenuItem
+    {
+        public string CommandLine { get; } = "";
+
+        public CommandMenuItem(string name, string commandLine) : base(name)
+        {
+            CommandLine = commandLine;
+        }
+    }
+
+    public class MenuItemState
+    {
+        public string Name { get; }
+
+        internal MenuItemState(string name)
+        {
+            Name = name;
+        }
+
+        public bool Enabled
+        {
+            set { Cad.EnableMenuCommand(Name, value); }
+        }
+
+        public bool Checked
+        {
+            get
+            {
+                bool isChecked;
+                Cad.GetCheckMenuCommand(out isChecked, Name);
+                return isChecked;
+            }
+            set { Cad.SetCheckMenuCommand(Name, value); }
+        }
     }
 }

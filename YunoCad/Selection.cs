@@ -50,13 +50,13 @@ namespace YunoCad
 
         public void Add(IEnumerable<CurrentObject> currentObjects)
         {
-            Cad.SelectObject();
+            if (Cad.GetSelectMode() != SelectionMode.Obj) Cad.SelectObject();
             AddImpl(currentObjects);
         }
 
         public void Add(IEnumerable<CurrentPrimitive> currentPrimitives)
         {
-            Cad.SelectPrim();
+            if (Cad.GetSelectMode() != SelectionMode.Prim) Cad.SelectPrim();
             AddImpl(currentPrimitives);
         }
 

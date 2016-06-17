@@ -314,18 +314,35 @@ namespace YunoCadTest
         {
             Session.Any.Converse(cs =>
             {
-                var menuName = @"{/pa}&ParentMenuName\&ChildMenuName";
-                var command = new Command(menuName, @"cmd.exe");
+                var addName = @"{/pa}&Parent\Child&Add";
+                var addItem = new MenuItem(addName);
+                var addCommandItem = new CommandMenuItem(addName, @"cmd.exe /c");
+                cs.Menu.Add(addCommandItem);
+                Assert.AreEqual(@"{/pa}&Parent\Child&Add", cs.Menu[addItem].Name);
+                Assert.AreEqual(@"{/pa}&Parent\Child&Add", cs.Menu[addCommandItem].Name);
 
-                cs.Menu.Add(command);
-                Assert.AreEqual(@"{/pa}&ParentMenuName\&ChildMenuName", cs.Menu[menuName].Name);
+                cs.Menu[addItem].Checked = false;
+                Assert.AreEqual(false, cs.Menu[addItem].Checked);
+                cs.Menu[addCommandItem].Checked = true;
+                Assert.AreEqual(true, cs.Menu[addCommandItem].Checked);
 
-                Assert.AreEqual(false, cs.Menu[menuName].Checked);
-                cs.Menu[menuName].Checked = true;
-                Assert.AreEqual(true, cs.Menu[menuName].Checked);
+                cs.Menu[addItem].Enabled = false;
+                cs.Menu[addCommandItem].Enabled = true;
 
-                cs.Menu[menuName].Enabled = true;
-                cs.Menu[menuName].Enabled = false;
+                var insertName = @"Child&Insert"; // 相対
+                var insertCommandItem = new CommandMenuItem(insertName, @"cmd.exe /c");
+                insertCommandItem = cs.Menu.Insert(addCommandItem, insertCommandItem);
+                Assert.AreEqual(@"{/pa}&Parent\Child&Insert", cs.Menu[insertCommandItem].Name);
+                Assert.AreEqual(@"{/pa}&Parent\Child&Insert", cs.Menu[insertCommandItem].Name);
+
+                var insertItem = new MenuItem(@"&Parent\Child&Insert"); // 絶対
+                cs.Menu[insertCommandItem].Checked = false;
+                Assert.AreEqual(false, cs.Menu[insertItem].Checked);
+                cs.Menu[insertCommandItem].Checked = true;
+                Assert.AreEqual(true, cs.Menu[insertItem].Checked);
+
+                cs.Menu[insertItem].Enabled = true;
+                cs.Menu[insertItem].Enabled = false;
             });
         }
     }
@@ -352,7 +369,7 @@ namespace YunoCadTest
             });
         }
     }
-    
+
     [TestClass]
     public class SetObjectTest
     {
@@ -364,7 +381,7 @@ namespace YunoCadTest
                 foreach (var d in cs.Documents.Scan().Take(1))
                 {
                     var doc = d.Activate().Resynch();
-                    
+
                 }
             });
         }

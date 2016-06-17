@@ -124,9 +124,10 @@ namespace YunoCad
             }
         }
 
-        public void ResetPrimitive()
+        public CurrentDocument Reset()
         {
             Cad.ResetPrim();
+            return CurrentDocument.Instance;
         }
     }
 
