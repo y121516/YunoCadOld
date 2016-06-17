@@ -300,6 +300,17 @@ namespace YunoCad
             Cad.CurPriFormattedText(text, options);
         }
 
+        public string Text
+        {
+            get
+            {
+                var text = "";
+                GetCurPriText(out text);
+                return text;
+            }
+            set { CurPriText(value); }
+        }
+
         public Tuple<Axes, double> Axes
         {
             get
@@ -343,20 +354,6 @@ namespace YunoCad
         public void TextProperty(string options)
         {
             CurPriTextProperty(options);
-        }
-
-        public string Text
-        {
-            get
-            {
-                var text = "";
-                Cad.GetCurPriText(out text);
-                return text;
-            }
-            set
-            {
-                Cad.CurPriText(value);
-            }
         }
     }
 
