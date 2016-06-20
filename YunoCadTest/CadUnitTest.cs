@@ -241,14 +241,14 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void AlignSelectionTest()
         {
-            ThrowsCadException(NoConversation, () => AlignSelection());
+            ThrowsCadException(NoConversation, AlignSelection);
 
             Converse(() =>
             {
-                ThrowsCadException(RequiresDocument, () => AlignSelection());
+                ThrowsCadException(RequiresDocument, AlignSelection);
                 using (var td = new TemporaryDocument())
                 {
-                    ThrowsCadException(RequiresSelection, () => AlignSelection());
+                    ThrowsCadException(RequiresSelection, AlignSelection);
                     // OK
                     Assert.AreEqual(0, GetNumSelPrim());
                     CreateText("AlignSelectionTest", Origin);
@@ -541,10 +541,10 @@ namespace MGDSNetDllTest
             // 通信時にどの設定座標軸を用いるか?
             // AxesResynch 呼び出しで、
             // 通信時に現在アクティブなウィンドウ定義の設定座標軸を用いることができる
-            ThrowsCadException(NoConversation, () => AxesResynch());
+            ThrowsCadException(NoConversation, AxesResynch);
             Converse(() =>
             {
-                ThrowsCadException(RequiresDocument, () => AxesResynch());
+                ThrowsCadException(RequiresDocument, AxesResynch);
                 CreateFile();
                 CreateLayer("default", null);
                 var axes = new Axes();

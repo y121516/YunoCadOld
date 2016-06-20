@@ -42,9 +42,10 @@ namespace YunoCad
             return GetCurrentPrimitive();
         }
 
-        public static void MakeCurrentPrimitive(this PriTriple priTriple)
+        public static CurrentPrimitive MakeCurrentPrimitive(this PriTriple priTriple)
         {
             CurPriLink(priTriple.plink);
+            return GetCurrentPrimitive();
         }
 
         public static void Set(this PriTriple priTriple)

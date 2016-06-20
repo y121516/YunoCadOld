@@ -30,8 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MGDSNet">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Informatix\MicroGDS 10.0\Custom\MGDSNet.dll</HintPath>
+    <Reference Include="MGDSNet, Version=8.0.3385.22965, Culture=neutral, PublicKeyToken=331b4a25733fc606, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Informatix\MicroGDS 11.3\Assemblies\MGDSNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,11 +56,11 @@
     <Compile Include="Primitive.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Session.cs" />
-    <Compile Include="SetLayer.cs" />
     <Compile Include="SetObject.cs" />
     <Compile Include="Snap.cs" />
     <Compile Include="Conversation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Wnd.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

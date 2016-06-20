@@ -118,7 +118,7 @@ namespace YunoCad
             public IEnumerable<CurrentObject> ScanArea(double left, double top, double right, double bottom,
                 string scanEH = DefaultScanEH, string wildcard = DefaultWildcard)
             {
-                if (Cad.ObjectScanArea(DefaultScanEH, DefaultWildcard, left, top, right, bottom))
+                if (Cad.ObjectScanArea(scanEH, wildcard, left, top, right, bottom))
                 {
                     do
                     {

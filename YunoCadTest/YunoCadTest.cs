@@ -34,7 +34,9 @@ namespace YunoCadTest
 
         public void EqualsSessionTest(Session x, Session y, Session z)
         {
+#pragma warning disable RECS0088 // Comparing equal expression for equality is usually useless
             Assert.IsTrue(x.Equals(x));
+#pragma warning restore RECS0088 // Comparing equal expression for equality is usually useless
             Assert.AreEqual(x.Equals(y), y.Equals(x));
             if (x.Equals(y) && y.Equals(z)) Assert.IsTrue(x.Equals(z));
             var a = x.Equals(y);
@@ -45,7 +47,9 @@ namespace YunoCadTest
 
         public void EqualsObjectTest(object x, object y, object z)
         {
+#pragma warning disable RECS0088 // Comparing equal expression for equality is usually useless
             Assert.IsTrue(x.Equals(x));
+#pragma warning restore RECS0088 // Comparing equal expression for equality is usually useless
             Assert.AreEqual(x.Equals(y), y.Equals(x));
             if (x.Equals(y) && y.Equals(z)) Assert.IsTrue(x.Equals(z));
             var a = x.Equals(y);

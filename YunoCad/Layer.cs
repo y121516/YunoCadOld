@@ -4,30 +4,102 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Informatix.MGDS;
+using static Informatix.MGDS.Cad;
 
 namespace YunoCad
 {
     public class CurrentLayer
     {
-        public int Link { get { return Cad.GetCurLayLink(); } }
+        public static CurrentLayer Instance { get; } = new CurrentLayer();
+
+        CurrentLayer() { }
+
+        /// <summary>
+        /// 新規レイヤが設定レイヤかつカレントのレイヤになる
+        /// </summary>
+        /// <param name="nameOfAlias"></param>
+        /// <param name="isTemporaryLayer"></param>
+        /// <returns></returns>
+        CurrentLayer Clone(string nameOfAlias, bool isTemporaryLayer = false)
+        {
+            CloneCurLayer(nameOfAlias, isTemporaryLayer);
+            return Instance; // TODO: return CurrentLayer and SetLayer
+        }
+
+        public string Label
+        {
+            get
+            {
+                var label = "";
+                GetCurLayLabel(out label);
+                return label;
+            }
+            set { CurLayLabel(value); }
+        }
+
+        public int Link => GetCurLayLink();
 
         public string Name
         {
             get
             {
                 var name = "";
-                Cad.GetCurLayName(out name);
+                GetCurLayName(out name);
                 return name;
             }
-            set
+            set { CurLayName(value); }
+        }
+
+        public string Type
+        {
+            get
             {
-                Cad.CurLayName(value);
+                var type = "";
+                GetCurLayType(out type);
+                return type;
             }
         }
     }
 
-    public class Layer
+    public class SetLayer
     {
+        int Link => GetSetLayLink();
+
+        public SetObject CreateObject(string name, Cad.Vector pos)
+        {
+            Cad.CreateObject(name, pos);
+            return SetObject.Instance;
+        }
+    }
+
+    public class Layers
+    {
+        const Save defaultDeleteSave = Save.RequestSave; // Don't be Save.Prompt
+        const Save defaultDisownSave = Save.RequestSave; // Don't be Save.Prompt & Save.DoNotDisown
+
+        public static Layers Instance { get; } = new Layers();
+
+        Layers() { }
+
+        /* SetLayer */
+        void Create(string layerName, string nameOfAlias)
+        {
+            CreateLayer(layerName, nameOfAlias);
+            return; // TODO: return SetLayer.Instance;
+        }
+
+        CurrentLayer CreateTemporary(string layerName)
+        {
+            CreateTempLayer(layerName);
+            return CurrentLayer.Instance; // TODO: return CurrentLayer and SetLayer
+        }
+
+        void Delete(int layerLink, Save save = defaultDeleteSave)
+            => DeleteLayer(layerLink, save);
+
+        void Disown(int layerLink, Save save = defaultDisownSave)
+            => DisownLayer(layerLink, save);
+
         /// <summary>
         /// カレントのレイヤ、オブジェクト、プリミティブは変更されません。
         /// </summary>
@@ -47,6 +119,7 @@ namespace YunoCad
                 } while (Cad.LayerNext(out layerName, out layerLink));
             }
         }
+
         static IEnumerable<TResult> ForEach<TResult>(Func<string, int, TResult> func)
         {
             var scanWild = "*";

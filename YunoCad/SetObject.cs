@@ -2,8 +2,12 @@
 
 namespace YunoCad
 {
-    class SetObject
+    public class SetObject
     {
+        public static SetObject Instance { get; } = new SetObject();
+
+        SetObject() { }
+
         void MoveTo(Cad.Vector pos)
         {
             Cad.MoveTo(pos);
