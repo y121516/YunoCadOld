@@ -127,19 +127,6 @@ namespace YunoCad
                 }
             }
 
-            // TODO: レイヤオブジェクトで呼び出すようにする
-            public IEnumerable<CurrentObject> ScanLayer(int layerLink, ScanMode extentType, Cad.Vector lo, Cad.Vector hi,
-                string scanEH = DefaultScanEH, string wildcard = DefaultWildcard)
-            {
-                if (Cad.ObjectScanLayer(layerLink, scanEH, wildcard, extentType, lo, hi))
-                {
-                    do
-                    {
-                        yield return CurrentObject.Instance;
-                    } while (Cad.ObjectNext());
-                }
-            }
-
             public IEnumerable<CurrentObject> ScanPoly(ScanPoly scanPoly, string scanEH = DefaultScanEH, string wildcard = DefaultWildcard)
             {
                 if (Cad.ObjectScanPoly(scanPoly, scanEH, wildcard))

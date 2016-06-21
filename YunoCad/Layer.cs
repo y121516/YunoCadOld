@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,7 @@ namespace YunoCad
         /// <param name="nameOfAlias"></param>
         /// <param name="isTemporaryLayer"></param>
         /// <returns></returns>
-        CurrentLayer Clone(string nameOfAlias, bool isTemporaryLayer = false)
+        public CurrentLayer Clone(string nameOfAlias, bool isTemporaryLayer = false)
         {
             CloneCurLayer(nameOfAlias, isTemporaryLayer);
             return Instance; // TODO: return CurrentLayer and SetLayer
@@ -191,13 +192,20 @@ namespace YunoCad
             var count = GetObjectCountVolume(pt1, pt2, scanEH, wildcard);
             return GetObjectLinksVolumeImpl(count, pt1, pt2, scanEH, wildcard);
         }
+
+        public bool IsOwned => IsCurLayOwned();
+        public bool IsTemporary => IsCurLayTemp();
     }
 
     public class SetLayer
     {
-        int Link => GetSetLayLink();
+        public static SetLayer Instance { get; } = new SetLayer();
 
-        public SetObject CreateObject(string name, Cad.Vector pos)
+        SetLayer() { }
+
+        public int Link => GetSetLayLink();
+
+        public SetObject CreateObject(string name, Vector pos)
         {
             Cad.CreateObject(name, pos);
             return SetObject.Instance;
@@ -208,71 +216,90 @@ namespace YunoCad
     {
         const Save defaultDeleteSave = Save.RequestSave; // Don't be Save.Prompt
         const Save defaultDisownSave = Save.RequestSave; // Don't be Save.Prompt & Save.DoNotDisown
+        const string defaultWildcard = "*";
+        const string defaultObjectWildcard = "**";
+        const string defaultScanEH = "E";
 
         public static Layers Instance { get; } = new Layers();
 
         Layers() { }
 
-        /* SetLayer */
-        void Create(string layerName, string nameOfAlias)
+        public SetLayer Create(string layerName, string nameOfAlias)
         {
             CreateLayer(layerName, nameOfAlias);
-            return; // TODO: return SetLayer.Instance;
+            return SetLayer.Instance;
         }
 
-        CurrentLayer CreateTemporary(string layerName)
+        public CurrentLayer CreateTemporary(string layerName)
         {
             CreateTempLayer(layerName);
             return CurrentLayer.Instance; // TODO: return CurrentLayer and SetLayer
         }
 
-        void Delete(int layerLink, Save save = defaultDeleteSave)
+        public void Delete(int layerLink, Save save = defaultDeleteSave)
             => DeleteLayer(layerLink, save);
 
-        void Disown(int layerLink, Save save = defaultDisownSave)
+        public void Disown(int layerLink, Save save = defaultDisownSave)
             => DisownLayer(layerLink, save);
 
-        int GetLayerOfChild(int layerLink, int objectLink) => Cad.GetLayerOfChild(layerLink, objectLink);
+        public int GetLayerOfChild(int layerLink, int objectLink) => Cad.GetLayerOfChild(layerLink, objectLink);
 
-        Tuple<int, int> GetLayerOfParent(int layerLink)
+        public Tuple<int, int> GetLayerOfParent(int layerLink)
         {
             int objectLink;
             var parentLayer = Cad.GetLayerOfParent(layerLink, out objectLink);
             return Tuple.Create(parentLayer, objectLink);
         }
 
+        public int GetLinkFromPath(string layerPath) => LayerLinkFromPath(layerPath);
+
+        public string GetPathFromLink(int layerLink)
+        {
+            var path = "";
+            LayerPathFromLink(layerLink, out path);
+            return path;
+        }
+
         /// <summary>
         /// カレントのレイヤ、オブジェクト、プリミティブは変更されません。
         /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="scanWild"></param>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        static IEnumerable<TResult> ForEach<TResult>(string scanWild, Func<string, int, TResult> func)
+        public static IEnumerable<Tuple<string, int>> Scan(string scanWild = defaultWildcard)
         {
             var layerName = "";
             int layerLink;
-            if (Cad.LayerScanStart(scanWild, out layerName, out layerLink))
+            if (LayerScanStart(scanWild, out layerName, out layerLink))
             {
                 do
                 {
-                    yield return func(layerName, layerLink);
-                } while (Cad.LayerNext(out layerName, out layerLink));
+                    yield return Tuple.Create(layerName, layerLink);
+                } while (LayerNext(out layerName, out layerLink));
             }
         }
 
-        static IEnumerable<TResult> ForEach<TResult>(Func<string, int, TResult> func)
+        public IEnumerable<CurrentObject> ObjectScan(int layerLink, ScanMode extentType, Vector lo, Vector hi,
+            string scanEH = defaultScanEH, string wildcard = defaultObjectWildcard)
         {
-            var scanWild = "*";
-            var layerName = "";
-            int layerLink;
-            if (Cad.LayerScanStart(scanWild, out layerName, out layerLink))
+            if (ObjectScanLayer(layerLink, scanEH, wildcard, extentType, lo, hi))
             {
                 do
                 {
-                    yield return func(layerName, layerLink);
-                } while (Cad.LayerNext(out layerName, out layerLink));
+                    yield return CurrentObject.Instance;
+                } while (ObjectNext());
             }
+        }
+
+        public void Own(int layerLink) => OwnLayer(layerLink);
+
+        public void Reset() => ResetLayer();
+
+        public void SaveLayer(int layerLink) => Cad.SaveLayer(layerLink);
+
+        public void SaveSetWndLayers() => Cad.SaveSetWndLayers();
+
+        public SetLayer Set(int layerLink)
+        {
+            SetLayer(layerLink);
+            return SetLayer.Instance;
         }
     }
 }
