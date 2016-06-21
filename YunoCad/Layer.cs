@@ -13,6 +13,7 @@ namespace YunoCad
     {
         const string defaultWildcardAll = "**";
         const string defaultScanEH = "E";
+        const ScanPoly defaultScanPoly = ScanPoly.In;
 
         public static CurrentLayer Instance { get; } = new CurrentLayer();
 
@@ -116,7 +117,7 @@ namespace YunoCad
         }
 
 
-        public int GetObjectCountPoly(ScanPoly scanPoly = ScanPoly.In, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int GetObjectCountPoly(ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
             => Cad.GetObjectCountPoly(scanPoly, scanEH, wildcard);
 
         int[] GetObjectLinksPolyImpl(int count, ScanPoly scanPoly, string scanEH, string wildcard)
@@ -126,23 +127,23 @@ namespace YunoCad
             return ObjectLinks;
         }
 
-        public int[] GetObjectLinksPoly(int atMostCount, ScanPoly scanPoly = ScanPoly.In, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int[] GetObjectLinksPoly(int atMostCount, ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
         {
             var count = Math.Min(atMostCount, GetObjectCountPoly(scanPoly, scanEH, wildcard));
             return GetObjectLinksPolyImpl(count, scanPoly, scanEH, wildcard);
         }
 
-        public int[] GetObjectLinksPoly(ScanPoly scanPoly = ScanPoly.In, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int[] GetObjectLinksPoly(ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
         {
             var count = GetObjectCountPoly(scanPoly, scanEH, wildcard);
             return GetObjectLinksPolyImpl(count, scanPoly, scanEH, wildcard);
         }
 
 
-        public int GetObjectCountPrimPoly(int layerLink, int objectLink, int primitiveLink, ScanPoly scanPoly = ScanPoly.In, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int GetObjectCountPrimPoly(int layerLink, int objectLink, int primitiveLink, ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
             => Cad.GetObjectCountPrimPoly(scanPoly, scanEH, wildcard, layerLink, objectLink, primitiveLink);
 
-        public int GetObjectCountPrimPoly(PriTriple priTriple, ScanPoly scanPoly = ScanPoly.In, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int GetObjectCountPrimPoly(PriTriple priTriple, ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
             => GetObjectCountPrimPoly(priTriple.llink, priTriple.vlink, priTriple.plink, scanPoly, scanEH, wildcard);
 
         int[] GetObjectLinksPrimPolyImpl(int count, int layerLink, int objectLink, int primitiveLink, ScanPoly scanPoly, string scanEH, string wildcard)
@@ -152,22 +153,22 @@ namespace YunoCad
             return ObjectLinks;
         }
 
-        public int[] GetObjectLinksPrimPoly(int atMostCount, int layerLink, int objectLink, int primitiveLink, ScanPoly scanPoly = ScanPoly.In, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int[] GetObjectLinksPrimPoly(int atMostCount, int layerLink, int objectLink, int primitiveLink, ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
         {
             var count = Math.Min(atMostCount, GetObjectCountPrimPoly(layerLink, objectLink, primitiveLink, scanPoly, scanEH, wildcard));
             return GetObjectLinksPrimPolyImpl(count, layerLink, objectLink, primitiveLink, scanPoly, scanEH, wildcard);
         }
 
-        public int[] GetObjectLinksPrimPoly(int atMostCount, PriTriple priTriple, ScanPoly scanPoly = ScanPoly.In, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int[] GetObjectLinksPrimPoly(int atMostCount, PriTriple priTriple, ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
             => GetObjectLinksPrimPoly(atMostCount, priTriple.llink, priTriple.vlink, priTriple.plink, scanPoly, scanEH, wildcard);
 
-        public int[] GetObjectLinksPrimPoly(int layerLink, int objectLink, int primitiveLink, ScanPoly scanPoly = ScanPoly.In, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int[] GetObjectLinksPrimPoly(int layerLink, int objectLink, int primitiveLink, ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
         {
             var count = GetObjectCountPrimPoly(layerLink, objectLink, primitiveLink, scanPoly, scanEH, wildcard);
             return GetObjectLinksPrimPolyImpl(count, layerLink, objectLink, primitiveLink, scanPoly, scanEH, wildcard);
         }
 
-        public int[] GetObjectLinksPrimPoly(PriTriple priTriple, ScanPoly scanPoly = ScanPoly.In, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int[] GetObjectLinksPrimPoly(PriTriple priTriple, ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
             => GetObjectLinksPrimPoly(priTriple.llink, priTriple.vlink, priTriple.plink, scanPoly, scanEH, wildcard);
 
 
