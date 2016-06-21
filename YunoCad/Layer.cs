@@ -50,6 +50,9 @@ namespace YunoCad
             set { CurLayName(value); }
         }
 
+        /// <summary>
+        /// "Layer", "Assembly", "Instance Assembly" のいずれか
+        /// </summary>
         public string Type
         {
             get
