@@ -226,6 +226,19 @@ namespace YunoCad
                 Cad.SetColourEx(value.Item1, value.Item2, value.Item3, value.Item4, value.Item5);
             }
         }
+
+        // 通常は SetWnd が単位を持つが
+        // SetWnd が一つもない場合、ドキュメントも単位を持てる
+        public Tuple<string, int> Units
+        {
+            get
+            {
+                var units = "";
+                var decimalPlace = Cad.GetSetUnits(out units);
+                return Tuple.Create(units, decimalPlace);
+            }
+            set { Cad.SetUnits(value.Item1, value.Item2); }
+        }
     }
 
     /// <summary>
