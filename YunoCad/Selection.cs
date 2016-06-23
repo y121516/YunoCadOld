@@ -32,6 +32,41 @@ namespace YunoCad
             }
         }
 
+
+        IEnumerable<Object> ObjectsImpl(int nObjs)
+        {
+            // GetObjSelectionsのnObjsに0以下の値を渡すと
+            // 「[1000] 許容範囲外の引数が関数に指定されました。」例外を投げる。
+            // 選択されていない状態でGetObjSelectionsを呼び出すと
+            // 「[1053] この関数を実行するには、何らかの要素を選択することが必要です。」例外を投げる。
+            // 例外を投げうる状況の場合はGetObjSelectionsを呼び出さないようにする。
+            if (nObjs <= 0) return new Object[0];
+
+            var objArray = new Cad.ObjPair[nObjs];
+            Cad.GetObjSelections(nObjs, objArray);
+            return objArray.Select(obj => new Object(obj));
+        }
+
+        public IEnumerable<Object> Objects(int atMostObjects)
+            => ObjectsImpl(Math.Min(atMostObjects, Cad.GetNumSelObj()));
+
+        public IEnumerable<Object> Objects()
+            => ObjectsImpl(Cad.GetNumSelObj());
+
+        Cad.PriTriple[] PrimitivesImpl(int nPrims)
+        {
+            var primArray = new Cad.PriTriple[nPrims];
+            Cad.GetPriSelections(nPrims, primArray);
+            return primArray;
+        }
+
+        public Cad.PriTriple[] Primitives(int atMostPrimitives)
+            => PrimitivesImpl(Math.Min(atMostPrimitives, Cad.GetNumSelPrim()));
+
+        public Cad.PriTriple[] Primitives()
+            => PrimitivesImpl(Cad.GetNumSelPrim());
+
+
         void AddImpl(IEnumerable<object> collection)
         {
             foreach (var item in collection)
