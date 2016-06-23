@@ -48,9 +48,9 @@ namespace YunoCad
 
         public static SetWnd Instance { get; } = new SetWnd();
 
-        Phases Phases { get; } = Phases.Instance;
+        public Phases Phases { get; } = Phases.Instance;
 
-        void DisownSetWnd(Save save = defaultSave)
+        public void DisownSetWnd(Save save = defaultSave)
             => DisownSetWndLayers(save);
     }
 }

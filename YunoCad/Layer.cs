@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -264,7 +263,7 @@ namespace YunoCad
         /// <summary>
         /// カレントのレイヤ、オブジェクト、プリミティブは変更されません。
         /// </summary>
-        public static IEnumerable<Tuple<string, int>> Scan(string scanWild = defaultWildcard)
+        public IEnumerable<Tuple<string, int>> Scan(string scanWild = defaultWildcard)
         {
             var layerName = "";
             int layerLink;

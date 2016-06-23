@@ -166,7 +166,8 @@ namespace YunoCad
         public static new CurrentDocument Instance { get; } = new CurrentDocument();
         public Selection Selection { get; } = Selection.Instance;
         public Aliases Aliases { get; } = Aliases.Instance;
-        public SetWnds SetWnd { get; } = SetWnds.Instance;
+        public SetWnds SetWnds { get; } = SetWnds.Instance;
+        public Layers Layers { get; } = Layers.Instance;
 
         internal CurrentDocument() { }
 
