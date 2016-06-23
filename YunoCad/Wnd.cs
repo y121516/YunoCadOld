@@ -52,5 +52,21 @@ namespace YunoCad
 
         public void DisownSetWnd(Save save = defaultSave)
             => DisownSetWndLayers(save);
+
+        /// <summary>
+        /// mm（ミリメートル）,cm（センチメートル）,Inches（インチ）,m（メートル）,km（キロメートル）,
+        /// Feet（フィート）,Feet+Inch（フィート+インチ）,Imperial（インチ系単位）Miles（マイル）,
+        /// Ken（間）,Shaku（尺）,Sun（寸）,Bu（分）,NauticalMiles（海里）
+        /// </summary>
+        public Tuple<string, int> Units
+        {
+            get
+            {
+                var units = "";
+                var decimalPlace = GetSetUnits(out units);
+                return Tuple.Create(units, decimalPlace);
+            }
+            set { SetUnits(value.Item1, value.Item2); }
+        }
     }
 }
