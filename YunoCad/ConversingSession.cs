@@ -14,6 +14,7 @@ namespace YunoCad
         public Session Session { get; }
         public Documents Documents { get; } = Documents.Instance;
         public Menu Menu { get; } = Menu.Instance;
+        public InfoBar InfoBar { get; } = InfoBar.Instance;
 
         public void Echo(string echoStr) => Cad.Echo(echoStr);
         public void Prompt(string promptStr) => Cad.Prompt(promptStr);
