@@ -66,6 +66,8 @@ namespace YunoCad
         public Cad.PriTriple[] Primitives()
             => PrimitivesImpl(Cad.GetNumSelPrim());
 
+        public int ObjectCount => Cad.GetNumSelObj();
+        public int PrimitiveCount => Cad.GetNumSelPrim();
 
         void AddImpl(IEnumerable<object> collection)
         {
