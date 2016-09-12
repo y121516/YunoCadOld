@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Informatix.MGDS;
+using M = Informatix.MGDS;
+using MC = Informatix.MGDS.Cad;
 
-namespace YunoCad
+namespace Yuno.Cad
 {
     // カレントレイヤは、カレントオブジェクトの直接の上位レイヤ（レイヤあるいはアセンブリオブジェクトを含む）に設定されます。この関数を呼び出すと、カレントのプリミティブがなくなります。
     public class CurrentObject
@@ -18,7 +16,7 @@ namespace YunoCad
         {
             try
             {
-                Cad.GetCurObjLink();
+                MC.GetCurObjLink();
             }
             catch (Exception)
             {
@@ -31,21 +29,21 @@ namespace YunoCad
         {
             get
             {
-                var lay = Cad.GetCurLayLink();
-                var obj = Cad.GetCurObjLink();
+                var lay = MC.GetCurLayLink();
+                var obj = MC.GetCurObjLink();
                 return new Object(lay, obj);
             }
         }
 
-        public int LayerLink => Cad.GetCurLayLink();
-        public int ObjectLink => Cad.GetCurObjLink();
+        public int LayerLink => MC.GetCurLayLink();
+        public int ObjectLink => MC.GetCurObjLink();
 
         public string Name
         {
             get
             {
                 var name = "";
-                Cad.GetCurObjName(out name);
+                MC.GetCurObjName(out name);
                 return name;
             }
         }
@@ -54,7 +52,7 @@ namespace YunoCad
 
         public void ResetObject()
         {
-            Cad.ResetObject();
+            MC.ResetObject();
         }
 
         public CurrentObjectAttribute Attribute { get; } = CurrentObjectAttribute.Instance;
@@ -62,9 +60,9 @@ namespace YunoCad
 
     public struct Object
     {
-        Cad.ObjPair _ObjPair;
+        MC.ObjPair _ObjPair;
 
-        public Object(Cad.ObjPair objPair)
+        public Object(MC.ObjPair objPair)
         {
             _ObjPair = objPair;
         }
@@ -82,7 +80,7 @@ namespace YunoCad
 
         public CurrentObject ToCurrent()
         {
-            Cad.CurObject(_ObjPair.llink, _ObjPair.vlink);
+            MC.CurObject(_ObjPair.llink, _ObjPair.vlink);
             return CurrentObject.Instance;
         }
 
@@ -93,72 +91,72 @@ namespace YunoCad
 
             public IEnumerable<CurrentObject> Scan(string scanEH = DefaultScanEH)
             {
-                if (Cad.ObjectScan(scanEH))
+                if (MC.ObjectScan(scanEH))
                 {
                     do
                     {
                         yield return CurrentObject.Instance;
-                    } while (Cad.ObjectNext());
+                    } while (MC.ObjectNext());
                 }
             }
 
             public IEnumerable<CurrentObject> ScanWildcard(string wildcard, string scanEH = DefaultScanEH)
             {
                 double extent;
-                Cad.GetExtentSize(out extent);
-                if (Cad.ObjectScanArea(scanEH, wildcard, -extent, extent, extent, -extent))
+                MC.GetExtentSize(out extent);
+                if (MC.ObjectScanArea(scanEH, wildcard, -extent, extent, extent, -extent))
                 {
                     do
                     {
                         yield return CurrentObject.Instance;
-                    } while (Cad.ObjectNext());
+                    } while (MC.ObjectNext());
                 }
             }
 
             public IEnumerable<CurrentObject> ScanArea(double left, double top, double right, double bottom,
                 string scanEH = DefaultScanEH, string wildcard = DefaultWildcard)
             {
-                if (Cad.ObjectScanArea(scanEH, wildcard, left, top, right, bottom))
+                if (MC.ObjectScanArea(scanEH, wildcard, left, top, right, bottom))
                 {
                     do
                     {
                         yield return CurrentObject.Instance;
-                    } while (Cad.ObjectNext());
+                    } while (MC.ObjectNext());
                 }
             }
 
-            public IEnumerable<CurrentObject> ScanPoly(ScanPoly scanPoly, string scanEH = DefaultScanEH, string wildcard = DefaultWildcard)
+            public IEnumerable<CurrentObject> ScanPoly(M.ScanPoly scanPoly, string scanEH = DefaultScanEH, string wildcard = DefaultWildcard)
             {
-                if (Cad.ObjectScanPoly(scanPoly, scanEH, wildcard))
+                if (MC.ObjectScanPoly(scanPoly, scanEH, wildcard))
                 {
                     do
                     {
                         yield return CurrentObject.Instance;
-                    } while (Cad.ObjectNext());
+                    } while (MC.ObjectNext());
                 }
             }
 
-            public IEnumerable<CurrentObject> ScanPrimPoly(ScanPoly scanPoly, Cad.PriTriple priTriple,
+            public IEnumerable<CurrentObject> ScanPrimPoly(M.ScanPoly scanPoly, MC.PriTriple priTriple,
                 string scanEH = DefaultScanEH, string wildcard = DefaultWildcard)
             {
-                if (Cad.ObjectScanPrimPoly(scanPoly, scanEH, wildcard, priTriple.llink, priTriple.vlink, priTriple.plink))
+                if (MC.ObjectScanPrimPoly(scanPoly, scanEH, wildcard, priTriple.llink, priTriple.vlink, priTriple.plink))
                 {
                     do
                     {
                         yield return CurrentObject.Instance;
-                    } while (Cad.ObjectNext());
+                    } while (MC.ObjectNext());
                 }
             }
 
-            public IEnumerable<CurrentObject> ScanVolume(Cad.Vector pt1, Cad.Vector pt2,
+            public IEnumerable<CurrentObject> ScanVolume(MC.Vector pt1, MC.Vector pt2,
                 string scanEH = DefaultScanEH, string wildcard = DefaultWildcard)
             {
-                if (Cad.ObjectScanVolume(scanEH, wildcard, pt1, pt2))
+                if (MC.ObjectScanVolume(scanEH, wildcard, pt1, pt2))
                 {
                     do
                     {
                         yield return CurrentObject.Instance;
-                    } while (Cad.ObjectNext());
+                    } while (MC.ObjectNext());
                 }
             }
 

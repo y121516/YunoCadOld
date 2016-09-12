@@ -1,6 +1,6 @@
-﻿using Informatix.MGDS;
+﻿using MC = Informatix.MGDS.Cad;
 
-namespace YunoCad
+namespace Yuno.Cad
 {
     public class SetObject
     {
@@ -8,20 +8,20 @@ namespace YunoCad
 
         SetObject() { }
 
-        void MoveTo(Cad.Vector pos)
+        void MoveTo(MC.Vector pos)
         {
-            Cad.MoveTo(pos);
+            MC.MoveTo(pos);
         }
 
-        Selection LineTo(Cad.Vector pos)
+        Selection LineTo(MC.Vector pos)
         {
-            Cad.LineTo(pos);
+            MC.LineTo(pos);
             return Selection.Instance;
         }
 
-        Selection ArcTo(Cad.Vector viaPos, Cad.Vector endPos)
+        Selection ArcTo(MC.Vector viaPos, MC.Vector endPos)
         {
-            Cad.ArcTo(viaPos, endPos);
+            MC.ArcTo(viaPos, endPos);
             return Selection.Instance;
         }
     }

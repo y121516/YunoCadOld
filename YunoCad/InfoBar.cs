@@ -1,7 +1,7 @@
-﻿using IB = Informatix.MGDS.InfoBar;
-using static Informatix.MGDS.Cad;
+﻿using MC = Informatix.MGDS.Cad;
+using IB = Informatix.MGDS.InfoBar;
 
-namespace YunoCad
+namespace Yuno.Cad
 {
     // Informatix.MGDS.InfoBar.SetEdit はドキュメントに依存するのでここでは実装しない
     public class InfoBar
@@ -12,20 +12,20 @@ namespace YunoCad
 
         public bool ZLock
         {
-            get { return GetInfoBarButton(IB.ZLock); }
-            set { InfoBarButton(IB.ZLock, value); }
+            get { return MC.GetInfoBarButton(IB.ZLock); }
+            set { MC.InfoBarButton(IB.ZLock, value); }
         }
 
         public bool HoverHighlight
         {
-            get { return GetInfoBarButton(IB.HoverHighlight); }
-            set { InfoBarButton(IB.HoverHighlight, value); }
+            get { return MC.GetInfoBarButton(IB.HoverHighlight); }
+            set { MC.InfoBarButton(IB.HoverHighlight, value); }
         }
 
         public bool SnapGuides
         {
-            get { return GetInfoBarButton(IB.SnapGuides); }
-            set { InfoBarButton(IB.SnapGuides, value); }
+            get { return MC.GetInfoBarButton(IB.SnapGuides); }
+            set { MC.InfoBarButton(IB.SnapGuides, value); }
         }
     }
 }

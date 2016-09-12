@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Informatix.MGDS;
+using M = Informatix.MGDS;
+using MC = Informatix.MGDS.Cad;
 
-namespace YunoCad
+namespace Yuno.Cad
 {
     public class Selection
     {
@@ -13,18 +12,18 @@ namespace YunoCad
 
         Selection() { }
 
-        public SelectionMode Mode
+        public M.SelectionMode Mode
         {
-            get { return Cad.GetSelectMode(); }
+            get { return MC.GetSelectMode(); }
             set
             {
                 switch (value)
                 {
-                    case SelectionMode.Obj:
-                        Cad.SelectObject();
+                    case M.SelectionMode.Obj:
+                        MC.SelectObject();
                         break;
-                    case SelectionMode.Prim:
-                        Cad.SelectPrim();
+                    case M.SelectionMode.Prim:
+                        MC.SelectPrim();
                         break;
                     default:
                         throw new Exception();
@@ -40,34 +39,36 @@ namespace YunoCad
             // 選択されていない状態でGetObjSelectionsを呼び出すと
             // 「[1053] この関数を実行するには、何らかの要素を選択することが必要です。」例外を投げる。
             // 例外を投げうる状況の場合はGetObjSelectionsを呼び出さないようにする。
-            if (nObjs <= 0) return new Object[0];
+            if (nObjs < 0) throw new Exception();
 
-            var objArray = new Cad.ObjPair[nObjs];
-            Cad.GetObjSelections(nObjs, objArray);
+            var objArray = new MC.ObjPair[nObjs];
+            if (nObjs > 0) MC.GetObjSelections(nObjs, objArray);
             return objArray.Select(obj => new Object(obj));
         }
 
         public IEnumerable<Object> Objects(int atMostObjects)
-            => ObjectsImpl(Math.Min(atMostObjects, Cad.GetNumSelObj()));
+            => ObjectsImpl(Math.Min(atMostObjects, MC.GetNumSelObj()));
 
         public IEnumerable<Object> Objects()
-            => ObjectsImpl(Cad.GetNumSelObj());
+            => ObjectsImpl(MC.GetNumSelObj());
 
-        Cad.PriTriple[] PrimitivesImpl(int nPrims)
+        MC.PriTriple[] PrimitivesImpl(int nPrims)
         {
-            var primArray = new Cad.PriTriple[nPrims];
-            Cad.GetPriSelections(nPrims, primArray);
+            if (nPrims < 0) throw new Exception();
+
+            var primArray = new MC.PriTriple[nPrims];
+            if (nPrims > 0) MC.GetPriSelections(nPrims, primArray);
             return primArray;
         }
 
-        public Cad.PriTriple[] Primitives(int atMostPrimitives)
-            => PrimitivesImpl(Math.Min(atMostPrimitives, Cad.GetNumSelPrim()));
+        public MC.PriTriple[] Primitives(int atMostPrimitives)
+            => PrimitivesImpl(Math.Min(atMostPrimitives, MC.GetNumSelPrim()));
 
-        public Cad.PriTriple[] Primitives()
-            => PrimitivesImpl(Cad.GetNumSelPrim());
+        public MC.PriTriple[] Primitives()
+            => PrimitivesImpl(MC.GetNumSelPrim());
 
-        public int ObjectCount => Cad.GetNumSelObj();
-        public int PrimitiveCount => Cad.GetNumSelPrim();
+        public int ObjectCount => MC.GetNumSelObj();
+        public int PrimitiveCount => MC.GetNumSelPrim();
 
         void AddImpl(IEnumerable<object> collection)
         {
@@ -75,11 +76,11 @@ namespace YunoCad
             {
                 try
                 {
-                    Cad.SelectAdd();
+                    MC.SelectAdd();
                 }
-                catch (ApiException ex)
+                catch (M.ApiException ex)
                 {
-                    if (ex.ErrorOccurred(AppErrorType.MGDS, AppError.AlreadySelected)) return;
+                    if (ex.ErrorOccurred(M.AppErrorType.MGDS, M.AppError.AlreadySelected)) return;
                     throw;
                 }
             }
@@ -87,41 +88,46 @@ namespace YunoCad
 
         public void Add(IEnumerable<CurrentObject> currentObjects)
         {
-            if (Cad.GetSelectMode() != SelectionMode.Obj) Cad.SelectObject();
+            if (MC.GetSelectMode() != M.SelectionMode.Obj) MC.SelectObject();
             AddImpl(currentObjects);
         }
 
         public void Add(IEnumerable<CurrentPrimitive> currentPrimitives)
         {
-            if (Cad.GetSelectMode() != SelectionMode.Prim) Cad.SelectPrim();
+            if (MC.GetSelectMode() != M.SelectionMode.Prim) MC.SelectPrim();
             AddImpl(currentPrimitives);
+        }
+
+        public void Remove()
+        {
+            MC.SelectRemove();
         }
 
         public Selection Align()
         {
-            Cad.AlignSelection();
+            MC.AlignSelection();
             return Instance;
         }
 
         // clipboard
         public void CopyToClipboard()
         {
-            Cad.CopySelection();
+            MC.CopySelection();
         }
 
         public void CutToClipboard()
         {
-            Cad.CutSelection();
+            MC.CutSelection();
         }
 
         public void Delete()
         {
-            Cad.DeleteSelection();
+            MC.DeleteSelection();
         }
 
         public void DeselectAll()
         {
-            Cad.DeselectAll();
+            MC.DeselectAll();
         }
     }
 }

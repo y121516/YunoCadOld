@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Informatix.MGDS;
-using static Informatix.MGDS.Cad;
+using M = Informatix.MGDS;
+using MC = Informatix.MGDS.Cad;
 
-namespace YunoCad
+namespace Yuno.Cad
 {
     public class SetWnds
     {
@@ -19,39 +16,39 @@ namespace YunoCad
         public IEnumerable<string> ScanName(string wildcardName = defaultWildcardName)
         {
             var name = "";
-            if (WndScanStart(wildcardName, out name))
+            if (MC.WndScanStart(wildcardName, out name))
             {
                 do
                 {
                     yield return name;
-                } while (WndNext(out name));
+                } while (MC.WndNext(out name));
             }
         }
 
         public IEnumerable<SetWnd> Scan(string wildcardName = defaultWildcardName)
         {
             var name = "";
-            if (WndScanStart(wildcardName, out name))
+            if (MC.WndScanStart(wildcardName, out name))
             {
                 do
                 {
-                    OpenWnd(name, false); // MANファイルで実行されるので isReadOnly: false は無視される
+                    MC.OpenWnd(name, false); // MANファイルで実行されるので isReadOnly: false は無視される
                     yield return SetWnd.Instance;
-                } while (WndNext(out name));
+                } while (MC.WndNext(out name));
             }
         }
     }
 
     public class SetWnd
     {
-        const Save defaultSave = Save.RequestSave; // Don't be Save.Prompt & Save.DoNotDisown
+        const M.Save defaultSave = M.Save.RequestSave; // Don't be Save.Prompt or Save.DoNotDisown
 
         public static SetWnd Instance { get; } = new SetWnd();
 
         public Phases Phases { get; } = Phases.Instance;
 
-        public void DisownSetWnd(Save save = defaultSave)
-            => DisownSetWndLayers(save);
+        public void DisownSetWnd(M.Save save = defaultSave)
+            => MC.DisownSetWndLayers(save);
 
         /// <summary>
         /// mm（ミリメートル）,cm（センチメートル）,Inches（インチ）,m（メートル）,km（キロメートル）,
@@ -63,10 +60,10 @@ namespace YunoCad
             get
             {
                 var units = "";
-                var decimalPlace = GetSetUnits(out units);
+                var decimalPlace = MC.GetSetUnits(out units);
                 return Tuple.Create(units, decimalPlace);
             }
-            set { SetUnits(value.Item1, value.Item2); }
+            set { MC.SetUnits(value.Item1, value.Item2); }
         }
     }
 }

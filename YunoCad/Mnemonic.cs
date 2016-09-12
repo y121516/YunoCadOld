@@ -1,53 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Informatix.MGDS;
+﻿using M = Informatix.MGDS;
+using MC = Informatix.MGDS.Cad;
 
-namespace YunoCad
+namespace Yuno.Cad
 {
     public static class Attribute
     {
         // reference, layer, object, primitive, window
         static void Delete(string mnemonicName)
         {
-            Cad.AttDel(mnemonicName);
+            MC.AttDel(mnemonicName);
         }
 
         static void Delete(Mnemonic mnemonic)
         {
-            Cad.AttDel(mnemonic.Name);
+            MC.AttDel(mnemonic.Name);
         }
 
         static void Set(string mnemonicName, string attributeValue)
         {
-            Cad.AttVal(mnemonicName, attributeValue);
+            MC.AttVal(mnemonicName, attributeValue);
         }
 
         static void Set(Mnemonic mnemonic, string attributeValue)
         {
-            Cad.AttVal(mnemonic.Name, attributeValue);
+            MC.AttVal(mnemonic.Name, attributeValue);
         }
 
         static string Get(string mnemonicName)
         {
             var attr = "";
-            Cad.GetAttVal(mnemonicName, out attr);
+            MC.GetAttVal(mnemonicName, out attr);
             return attr;
         }
 
         static string Get(Mnemonic mnemonic)
         {
             var attr = "";
-            Cad.GetAttVal(mnemonic.Name, out attr);
+            MC.GetAttVal(mnemonic.Name, out attr);
             return attr;
         }
     }
 
     public class Mnemonic
     {
-        const AttributeType DefaultAttributeType = AttributeType.Text;
+        const M.AttributeType DefaultAttributeType = M.AttributeType.Text;
         const int DefaultMaxNumList = 1;
         const int DefaultMin = 0;
         const int DefaultMax = 65535;
@@ -56,19 +52,19 @@ namespace YunoCad
 
         public static void Define(
             string mnemonicName,
-            AttributeType type = DefaultAttributeType,
+            M.AttributeType type = DefaultAttributeType,
             int maxNumList = DefaultMaxNumList,
             int min = DefaultMin,
             int max = DefaultMax,
             string prompt = DefaultPrompt,
             string wordList = DefaultWordList)
         {
-            Cad.MnemDefLV(mnemonicName, type, maxNumList, min, max, prompt, wordList);
+            MC.MnemDefLV(mnemonicName, type, maxNumList, min, max, prompt, wordList);
         }
 
         public static void Define(
             string mnemonicName,
-            AttributeType type = DefaultAttributeType,
+            M.AttributeType type = DefaultAttributeType,
             int min = DefaultMin,
             int max = DefaultMax,
             string prompt = DefaultPrompt)
@@ -88,9 +84,9 @@ namespace YunoCad
 
         public string Name { get; } = "";
 
-        private AttributeType _Type;
+        private M.AttributeType _Type;
 
-        public AttributeType Type
+        public M.AttributeType Type
         {
             get { return _Type; }
             private set { _Type = value; }
@@ -143,7 +139,7 @@ namespace YunoCad
         /// <param name="mnemonicName">ニーモニック名</param>
         public Mnemonic(string mnemonicName)
         {
-            Cad.GetMnemDefLV(mnemonicName, out _Type, out _MaxNumList, out _Min, out _Max, out _Prompt, out _WordList);
+            MC.GetMnemDefLV(mnemonicName, out _Type, out _MaxNumList, out _Min, out _Max, out _Prompt, out _WordList);
         }
 
         /// <summary>
@@ -159,7 +155,7 @@ namespace YunoCad
         /// <param name="wordList"></param>
         public Mnemonic(
             string mnemonicName,
-            AttributeType type = AttributeType.Text,
+            M.AttributeType type = M.AttributeType.Text,
             int maxNumList = 1,
             int min = 0,
             int max = 65535,
@@ -167,7 +163,7 @@ namespace YunoCad
             string wordList = ""
             )
         {
-            Cad.MnemDefLV(mnemonicName, type, maxNumList, min, max, prompt, wordList);
+            MC.MnemDefLV(mnemonicName, type, maxNumList, min, max, prompt, wordList);
             Name = mnemonicName;
             Type = type;
             MaxNumList = maxNumList;
@@ -180,30 +176,30 @@ namespace YunoCad
         static string[] Mnemonics()
         {
             var mnemonics = "";
-            Cad.GetMnemonics(out mnemonics);
+            MC.GetMnemonics(out mnemonics);
             return mnemonics.Split(',');
         }
 
-        static int Count { get { return Cad.GetNumMnemDefs(); } }
+        static int Count { get { return MC.GetNumMnemDefs(); } }
 
         static void Delete(string mnemonicName)
         {
-            Cad.MnemDefDel(mnemonicName);
+            MC.MnemDefDel(mnemonicName);
         }
 
         void Delete()
         {
-            Cad.MnemDefDel(Name);
+            MC.MnemDefDel(Name);
         }
 
-        static void Set(string mnemonicName, AttributeType attributeType, int maxNumList, int min, int max, string prompt, string wordlist)
+        static void Set(string mnemonicName, M.AttributeType attributeType, int maxNumList, int min, int max, string prompt, string wordlist)
         {
-            Cad.MnemDefLV(mnemonicName, attributeType, maxNumList, min, max, prompt, wordlist);
+            MC.MnemDefLV(mnemonicName, attributeType, maxNumList, min, max, prompt, wordlist);
         }
 
-        void Set(AttributeType type, int maxNumList, int min, int max, string prompt, string wordList)
+        void Set(M.AttributeType type, int maxNumList, int min, int max, string prompt, string wordList)
         {
-            Cad.MnemDefLV(Name, type, maxNumList, min, max, prompt, wordList);
+            MC.MnemDefLV(Name, type, maxNumList, min, max, prompt, wordList);
             Type = type;
             MaxNumList = maxNumList;
             Min = min;
@@ -245,12 +241,12 @@ namespace YunoCad
             get
             {
                 var attr = "";
-                Cad.GetAttVal(mnemonic.ToString(), out attr);
+                MC.GetAttVal(mnemonic.ToString(), out attr);
                 return attr;
             }
             set
             {
-                Cad.AttVal(mnemonic.ToString(), value);
+                MC.AttVal(mnemonic.ToString(), value);
             }
         }
 

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MGDS = Informatix.MGDS;
+using M = Informatix.MGDS;
+using MC = Informatix.MGDS.Cad;
 
-namespace YunoCad
+namespace Yuno.Cad
 {
     public class Snap
     {
@@ -13,18 +10,18 @@ namespace YunoCad
 
         Snap() { }
 
-        public Tuple<MGDS.Snapped, MGDS.Cad.Vector, string> GetArg(string prompt, MGDS.Snap snapType)
+        public Tuple<M.Snapped, MC.Vector, string> GetArg(string prompt, M.Snap snapType)
         {
-            MGDS.Cad.Vector argPos;
+            MC.Vector argPos;
             var snap = "";
-            var snapped = MGDS.Cad.GetArg(out argPos, ref snap, prompt, snapType);
+            var snapped = MC.GetArg(out argPos, ref snap, prompt, snapType);
             return Tuple.Create(snapped, argPos, snap);
         }
 
         public enum SetEdit
         {
-            NotUse = MGDS.Snap.AllowList,
-            Use = MGDS.Snap.SEAllowList
+            NotUse = M.Snap.AllowList,
+            Use = M.Snap.SEAllowList
         }
 
         /// <summary>
@@ -36,10 +33,10 @@ namespace YunoCad
         /// </param>
         /// <param name="setEdit"></param>
         /// <returns></returns>
-        public R GetArg<R>(string prompt, string allowSnaps, SetEdit setEdit, Func<MGDS.Snapped, R> byKeyboard, Func<MGDS.Snapped, MGDS.Cad.Vector, string, CurrentPrimitive, R> byMouse)
+        public R GetArg<R>(string prompt, string allowSnaps, SetEdit setEdit, Func<M.Snapped, R> byKeyboard, Func<M.Snapped, MC.Vector, string, CurrentPrimitive, R> byMouse)
         {
-            MGDS.Cad.Vector argPos;
-            var snapped = MGDS.Cad.GetArg(out argPos, ref allowSnaps, prompt, (MGDS.Snap)setEdit);
+            MC.Vector argPos;
+            var snapped = MC.GetArg(out argPos, ref allowSnaps, prompt, (M.Snap)setEdit);
             return snapped.IsByKey() ? byKeyboard(snapped)
                 : byMouse(snapped, argPos, allowSnaps, CurrentPrimitive.Instance);
         }
@@ -60,8 +57,8 @@ namespace YunoCad
 
             void Get()
             {
-                MGDS.Cad.Vector argPos;
-                var snapped = MGDS.Cad.GetArg(out argPos, ref AllowSnaps, Prompt, (MGDS.Snap)SetEdit);
+                MC.Vector argPos;
+                var snapped = MC.GetArg(out argPos, ref AllowSnaps, Prompt, (M.Snap)SetEdit);
             }
         }
     }
@@ -78,79 +75,78 @@ namespace YunoCad
 
     public static class SnappedExtension
     {
-        public static bool IsByKey(this MGDS.Snapped snapped)
+        public static bool IsByKey(this M.Snapped snapped)
         {
             switch (snapped)
             {
-                case MGDS.Snapped.Enter:
-                case MGDS.Snapped.Escape:
-                case MGDS.Snapped.Backspace:
-                case MGDS.Snapped.CtrlEnter:
-                case MGDS.Snapped.ShiftEnter:
-                case MGDS.Snapped.CtrlShiftEnter:
+                case M.Snapped.Enter:
+                case M.Snapped.Escape:
+                case M.Snapped.Backspace:
+                case M.Snapped.CtrlEnter:
+                case M.Snapped.ShiftEnter:
+                case M.Snapped.CtrlShiftEnter:
                     return true;
                 default:
                     return false;
             }
         }
 
-        public static bool IsByMouse(this MGDS.Snapped snapped)
+        public static bool IsByMouse(this M.Snapped snapped)
         {
             switch (snapped)
             {
-                case MGDS.Snapped.Mouse:
-                case MGDS.Snapped.CtrlMouse:
-                case MGDS.Snapped.ShiftMouse:
-                case MGDS.Snapped.CtrlShiftMouse:
+                case M.Snapped.Mouse:
+                case M.Snapped.CtrlMouse:
+                case M.Snapped.ShiftMouse:
+                case M.Snapped.CtrlShiftMouse:
                     return true;
                 default:
                     return false;
             }
         }
 
-        public static bool HasCtrl(this MGDS.Snapped snapped)
+        public static bool HasCtrl(this M.Snapped snapped)
         {
             switch (snapped)
             {
-                case MGDS.Snapped.CtrlMouse:
-                case MGDS.Snapped.CtrlShiftMouse:
-                case MGDS.Snapped.CtrlEnter:
-                case MGDS.Snapped.CtrlShiftEnter:
+                case M.Snapped.CtrlMouse:
+                case M.Snapped.CtrlShiftMouse:
+                case M.Snapped.CtrlEnter:
+                case M.Snapped.CtrlShiftEnter:
                     return true;
                 default:
                     return false;
             }
         }
 
-        public static bool HasShift(this MGDS.Snapped snapped)
+        public static bool HasShift(this M.Snapped snapped)
         {
             switch (snapped)
             {
-                case MGDS.Snapped.ShiftMouse:
-                case MGDS.Snapped.CtrlShiftMouse:
-                case MGDS.Snapped.ShiftEnter:
-                case MGDS.Snapped.CtrlShiftEnter:
+                case M.Snapped.ShiftMouse:
+                case M.Snapped.CtrlShiftMouse:
+                case M.Snapped.ShiftEnter:
+                case M.Snapped.CtrlShiftEnter:
                     return true;
                 default:
                     return false;
             }
         }
 
-        public static bool HasModifiers(this MGDS.Snapped snapped)
+        public static bool HasModifiers(this M.Snapped snapped)
         {
             switch (snapped)
             {
-                case MGDS.Snapped.CtrlMouse:
-                case MGDS.Snapped.ShiftMouse:
-                case MGDS.Snapped.CtrlShiftMouse:
-                case MGDS.Snapped.CtrlEnter:
-                case MGDS.Snapped.ShiftEnter:
-                case MGDS.Snapped.CtrlShiftEnter:
+                case M.Snapped.CtrlMouse:
+                case M.Snapped.ShiftMouse:
+                case M.Snapped.CtrlShiftMouse:
+                case M.Snapped.CtrlEnter:
+                case M.Snapped.ShiftEnter:
+                case M.Snapped.CtrlShiftEnter:
                     return true;
                 default:
                     return false;
             }
         }
     }
-
 }

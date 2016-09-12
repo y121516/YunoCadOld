@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Informatix.MGDS;
-using static Informatix.MGDS.Cad;
+using M = Informatix.MGDS;
+using MC = Informatix.MGDS.Cad;
 
-namespace YunoCad
+namespace Yuno.Cad
 {
     public class CurrentLayer
     {
         const string defaultWildcardAll = "**";
         const string defaultScanEH = "E";
-        const ScanPoly defaultScanPoly = ScanPoly.In;
+        const M.ScanPoly defaultScanPoly = M.ScanPoly.In;
 
         public static CurrentLayer Instance { get; } = new CurrentLayer();
 
@@ -26,7 +23,7 @@ namespace YunoCad
         /// <returns></returns>
         public CurrentLayer Clone(string nameOfAlias, bool isTemporaryLayer = false)
         {
-            CloneCurLayer(nameOfAlias, isTemporaryLayer);
+            MC.CloneCurLayer(nameOfAlias, isTemporaryLayer);
             return Instance; // TODO: return CurrentLayer and SetLayer
         }
 
@@ -35,23 +32,23 @@ namespace YunoCad
             get
             {
                 var label = "";
-                GetCurLayLabel(out label);
+                MC.GetCurLayLabel(out label);
                 return label;
             }
-            set { CurLayLabel(value); }
+            set { MC.CurLayLabel(value); }
         }
 
-        public int Link => GetCurLayLink();
+        public int Link => MC.GetCurLayLink();
 
         public string Name
         {
             get
             {
                 var name = "";
-                GetCurLayName(out name);
+                MC.GetCurLayName(out name);
                 return name;
             }
-            set { CurLayName(value); }
+            set { MC.CurLayName(value); }
         }
 
         /// <summary>
@@ -62,7 +59,7 @@ namespace YunoCad
             get
             {
                 var type = "";
-                GetCurLayType(out type);
+                MC.GetCurLayType(out type);
                 return type;
             }
         }
@@ -71,12 +68,12 @@ namespace YunoCad
 
 
         public int GetObjectCount(string wildcard = defaultWildcardAll)
-            => Cad.GetObjectCount(wildcard);
+            => MC.GetObjectCount(wildcard);
 
         int[] GetObjectLinksImpl(int count, string wildcard)
         {
             var objectLinks = new int[count];
-            Cad.GetObjectLinks(objectLinks, wildcard, count);
+            MC.GetObjectLinks(objectLinks, wildcard, count);
             return objectLinks;
         }
 
@@ -94,12 +91,12 @@ namespace YunoCad
 
 
         public int GetObjectCountArea(double left, double top, double right, double bottom, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
-            => Cad.GetObjectCountArea(scanEH, wildcard, left, top, right, bottom);
+            => MC.GetObjectCountArea(scanEH, wildcard, left, top, right, bottom);
 
         int[] GetObjectLinksAreaImpl(int count, double left, double top, double right, double bottom, string scanEH, string wildcard)
         {
             var objectLinks = new int[count];
-            Cad.GetObjectLinksArea(ObjectLinks, scanEH, wildcard, count, left, top, right, bottom);
+            MC.GetObjectLinksArea(ObjectLinks, scanEH, wildcard, count, left, top, right, bottom);
             return ObjectLinks;
         }
 
@@ -116,85 +113,85 @@ namespace YunoCad
         }
 
 
-        public int GetObjectCountPoly(ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
-            => Cad.GetObjectCountPoly(scanPoly, scanEH, wildcard);
+        public int GetObjectCountPoly(M.ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+            => MC.GetObjectCountPoly(scanPoly, scanEH, wildcard);
 
-        int[] GetObjectLinksPolyImpl(int count, ScanPoly scanPoly, string scanEH, string wildcard)
+        int[] GetObjectLinksPolyImpl(int count, M.ScanPoly scanPoly, string scanEH, string wildcard)
         {
             var objectLinks = new int[count];
-            Cad.GetObjectLinksPoly(ObjectLinks, scanPoly, scanEH, wildcard, count);
+            MC.GetObjectLinksPoly(ObjectLinks, scanPoly, scanEH, wildcard, count);
             return ObjectLinks;
         }
 
-        public int[] GetObjectLinksPoly(int atMostCount, ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int[] GetObjectLinksPoly(int atMostCount, M.ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
         {
             var count = Math.Min(atMostCount, GetObjectCountPoly(scanPoly, scanEH, wildcard));
             return GetObjectLinksPolyImpl(count, scanPoly, scanEH, wildcard);
         }
 
-        public int[] GetObjectLinksPoly(ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int[] GetObjectLinksPoly(M.ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
         {
             var count = GetObjectCountPoly(scanPoly, scanEH, wildcard);
             return GetObjectLinksPolyImpl(count, scanPoly, scanEH, wildcard);
         }
 
 
-        public int GetObjectCountPrimPoly(int layerLink, int objectLink, int primitiveLink, ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
-            => Cad.GetObjectCountPrimPoly(scanPoly, scanEH, wildcard, layerLink, objectLink, primitiveLink);
+        public int GetObjectCountPrimPoly(int layerLink, int objectLink, int primitiveLink, M.ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+            => MC.GetObjectCountPrimPoly(scanPoly, scanEH, wildcard, layerLink, objectLink, primitiveLink);
 
-        public int GetObjectCountPrimPoly(PriTriple priTriple, ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int GetObjectCountPrimPoly(MC.PriTriple priTriple, M.ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
             => GetObjectCountPrimPoly(priTriple.llink, priTriple.vlink, priTriple.plink, scanPoly, scanEH, wildcard);
 
-        int[] GetObjectLinksPrimPolyImpl(int count, int layerLink, int objectLink, int primitiveLink, ScanPoly scanPoly, string scanEH, string wildcard)
+        int[] GetObjectLinksPrimPolyImpl(int count, int layerLink, int objectLink, int primitiveLink, M.ScanPoly scanPoly, string scanEH, string wildcard)
         {
             var objectLinks = new int[count];
-            Cad.GetObjectLinksPrimPoly(ObjectLinks, scanPoly, scanEH, wildcard, count, layerLink, objectLink, primitiveLink);
+            MC.GetObjectLinksPrimPoly(ObjectLinks, scanPoly, scanEH, wildcard, count, layerLink, objectLink, primitiveLink);
             return ObjectLinks;
         }
 
-        public int[] GetObjectLinksPrimPoly(int atMostCount, int layerLink, int objectLink, int primitiveLink, ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int[] GetObjectLinksPrimPoly(int atMostCount, int layerLink, int objectLink, int primitiveLink, M.ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
         {
             var count = Math.Min(atMostCount, GetObjectCountPrimPoly(layerLink, objectLink, primitiveLink, scanPoly, scanEH, wildcard));
             return GetObjectLinksPrimPolyImpl(count, layerLink, objectLink, primitiveLink, scanPoly, scanEH, wildcard);
         }
 
-        public int[] GetObjectLinksPrimPoly(int atMostCount, PriTriple priTriple, ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int[] GetObjectLinksPrimPoly(int atMostCount, MC.PriTriple priTriple, M.ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
             => GetObjectLinksPrimPoly(atMostCount, priTriple.llink, priTriple.vlink, priTriple.plink, scanPoly, scanEH, wildcard);
 
-        public int[] GetObjectLinksPrimPoly(int layerLink, int objectLink, int primitiveLink, ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int[] GetObjectLinksPrimPoly(int layerLink, int objectLink, int primitiveLink, M.ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
         {
             var count = GetObjectCountPrimPoly(layerLink, objectLink, primitiveLink, scanPoly, scanEH, wildcard);
             return GetObjectLinksPrimPolyImpl(count, layerLink, objectLink, primitiveLink, scanPoly, scanEH, wildcard);
         }
 
-        public int[] GetObjectLinksPrimPoly(PriTriple priTriple, ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int[] GetObjectLinksPrimPoly(MC.PriTriple priTriple, M.ScanPoly scanPoly = defaultScanPoly, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
             => GetObjectLinksPrimPoly(priTriple.llink, priTriple.vlink, priTriple.plink, scanPoly, scanEH, wildcard);
 
 
-        public int GetObjectCountVolume(Vector pt1, Vector pt2, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
-            => Cad.GetObjectCountVolume(scanEH, wildcard, pt1, pt2);
+        public int GetObjectCountVolume(MC.Vector pt1, MC.Vector pt2, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+            => MC.GetObjectCountVolume(scanEH, wildcard, pt1, pt2);
 
-        int[] GetObjectLinksVolumeImpl(int count, Vector pt1, Vector pt2, string scanEH, string wildcard)
+        int[] GetObjectLinksVolumeImpl(int count, MC.Vector pt1, MC.Vector pt2, string scanEH, string wildcard)
         {
             var objectLinks = new int[count];
-            Cad.GetObjectLinksVolume(ObjectLinks, scanEH, wildcard, count, pt1, pt2);
+            MC.GetObjectLinksVolume(ObjectLinks, scanEH, wildcard, count, pt1, pt2);
             return ObjectLinks;
         }
 
-        public int[] GetObjectLinksVolume(int atMostCount, Vector pt1, Vector pt2, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int[] GetObjectLinksVolume(int atMostCount, MC.Vector pt1, MC.Vector pt2, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
         {
             var count = Math.Min(atMostCount, GetObjectCountVolume(pt1, pt2, scanEH, wildcard));
             return GetObjectLinksVolumeImpl(count, pt1, pt2, scanEH, wildcard);
         }
 
-        public int[] GetObjectLinksVolume(Vector pt1, Vector pt2, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
+        public int[] GetObjectLinksVolume(MC.Vector pt1, MC.Vector pt2, string scanEH = defaultScanEH, string wildcard = defaultWildcardAll)
         {
             var count = GetObjectCountVolume(pt1, pt2, scanEH, wildcard);
             return GetObjectLinksVolumeImpl(count, pt1, pt2, scanEH, wildcard);
         }
 
-        public bool IsOwned => IsCurLayOwned();
-        public bool IsTemporary => IsCurLayTemp();
+        public bool IsOwned => MC.IsCurLayOwned();
+        public bool IsTemporary => MC.IsCurLayTemp();
     }
 
     public class SetLayer
@@ -203,19 +200,19 @@ namespace YunoCad
 
         SetLayer() { }
 
-        public int Link => GetSetLayLink();
+        public int Link => MC.GetSetLayLink();
 
-        public SetObject CreateObject(string name, Vector pos)
+        public SetObject CreateObject(string name, MC.Vector pos)
         {
-            Cad.CreateObject(name, pos);
+            MC.CreateObject(name, pos);
             return SetObject.Instance;
         }
     }
 
     public class Layers
     {
-        const Save defaultDeleteSave = Save.RequestSave; // Don't be Save.Prompt
-        const Save defaultDisownSave = Save.RequestSave; // Don't be Save.Prompt & Save.DoNotDisown
+        const M.Save defaultDeleteSave = M.Save.RequestSave; // Don't be Save.Prompt
+        const M.Save defaultDisownSave = M.Save.RequestSave; // Don't be Save.Prompt or Save.DoNotDisown
         const string defaultWildcard = "*";
         const string defaultObjectWildcard = "**";
         const string defaultScanEH = "E";
@@ -226,37 +223,37 @@ namespace YunoCad
 
         public SetLayer Create(string layerName, string nameOfAlias)
         {
-            CreateLayer(layerName, nameOfAlias);
+            MC.CreateLayer(layerName, nameOfAlias);
             return SetLayer.Instance;
         }
 
         public CurrentLayer CreateTemporary(string layerName)
         {
-            CreateTempLayer(layerName);
+            MC.CreateTempLayer(layerName);
             return CurrentLayer.Instance; // TODO: return CurrentLayer and SetLayer
         }
 
-        public void Delete(int layerLink, Save save = defaultDeleteSave)
-            => DeleteLayer(layerLink, save);
+        public void Delete(int layerLink, M.Save save = defaultDeleteSave)
+            => MC.DeleteLayer(layerLink, save);
 
-        public void Disown(int layerLink, Save save = defaultDisownSave)
-            => DisownLayer(layerLink, save);
+        public void Disown(int layerLink, M.Save save = defaultDisownSave)
+            => MC.DisownLayer(layerLink, save);
 
-        public int GetLayerOfChild(int layerLink, int objectLink) => Cad.GetLayerOfChild(layerLink, objectLink);
+        public int GetLayerOfChild(int layerLink, int objectLink) => MC.GetLayerOfChild(layerLink, objectLink);
 
         public Tuple<int, int> GetLayerOfParent(int layerLink)
         {
             int objectLink;
-            var parentLayer = Cad.GetLayerOfParent(layerLink, out objectLink);
+            var parentLayer = MC.GetLayerOfParent(layerLink, out objectLink);
             return Tuple.Create(parentLayer, objectLink);
         }
 
-        public int GetLinkFromPath(string layerPath) => LayerLinkFromPath(layerPath);
+        public int GetLinkFromPath(string layerPath) => MC.LayerLinkFromPath(layerPath);
 
         public string GetPathFromLink(int layerLink)
         {
             var path = "";
-            LayerPathFromLink(layerLink, out path);
+            MC.LayerPathFromLink(layerLink, out path);
             return path;
         }
 
@@ -267,38 +264,38 @@ namespace YunoCad
         {
             var layerName = "";
             int layerLink;
-            if (LayerScanStart(scanWild, out layerName, out layerLink))
+            if (MC.LayerScanStart(scanWild, out layerName, out layerLink))
             {
                 do
                 {
                     yield return Tuple.Create(layerName, layerLink);
-                } while (LayerNext(out layerName, out layerLink));
+                } while (MC.LayerNext(out layerName, out layerLink));
             }
         }
 
-        public IEnumerable<CurrentObject> ObjectScan(int layerLink, ScanMode extentType, Vector lo, Vector hi,
+        public IEnumerable<CurrentObject> ObjectScan(int layerLink, M.ScanMode extentType, MC.Vector lo, MC.Vector hi,
             string scanEH = defaultScanEH, string wildcard = defaultObjectWildcard)
         {
-            if (ObjectScanLayer(layerLink, scanEH, wildcard, extentType, lo, hi))
+            if (MC.ObjectScanLayer(layerLink, scanEH, wildcard, extentType, lo, hi))
             {
                 do
                 {
                     yield return CurrentObject.Instance;
-                } while (ObjectNext());
+                } while (MC.ObjectNext());
             }
         }
 
-        public void Own(int layerLink) => OwnLayer(layerLink);
+        public void Own(int layerLink) => MC.OwnLayer(layerLink);
 
-        public void Reset() => ResetLayer();
+        public void Reset() => MC.ResetLayer();
 
-        public void SaveLayer(int layerLink) => Cad.SaveLayer(layerLink);
+        public void SaveLayer(int layerLink) => MC.SaveLayer(layerLink);
 
-        public void SaveSetWndLayers() => Cad.SaveSetWndLayers();
+        public void SaveSetWndLayers() => MC.SaveSetWndLayers();
 
         public SetLayer Set(int layerLink)
         {
-            SetLayer(layerLink);
+            MC.SetLayer(layerLink);
             return SetLayer.Instance;
         }
     }

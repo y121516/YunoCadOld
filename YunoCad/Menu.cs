@@ -1,6 +1,6 @@
-﻿using Informatix.MGDS;
+﻿using MC = Informatix.MGDS.Cad;
 
-namespace YunoCad
+namespace Yuno.Cad
 {
     public class Menu
     {
@@ -8,31 +8,31 @@ namespace YunoCad
 
         Menu() { }
 
-        public int GetFreeEvent(int eventID) => Cad.GetFreeMenuEvent(eventID);
+        public int GetFreeEvent(int eventID) => MC.GetFreeMenuEvent(eventID);
 
         public string PrefCfg
         {
             get
             {
                 var fileName = "";
-                Cad.GetPrefMenuCfg(out fileName);
+                MC.GetPrefMenuCfg(out fileName);
                 return fileName;
             }
-            set { Cad.PrefMenuCfg(value); }
+            set { MC.PrefMenuCfg(value); }
         }
 
-        public void Load(string fileName, string section) => Cad.LoadMenu(fileName, section);
+        public void Load(string fileName, string section) => MC.LoadMenu(fileName, section);
 
-        public void RestoreState() => Cad.RestoreMenuState();
+        public void RestoreState() => MC.RestoreMenuState();
 
         public MenuItemState this[MenuItem menuItem] => new MenuItemState(menuItem.Name);
 
         public void Add(CommandMenuItem commandMenuItem)
-            => Cad.AddMenuCommand(commandMenuItem.Name, commandMenuItem.CommandLine);
+            => MC.AddMenuCommand(commandMenuItem.Name, commandMenuItem.CommandLine);
 
         public CommandMenuItem Insert(MenuItem insertBeforeMenuItem, CommandMenuItem commandMenuItem)
         {
-            Cad.InsertMenuCommand(insertBeforeMenuItem.Name, commandMenuItem.Name, commandMenuItem.CommandLine);
+            MC.InsertMenuCommand(insertBeforeMenuItem.Name, commandMenuItem.Name, commandMenuItem.CommandLine);
             var absoluteName = System.Text.RegularExpressions.Regex.Replace(
                 insertBeforeMenuItem.Name,
                 @"^?([^\\]+\\)(?:.*)",
@@ -40,7 +40,7 @@ namespace YunoCad
             return new CommandMenuItem(absoluteName, commandMenuItem.CommandLine);
         }
 
-        public void Remove(MenuItem menuItem) => Cad.RemoveMenuCommand(menuItem.Name);
+        public void Remove(MenuItem menuItem) => MC.RemoveMenuCommand(menuItem.Name);
     }
 
     public class MenuItem
@@ -74,7 +74,7 @@ namespace YunoCad
 
         public bool Enabled
         {
-            set { Cad.EnableMenuCommand(Name, value); }
+            set { MC.EnableMenuCommand(Name, value); }
         }
 
         public bool Checked
@@ -82,10 +82,10 @@ namespace YunoCad
             get
             {
                 bool isChecked;
-                Cad.GetCheckMenuCommand(out isChecked, Name);
+                MC.GetCheckMenuCommand(out isChecked, Name);
                 return isChecked;
             }
-            set { Cad.SetCheckMenuCommand(Name, value); }
+            set { MC.SetCheckMenuCommand(Name, value); }
         }
     }
 }

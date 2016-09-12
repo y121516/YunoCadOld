@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Informatix.MGDS;
+using M = Informatix.MGDS;
+using MC = Informatix.MGDS.Cad;
 
-namespace YunoCad
+namespace Yuno.Cad
 {
     /// <summary>
     /// Find を呼び出すことのできるインターフェイス。
@@ -32,7 +30,7 @@ namespace YunoCad
 
         public ActiveDocument Find()
         {
-            Cad.DocFind(true, Name);
+            MC.DocFind(true, Name);
             return ActiveDocument.Instance;
         }
     }
@@ -50,7 +48,7 @@ namespace YunoCad
 
         public ActiveDocument Find()
         {
-            Cad.DocFind(false, ID);
+            MC.DocFind(false, ID);
             return ActiveDocument.Instance;
         }
     }
@@ -66,14 +64,14 @@ namespace YunoCad
         public virtual DocumentID GetID()
         {
             var docID = "";
-            Cad.DocGetID(out docID);
+            MC.DocGetID(out docID);
             return new DocumentID(docID);
         }
 
         public virtual DocumentName GetName()
         {
             var docName = "";
-            Cad.DocGetName(out docName);
+            MC.DocGetName(out docName);
             return new DocumentName(docName);
         }
     }
@@ -98,7 +96,7 @@ namespace YunoCad
         public ScanActiveDocument Activate()
         {
             var docName = "";
-            Cad.DocActivate(out docName);
+            MC.DocActivate(out docName);
             return new ScanActiveDocument(ID, docName);
         }
     }
@@ -113,21 +111,21 @@ namespace YunoCad
 
         internal ActiveDocument() { }
 
-        public System.Windows.Forms.DialogResult Close(Save drawingSave = Informatix.MGDS.Save.Prompt)
+        public System.Windows.Forms.DialogResult Close(M.Save drawingSave = M.Save.Prompt)
         {
-            return Cad.DocClose(drawingSave);
+            return MC.DocClose(drawingSave);
         }
 
-        public DocViewType ViewType => Cad.DocGetViewType();
+        public M.DocViewType ViewType => MC.DocGetViewType();
 
         public System.Windows.Forms.DialogResult Save()
         {
-            return Cad.DocSave();
+            return MC.DocSave();
         }
 
         public virtual CurrentDocument Resynch()
         {
-            Cad.DocResynch();
+            MC.DocResynch();
             return CurrentDocument.Instance;
         }
 
@@ -152,7 +150,7 @@ namespace YunoCad
 
         public new ScanCurrentDocument Resynch()
         {
-            Cad.DocResynch();
+            MC.DocResynch();
             return new ScanCurrentDocument(ID, Name);
         }
     }
@@ -168,20 +166,21 @@ namespace YunoCad
         public Aliases Aliases { get; } = Aliases.Instance;
         public SetWnds SetWnds { get; } = SetWnds.Instance;
         public Layers Layers { get; } = Layers.Instance;
+        public SetEdit SetEdit { get; } = SetEdit.Instance;
 
         internal CurrentDocument() { }
 
         public override DocumentID GetID()
         {
             var docID = "";
-            Cad.DocGetCurID(out docID);
+            MC.DocGetCurID(out docID);
             return new DocumentID(docID);
         }
 
         public override DocumentName GetName()
         {
             var docName = "";
-            Cad.DocGetCurName(out docName);
+            MC.DocGetCurName(out docName);
             return new DocumentName(docName);
         }
 
@@ -190,7 +189,7 @@ namespace YunoCad
             get
             {
                 var docID = "";
-                Cad.DocGetCurID(out docID);
+                MC.DocGetCurID(out docID);
                 return new DocumentID(docID);
             }
         }
@@ -200,7 +199,7 @@ namespace YunoCad
             get
             {
                 var docName = "";
-                Cad.DocGetCurName(out docName);
+                MC.DocGetCurName(out docName);
                 return docName;
             }
         }
@@ -209,8 +208,8 @@ namespace YunoCad
 
         public int Colour
         {
-            get { return Cad.GetSetColour(); }
-            set { Cad.SetColour(value); }
+            get { return MC.GetSetColour(); }
+            set { MC.SetColour(value); }
         }
 
         public Tuple<int, int, int, int, int> ColourEx
@@ -218,12 +217,12 @@ namespace YunoCad
             get
             {
                 int colourIndex, red, green, blue, alpha;
-                Cad.GetSetColourEx(out colourIndex, out red, out green, out blue, out alpha);
+                MC.GetSetColourEx(out colourIndex, out red, out green, out blue, out alpha);
                 return Tuple.Create(colourIndex, red, green, blue, alpha);
             }
             set
             {
-                Cad.SetColourEx(value.Item1, value.Item2, value.Item3, value.Item4, value.Item5);
+                MC.SetColourEx(value.Item1, value.Item2, value.Item3, value.Item4, value.Item5);
             }
         }
 
@@ -234,10 +233,10 @@ namespace YunoCad
             get
             {
                 var units = "";
-                var decimalPlace = Cad.GetSetUnits(out units);
+                var decimalPlace = MC.GetSetUnits(out units);
                 return Tuple.Create(units, decimalPlace);
             }
-            set { Cad.SetUnits(value.Item1, value.Item2); }
+            set { MC.SetUnits(value.Item1, value.Item2); }
         }
     }
 
@@ -267,7 +266,7 @@ namespace YunoCad
 
         public CurrentDocument CreateNew()
         {
-            Cad.CreateFile();
+            MC.CreateFile();
             return CurrentDocument.Instance; // 作成したファイル(ドキュメント)がカレントドキュメントとなる
         }
 
@@ -277,12 +276,12 @@ namespace YunoCad
             {
                 var docID = "";
                 int n = 0;
-                if (Cad.DocFirst(out docID))
+                if (MC.DocFirst(out docID))
                 {
                     do
                     {
                         ++n;
-                    } while (Cad.DocNext(out docID));
+                    } while (MC.DocNext(out docID));
                 }
                 return n;
             }
@@ -291,12 +290,12 @@ namespace YunoCad
         public IEnumerable<ScanDocument> Scan()
         {
             var docID = "";
-            if (Cad.DocFirst(out docID))
+            if (MC.DocFirst(out docID))
             {
                 do
                 {
                     yield return new ScanDocument(docID);
-                } while (Cad.DocNext(out docID));
+                } while (MC.DocNext(out docID));
             }
         }
     }
@@ -327,15 +326,15 @@ namespace YunoCad
             public IEnumerable<DocumentView> Scan()
             {
                 // ViewTypeのチェックが必要かも。ビューが無い場合
-                if (Cad.DocGetViewType() != DocViewType.Drawing) yield break;
+                if (MC.DocGetViewType() != M.DocViewType.Drawing) yield break;
 
                 int viewID;
-                if (Cad.DocViewFirst(out viewID))
+                if (MC.DocViewFirst(out viewID))
                 {
                     do
                     {
                         yield return new DocumentView(viewID);
-                    } while (Cad.DocViewNext(out viewID));
+                    } while (MC.DocViewNext(out viewID));
                 }
             }
         }

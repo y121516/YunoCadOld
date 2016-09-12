@@ -1,7 +1,7 @@
-﻿using AliasType = Informatix.MGDS.AliasName;
-using static Informatix.MGDS.Cad;
+﻿using MC = Informatix.MGDS.Cad;
+using AliasType = Informatix.MGDS.AliasName;
 
-namespace YunoCad
+namespace Yuno.Cad
 {
     public class Aliases
     {
@@ -15,7 +15,7 @@ namespace YunoCad
             {
                 var path = "";
                 bool expandable;
-                GetAliasDefinition(alias.Type, alias.Name, out path, out expandable);
+                MC.GetAliasDefinition(alias.Type, alias.Name, out path, out expandable);
                 return new AliasInfo(path, expandable);
             }
             set
@@ -25,9 +25,9 @@ namespace YunoCad
         }
 
         public void Add(Alias alias, AliasInfo info)
-            => AliasDefinition(alias.Type, alias.Name, info.Path, info.Expandable);
+            => MC.AliasDefinition(alias.Type, alias.Name, info.Path, info.Expandable);
 
-        public void Delete(Alias alias) => DeleteAliasDefinition(alias.Type, alias.Name);
+        public void Delete(Alias alias) => MC.DeleteAliasDefinition(alias.Type, alias.Name);
 
         public DefaultAlias DefaultAlias(AliasType type) => new DefaultAlias(type);
     }
@@ -46,13 +46,13 @@ namespace YunoCad
             get
             {
                 var name = "";
-                GetSetAlias(Type, out name);
+                MC.GetSetAlias(Type, out name);
                 return name;
             }
-            set { SetAlias(Type, value); }
+            set { MC.SetAlias(Type, value); }
         }
 
-        public void Reset() => ResetAlias(Type);
+        public void Reset() => MC.ResetAlias(Type);
     }
 
     public class Alias

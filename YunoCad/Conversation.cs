@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using M = Informatix.MGDS;
 
-namespace YunoCad
+namespace Yuno.Cad
 {
     /// <summary>
     /// MicroGDS との通信を表すクラス。
@@ -17,7 +18,7 @@ namespace YunoCad
 
         public static void Converse(this Session session, int timeoutMillisecond, Action<ConversingSession> action)
         {
-            using (var c = new Informatix.MGDS.Conversation())
+            using (var c = new M.Conversation())
             {
                 c.Start(session.ID, timeoutMillisecond);
                 action(new ConversingSession(c, session));
@@ -28,15 +29,15 @@ namespace YunoCad
             => Converse(session, DefaultTimeoutMillisecond, action);
 
         public static void Converse(int timeoutMillisecond, Action<ConversingSession> action)
-            => Converse(Session.Any, timeoutMillisecond, action);
+            => Converse(Sessions.Any, timeoutMillisecond, action);
 
         public static void Converse(Action<ConversingSession> action)
-            => Converse(Session.Any, action);
+            => Converse(Sessions.Any, action);
 
 
         public static TResult Converse<TResult>(this Session session, int timeoutMillisecond, Func<ConversingSession, TResult> func)
         {
-            using (var c = new Informatix.MGDS.Conversation())
+            using (var c = new M.Conversation())
             {
                 c.Start(session.ID, timeoutMillisecond);
                 return func(new ConversingSession(c, session));
@@ -47,10 +48,10 @@ namespace YunoCad
             => Converse(session, DefaultTimeoutMillisecond, func);
 
         public static TResult Converse<TResult>(int timeoutMillisecond, Func<ConversingSession, TResult> func)
-            => Converse(Session.Any, timeoutMillisecond, func);
+            => Converse(Sessions.Any, timeoutMillisecond, func);
 
         public static TResult Converse<TResult>(Func<ConversingSession, TResult> func)
-            => Converse(Session.Any, func);
+            => Converse(Sessions.Any, func);
 
 
         public static Task ConverseAsync(this Session session, int timeoutMillisecond, Action<ConversingSession> action)
@@ -60,10 +61,10 @@ namespace YunoCad
             => ConverseAsync(session, DefaultTimeoutMillisecond, action);
 
         public static Task ConverseAsync(int timeoutMillisecond, Action<ConversingSession> action)
-            => ConverseAsync(Session.Any, timeoutMillisecond, action);
+            => ConverseAsync(Sessions.Any, timeoutMillisecond, action);
 
         public static Task ConverseAsync(Action<ConversingSession> action)
-            => ConverseAsync(Session.Any, action);
+            => ConverseAsync(Sessions.Any, action);
 
 
         public static Task<TResult> ConverseAsync<TResult>(this Session session, int timeoutMillisecond, Func<ConversingSession, TResult> func)
@@ -73,9 +74,9 @@ namespace YunoCad
             => ConverseAsync(session, DefaultTimeoutMillisecond, func);
 
         public static Task<TResult> ConverseAsync<TResult>(int timeoutMillisecond, Func<ConversingSession, TResult> func)
-            => ConverseAsync(Session.Any, timeoutMillisecond, func);
+            => ConverseAsync(Sessions.Any, timeoutMillisecond, func);
 
         public static Task<TResult> ConverseAsync<TResult>(Func<ConversingSession, TResult> func)
-            => ConverseAsync(Session.Any, func);
+            => ConverseAsync(Sessions.Any, func);
     }
 }

@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Informatix.MGDS;
-using static Informatix.MGDS.Cad;
+using M = Informatix.MGDS;
+using MC = Informatix.MGDS.Cad;
 
-namespace YunoCad
+namespace Yuno.Cad
 {
     public static class Primitive
     {
-        public static PriTriple Create(int layerLink, int objectLink, int primitiveLink) => new PriTriple(layerLink, objectLink, primitiveLink);
-        public static PriTriple Create(ObjPair objPair, int primitiveLink) => new PriTriple(objPair.llink, objPair.vlink, primitiveLink);
+        public static MC.PriTriple Create(int layerLink, int objectLink, int primitiveLink) => new MC.PriTriple(layerLink, objectLink, primitiveLink);
+        public static MC.PriTriple Create(MC.ObjPair objPair, int primitiveLink) => new MC.PriTriple(objPair.llink, objPair.vlink, primitiveLink);
 
-        public static ObjPair ParentObject(this PriTriple priTriple) => new ObjPair(priTriple.llink, priTriple.vlink);
+        public static MC.ObjPair ParentObject(this MC.PriTriple priTriple) => new MC.ObjPair(priTriple.llink, priTriple.vlink);
 
-        public static void Delete(this PriTriple priTriple) => DeletePrimitive(priTriple.llink, priTriple.vlink, priTriple.plink);
+        public static void Delete(this MC.PriTriple priTriple) => MC.DeletePrimitive(priTriple.llink, priTriple.vlink, priTriple.plink);
 
         public static CurrentPrimitive GetCurrentPrimitive()
         {
             var priType = "";
-            GetCurPriType(out priType);
+            MC.GetCurPriType(out priType);
             switch (priType)
             {
                 case "CLUMP MESH": return CurrentClumpMeshPrimitive.Instance;
@@ -36,21 +34,27 @@ namespace YunoCad
             }
         }
 
-        public static CurrentPrimitive MakeCurrent(this PriTriple priTriple)
+        public static TResult MakeCurrent<TResult>(this MC.PriTriple priTriple, Func<CurrentPrimitive, TResult> func)
         {
-            CurPrimitive(priTriple.llink, priTriple.vlink, priTriple.plink);
+            MC.CurPrimitive(priTriple.llink, priTriple.vlink, priTriple.plink);
+            return func(GetCurrentPrimitive());
+        }
+
+        public static void MakeCurrent(this MC.PriTriple priTriple, Action<CurrentPrimitive> action)
+        {
+            MC.CurPrimitive(priTriple.llink, priTriple.vlink, priTriple.plink);
+            action(GetCurrentPrimitive());
+        }
+
+        public static CurrentPrimitive MakeCurrentPrimitive(this MC.PriTriple priTriple)
+        {
+            MC.CurPriLink(priTriple.plink);
             return GetCurrentPrimitive();
         }
 
-        public static CurrentPrimitive MakeCurrentPrimitive(this PriTriple priTriple)
+        public static void Set(this MC.PriTriple priTriple)
         {
-            CurPriLink(priTriple.plink);
-            return GetCurrentPrimitive();
-        }
-
-        public static void Set(this PriTriple priTriple)
-        {
-            SetPrimitive(priTriple.llink, priTriple.vlink, priTriple.plink);
+            MC.SetPrimitive(priTriple.llink, priTriple.vlink, priTriple.plink);
             return; // TODO:
         }
     }
@@ -68,12 +72,12 @@ namespace YunoCad
         //カレントのレイヤ、オブジェクトは変更されません。カレントオブジェクトがアセンブリオブジェクトの場合は、プリミティブは返されません。
         public IEnumerable<CurrentPrimitive> Scan(string scanEH = DefaultScanEH)
         {
-            if (Cad.PrimScan(scanEH))
+            if (MC.PrimScan(scanEH))
             {
                 do
                 {
                     yield return Primitive.GetCurrentPrimitive();
-                } while (Cad.PrimNext());
+                } while (MC.PrimNext());
             }
         }
     }
@@ -84,20 +88,20 @@ namespace YunoCad
 
         internal CurrentPrimitive() { }
 
-        public PriTriple Link
+        public MC.PriTriple Link
         {
             get
             {
-                var lay = GetCurLayLink();
-                var obj = GetCurObjLink();
-                var pri = GetCurPriLink();
-                return new PriTriple(lay, obj, pri);
+                var lay = MC.GetCurLayLink();
+                var obj = MC.GetCurObjLink();
+                var pri = MC.GetCurPriLink();
+                return new MC.PriTriple(lay, obj, pri);
             }
         }
 
-        public int LayerLink => GetCurLayLink();
-        public int ObjectLink => GetCurObjLink();
-        public int PrimitiveLink => GetCurPriLink();
+        public int LayerLink => MC.GetCurLayLink();
+        public int ObjectLink => MC.GetCurObjLink();
+        public int PrimitiveLink => MC.GetCurPriLink();
 
         // 閉じたプリミティブ
         public double Area
@@ -105,7 +109,7 @@ namespace YunoCad
             get
             {
                 double area;
-                GetCurPriArea(out area);
+                MC.GetCurPriArea(out area);
                 return area;
             }
         }
@@ -115,10 +119,10 @@ namespace YunoCad
             get
             {
                 var lineStyle = "";
-                GetCurPriLinestyle(out lineStyle);
+                MC.GetCurPriLinestyle(out lineStyle);
                 return lineStyle;
             }
-            set { CurPriLinestyle(value); }
+            set { MC.CurPriLinestyle(value); }
         }
 
         /// <summary>
@@ -130,19 +134,19 @@ namespace YunoCad
             get
             {
                 var type = "";
-                GetCurPriType(out type);
+                MC.GetCurPriType(out type);
                 return type;
             }
         }
 
-        public void Move(Vector from, Vector moveTo, bool copy = false, double byScale = 1, double radianRotation = 0)
-            => CurPriMove(copy, from, moveTo, byScale, radianRotation);
+        public void Move(MC.Vector from, MC.Vector moveTo, bool copy = false, double byScale = 1, double radianRotation = 0)
+            => MC.CurPriMove(copy, from, moveTo, byScale, radianRotation);
 
-        public void Rotate(Vector radianOrient) => CurPriRotate(radianOrient);
+        public void Rotate(MC.Vector radianOrient) => MC.CurPriRotate(radianOrient);
 
         public CurrentDocument Reset()
         {
-            Cad.ResetPrim();
+            MC.ResetPrim();
             return CurrentDocument.Instance;
         }
 
@@ -154,40 +158,43 @@ namespace YunoCad
             get
             {
                 double wrap;
-                GetCurPriWrap(out wrap);
+                MC.GetCurPriWrap(out wrap);
                 return wrap;
             }
-            set { CurPriWrap(value); }
+            set { MC.CurPriWrap(value); }
         }
 
-        public bool IsMirroed => IsCurPriMirrored();
-        public bool IsReadOnlyInstance => IsCurPrimReadonly() == Informatix.MGDS.Primitive.ReadOnly;
-        public bool IsSelected => IsCurPriSelected();
+        public bool IsMirroed => MC.IsCurPriMirrored();
+        public bool IsReadOnlyInstance => MC.IsCurPrimReadonly() == M.Primitive.ReadOnly;
+        public bool IsSelected => MC.IsCurPriSelected();
 
-        public void Transform(ref Axes from, ref Axes moveTo, bool copy = false)
-            => TransformCurPrimitive(copy, ref from, ref moveTo);
+        public void Transform(ref MC.Axes from, ref MC.Axes moveTo, bool copy = false)
+            => MC.TransformCurPrimitive(copy, ref from, ref moveTo);
+
+        public void SelectRemove()
+            => MC.SelectRemove();
     }
 
     public class CurrentLineOrPhotePrimitive : CurrentPrimitive
     {
-        public void Polyline(int nPoints, Vector[] pointArray)
-            => CurPriPolyline(nPoints, pointArray);
+        public void Polyline(int nPoints, MC.Vector[] pointArray)
+            => MC.CurPriPolyline(nPoints, pointArray);
 
-        public void Polyline(int nPoints, Vector[] pointArray, double[] bulgeArray, Vector[] axisArray)
-            => CurPriPolyline(nPoints, pointArray, bulgeArray, axisArray);
+        public void Polyline(int nPoints, MC.Vector[] pointArray, double[] bulgeArray, MC.Vector[] axisArray)
+            => MC.CurPriPolyline(nPoints, pointArray, bulgeArray, axisArray);
 
         /// <param name="options">"method=vertices" または "method=midpoints"</param>
         public void SmoothLine(bool copy = false, string options = "method=vertices")
-            => CurPriSmoothLine(copy, options);
+            => MC.CurPriSmoothLine(copy, options);
 
-        public void Trim(Vector fromPos, Vector toPos)
-            => CurPriTrim(fromPos, toPos);
+        public void Trim(MC.Vector fromPos, MC.Vector toPos)
+            => MC.CurPriTrim(fromPos, toPos);
 
-        public Tuple<double, Vector> GetBulge(int i)
+        public Tuple<double, MC.Vector> GetBulge(int i)
         {
-            Vector axis;
+            MC.Vector axis;
             double bulge;
-            GetCurPriBulge(i, out axis, out bulge);
+            MC.GetCurPriBulge(i, out axis, out bulge);
             return Tuple.Create(bulge, axis);
         }
 
@@ -196,43 +203,43 @@ namespace YunoCad
             get
             {
                 double length;
-                GetCurPriLen(out length);
+                MC.GetCurPriLen(out length);
                 return length;
             }
         }
 
-        public int NumberOfPoints => GetCurPriNP();
+        public int NumberOfPoints => MC.GetCurPriNP();
 
-        public Vector Pt(int i)
+        public MC.Vector Pt(int i)
         {
-            Vector vec;
-            GetCurPriPt(i, out vec);
+            MC.Vector vec;
+            MC.GetCurPriPt(i, out vec);
             return vec;
         }
 
-        public Vector[] Pts()
+        public MC.Vector[] Pts()
         {
             var np = NumberOfPoints;
-            var points = new Vector[np];
-            GetCurPriPts(np, points);
+            var points = new MC.Vector[np];
+            MC.GetCurPriPts(np, points);
             return points;
         }
 
-        public Tuple<Vector[], double[], Vector[]> PolylinePts(int start, int nPoints, Vector[] pointArray, double[] bulgeArray, Vector[] axisArray)
+        public Tuple<MC.Vector[], double[], MC.Vector[]> PolylinePts(int start, int nPoints, MC.Vector[] pointArray, double[] bulgeArray, MC.Vector[] axisArray)
         {
-            GetPolylinePts(start, nPoints, pointArray, bulgeArray, axisArray);
+            MC.GetPolylinePts(start, nPoints, pointArray, bulgeArray, axisArray);
             return Tuple.Create(pointArray, bulgeArray, axisArray);
         }
 
         /// <param name="whereAdd">頂点を追加する線分（1～）、あるいはVertexAt.Start、VertexAt.Endのいずれか</param>
-        public void VertexAdd(int whereAdd, Vector pos, bool redraw = true)
-            => Cad.VertexAdd(whereAdd, pos, redraw);
+        public void VertexAdd(int whereAdd, MC.Vector pos, bool redraw = true)
+            => MC.VertexAdd(whereAdd, pos, redraw);
 
         public void VertexDelete(int vertex, bool redraw = true)
-            => Cad.VertexDelete(vertex, redraw);
+            => MC.VertexDelete(vertex, redraw);
 
-        public void VertexMove(int vertex, Vector pos, bool redraw = true)
-            => Cad.VertexMove(vertex, pos, redraw);
+        public void VertexMove(int vertex, MC.Vector pos, bool redraw = true)
+            => MC.VertexMove(vertex, pos, redraw);
     }
 
     public class CurrentClumpMeshPrimitive : CurrentPrimitive
@@ -246,10 +253,10 @@ namespace YunoCad
             get
             {
                 double smooth;
-                GetCurPriSmooth(out smooth);
+                MC.GetCurPriSmooth(out smooth);
                 return smooth;
             }
-            set { CurPriSmooth(value); }
+            set { MC.CurPriSmooth(value); }
         }
     }
 
@@ -264,7 +271,7 @@ namespace YunoCad
             get
             {
                 double volume;
-                GetCurPriVolume(out volume);
+                MC.GetCurPriVolume(out volume);
                 return volume;
             }
         }
@@ -284,7 +291,7 @@ namespace YunoCad
             get
             {
                 var text = "";
-                Cad.GetCurPriExpandedText(out text);
+                MC.GetCurPriExpandedText(out text);
                 return text;
             }
         }
@@ -292,13 +299,13 @@ namespace YunoCad
         public string FormattedText(string options = DefaultGetFormattedTextOptions)
         {
             var text = "";
-            Cad.GetCurPriFormattedText(out text, options);
+            MC.GetCurPriFormattedText(out text, options);
             return text;
         }
 
         public void FormattedText(string text, string options = DefaultSetFormattedTextOptions)
         {
-            Cad.CurPriFormattedText(text, options);
+            MC.CurPriFormattedText(text, options);
         }
 
         public string Text
@@ -306,55 +313,55 @@ namespace YunoCad
             get
             {
                 var text = "";
-                GetCurPriText(out text);
+                MC.GetCurPriText(out text);
                 return text;
             }
-            set { CurPriText(value); }
+            set { MC.CurPriText(value); }
         }
 
-        public Tuple<Axes, double> Axes
+        public Tuple<MC.Axes, double> Axes
         {
             get
             {
-                Axes axes;
+                MC.Axes axes;
                 double yFactor;
-                GetCurPriTextAxes(out axes, out yFactor);
+                MC.GetCurPriTextAxes(out axes, out yFactor);
                 return Tuple.Create(axes, yFactor);
             }
-            set { CurPriTextAxes(value.Item1, value.Item2); }
+            set { MC.CurPriTextAxes(value.Item1, value.Item2); }
         }
 
         public string TextPropertyDirection()
         {
             var value = "";
-            GetCurPriTextProperty("DIRECTION", out value);
+            MC.GetCurPriTextProperty("DIRECTION", out value);
             return value;
         }
 
         public string TextPropertyLinestyle()
         {
             var value = "";
-            GetCurPriTextProperty("LINESTYLE", out value);
+            MC.GetCurPriTextProperty("LINESTYLE", out value);
             return value;
         }
 
         public string TextPropertyPoint()
         {
             var value = "";
-            GetCurPriTextProperty("POINT", out value);
+            MC.GetCurPriTextProperty("POINT", out value);
             return value;
         }
 
         public string TextPropertyJustification()
         {
             var value = "";
-            GetCurPriTextProperty("JUSTIFICATION", out value);
+            MC.GetCurPriTextProperty("JUSTIFICATION", out value);
             return value;
         }
 
         public void TextProperty(string options)
         {
-            CurPriTextProperty(options);
+            MC.CurPriTextProperty(options);
         }
     }
 
@@ -364,16 +371,16 @@ namespace YunoCad
 
         CurrentLinePrimitive() { }
 
-        public void Break(Vector atPos) => CurPriBreak(atPos);
+        public void Break(MC.Vector atPos) => MC.CurPriBreak(atPos);
 
-        public void Glue(PriTriple otherPrimitive)
-            => CurPriGlue(otherPrimitive.llink, otherPrimitive.vlink, otherPrimitive.plink);
+        public void Glue(MC.PriTriple otherPrimitive)
+            => MC.CurPriGlue(otherPrimitive.llink, otherPrimitive.vlink, otherPrimitive.plink);
 
-        public void Intersect(Vector fromPos, PriTriple otherPrimitive, Vector toPos)
-            => CurPriIntersect(fromPos, otherPrimitive.llink, otherPrimitive.vlink, otherPrimitive.plink, toPos);
+        public void Intersect(MC.Vector fromPos, MC.PriTriple otherPrimitive, MC.Vector toPos)
+            => MC.CurPriIntersect(fromPos, otherPrimitive.llink, otherPrimitive.vlink, otherPrimitive.plink, toPos);
 
-        public void Join(Vector fromPos, PriTriple otherPrimitive, Vector toPos)
-            => CurPriJoin(fromPos, otherPrimitive.llink, otherPrimitive.vlink, otherPrimitive.plink, toPos);
+        public void Join(MC.Vector fromPos, MC.PriTriple otherPrimitive, MC.Vector toPos)
+            => MC.CurPriJoin(fromPos, otherPrimitive.llink, otherPrimitive.vlink, otherPrimitive.plink, toPos);
     }
 
     public class CurrentOlePrimitive : CurrentLineOrPhotePrimitive

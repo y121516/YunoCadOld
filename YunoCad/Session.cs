@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Informatix.MGDS;
+using M = Informatix.MGDS;
+using MC = Informatix.MGDS.Cad;
 
-namespace YunoCad
+namespace Yuno.Cad
 {
     /// <summary>
     /// セッション (実行中の MicroGDS のプロセス) を表すクラス。
@@ -12,30 +11,9 @@ namespace YunoCad
     {
         public const int DefaultTimeoutMillisecond = 30 * 1000;
 
-        public static Session Start(StartFileType fileType = StartFileType.MAN, int timeoutMillisecond = DefaultTimeoutMillisecond)
+        public static Session Start(M.StartFileType fileType = M.StartFileType.MAN, int timeoutMillisecond = DefaultTimeoutMillisecond)
         {
-            return new Session(Cad.StartMicroGDS(fileType, timeoutMillisecond));
-        }
-
-        public static Session Any { get; } = new Session(Informatix.MGDS.Conversation.AnySession);
-
-        public static int Count
-        {
-            get
-            {
-                return Cad.GetSessionCount();
-            }
-        }
-
-        public static IEnumerable<Session> Sessions
-        {
-            get
-            {
-                var maxSessionIDs = Count;
-                var sessionIDArray = new int[maxSessionIDs];
-                Cad.GetSessionIDs(sessionIDArray, maxSessionIDs);
-                return sessionIDArray.Select(session => new Session(session));
-            }
+            return new Session(MC.StartMicroGDS(fileType, timeoutMillisecond));
         }
 
         public int ID { get; }
@@ -54,15 +32,15 @@ namespace YunoCad
         public static bool operator ==(Session a, Session b) => ReferenceEquals(a, b) || (a?.Equals(b) ?? false);
         public static bool operator !=(Session a, Session b) => !(a == b);
 
-        public void Exit(Save drawing = Save.Prompt, Save preference = Save.Prompt, int conversationTimeoutMillisecond = Conversation.DefaultTimeoutMillisecond)
+        public void Exit(M.Save drawing = M.Save.Prompt, M.Save preference = M.Save.Prompt, int conversationTimeoutMillisecond = Conversation.DefaultTimeoutMillisecond)
         {
-            using (var c = new Informatix.MGDS.Conversation())
+            using (var c = new M.Conversation())
             {
                 c.Start(ID, conversationTimeoutMillisecond);
-                Cad.Exit(drawing, preference);
+                MC.Exit(drawing, preference);
             }
         }
 
-        public void DontSaveExit(int conversationTimeoutMillisecond = Conversation.DefaultTimeoutMillisecond) => Exit(Save.DoNotSave, Save.DoNotSave, conversationTimeoutMillisecond);
+        public void DontSaveExit(int conversationTimeoutMillisecond = Conversation.DefaultTimeoutMillisecond) => Exit(M.Save.DoNotSave, M.Save.DoNotSave, conversationTimeoutMillisecond);
     }
 }

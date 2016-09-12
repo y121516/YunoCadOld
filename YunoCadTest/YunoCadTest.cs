@@ -382,10 +382,20 @@ namespace YunoCadTest
         {
             Session.Any.Converse(cs =>
             {
-                foreach (var d in cs.Documents.Scan().Take(1))
+                foreach (var d in cs.Documents.Scan().Take(1).Select(d=>d.Activate().Resynch()))
                 {
-                    var doc = d.Activate().Resynch();
-
+                    var se = d.SetEdit;
+                    var ls1 = SE.LineStyle.All;
+                    var ls2 = SE.LineStyle.Not.All;
+                    var ls1 = SE.LineStyle("hoge");
+                    var ls2 = SE.LineStyleNot("hoge");
+                    se.LineStyle = false;
+                }
+                {
+                    var ib = cs.InfoBar;
+                    { var a = ib.HoverHighlight; ib.HoverHighlight = !a; }
+                    { var a = ib.SnapGuides; ib.SnapGuides = !a; }
+                    { var a = ib.ZLock; ib.ZLock = !a; }
                 }
             });
         }
