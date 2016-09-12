@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MGDS = Informatix.MGDS;
-using YunoCad;
+using Yuno.Cad;
 
 namespace YunoCadTest
 {
@@ -15,19 +15,19 @@ namespace YunoCadTest
         [TestInitialize]
         public void Initialize()
         {
-            prevSessions = Session.Sessions;
+            prevSessions = YunoCad.Sessions;
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            foreach (var session in Session.Sessions.Except(prevSessions)) session.DontSaveExit();
+            foreach (var session in YunoCad.Sessions.Except(prevSessions)) session.DontSaveExit();
         }
 
         [TestMethod]
         public void IDTest()
         {
-            Assert.AreEqual(Session.Any.ID, MGDS.Conversation.AnySession);
+            Assert.AreEqual(Sessions.Any.ID, MGDS.Conversation.AnySession);
             Assert.AreEqual(new Session(1).ID, 1);
             Assert.AreEqual(new Session(2).ID, 2);
         }
@@ -206,7 +206,7 @@ namespace YunoCadTest
                 Session.Start(timeoutMillisecond: 50 * 1000),
                 Session.Start(MGDS.StartFileType.DWG, 50 * 1000)
             };
-            CollectionAssert.IsSubsetOf(sessions, Session.Sessions.ToArray());
+            CollectionAssert.IsSubsetOf(sessions, YunoCad.Sessions.ToArray());
         }
     }
 
@@ -316,7 +316,7 @@ namespace YunoCadTest
         [TestMethod]
         public void MenuItemTest()
         {
-            Session.Any.Converse(cs =>
+            Sessions.Any.Converse(cs =>
             {
                 var addName = @"{/pa}&Parent\Child&Add";
                 var addItem = new MenuItem(addName);
@@ -357,7 +357,7 @@ namespace YunoCadTest
         [TestMethod]
         public void Test()
         {
-            Session.Any.Converse(cs =>
+            Sessions.Any.Converse(cs =>
             {
                 foreach (var doc in cs.Documents.Scan().Take(1))
                 {
@@ -380,16 +380,16 @@ namespace YunoCadTest
         [TestMethod]
         public void Test()
         {
-            Session.Any.Converse(cs =>
+            Sessions.Any.Converse(cs =>
             {
-                foreach (var d in cs.Documents.Scan().Take(1).Select(d=>d.Activate().Resynch()))
+                foreach (var d in cs.Documents.Scan().Take(1).Select(d => d.Activate().Resynch()))
                 {
-                    var se = d.SetEdit;
-                    var ls1 = SE.LineStyle.All;
-                    var ls2 = SE.LineStyle.Not.All;
-                    var ls1 = SE.LineStyle("hoge");
-                    var ls2 = SE.LineStyleNot("hoge");
-                    se.LineStyle = false;
+                    //var se = d.SetEdit;
+                    //var ls1 = se.LineStyle.All;
+                    //var ls2 = se.LineStyle.Not.All;
+                    //ls1 = se.LineStyle("hoge");
+                    //ls2 = se.LineStyleNot("hoge");
+                    //se.LineStyle = false;
                 }
                 {
                     var ib = cs.InfoBar;

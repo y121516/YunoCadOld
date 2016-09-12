@@ -1542,7 +1542,16 @@ namespace MGDSNetDllTest
         [TestMethod]
         public void GetSystemTypeTest() { Assert.Fail("Not implemented"); }
         [TestMethod]
-        public void GetTitleTest() { Assert.Fail("Not implemented"); }
+        public void GetTitleTest()
+        {
+            string title;
+            ThrowsCadException(NoConversation, () => GetTitle(out title));
+            Converse(() =>
+            {
+                GetTitle(out title);
+                Assert.AreEqual("MicroGDS Standard 11.3", title);
+            });
+        }
         [TestMethod]
         public void GetViewNudgeModeTest() { Assert.Fail("Not implemented"); }
         [TestMethod]

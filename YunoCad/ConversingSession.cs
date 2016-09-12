@@ -19,5 +19,15 @@ namespace Yuno.Cad
 
         public void Echo(string echoStr) => MC.Echo(echoStr);
         public void Prompt(string promptStr) => MC.Prompt(promptStr);
+
+        public string Title
+        {
+            get
+            {
+                string title;
+                MC.GetTitle(out title);
+                return title;
+            }
+        }
     }
 }
