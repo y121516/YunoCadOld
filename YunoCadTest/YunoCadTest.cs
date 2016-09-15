@@ -400,4 +400,23 @@ namespace YunoCadTest
             });
         }
     }
+
+    [TestClass]
+    public class SyntaxText
+    {
+        [TestMethod]
+        public void Test()
+        {
+            Sessions.Any.Converse(cs =>
+            {
+                foreach(var nameAndLink in cs.Documents.Scan().Select(d => d.Activate().Resynch())
+                    .SelectMany(d => d.Layers.Scan()))
+                {
+                    var name = nameAndLink.Item1;
+                    var link = nameAndLink.Item2;
+                    Informatix.MGDS.Cad.CurLayLink(link);
+                }
+            });
+        }
+    }
 }

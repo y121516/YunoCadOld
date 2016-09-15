@@ -80,6 +80,8 @@ namespace Yuno.Cad
                 } while (MC.PrimNext());
             }
         }
+
+        public int Count => MC.GetPriCount();
     }
 
     public class CurrentPrimitive
@@ -373,7 +375,7 @@ namespace Yuno.Cad
         }
 
         public TextProperty TextProperty { get; } = TextProperty.Instance;
-
+        
 
         /// <summary>
         /// カレントのテキストプリミティブの1行のサイズ。サイズが設定されていない場合は、0。
