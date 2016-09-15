@@ -282,6 +282,16 @@ namespace Yuno.Cad
             }
             set { MC.CurPriSmooth(value); }
         }
+
+        public double SurfArea
+        {
+            get
+            {
+                double area;
+                MC.GetCurPriSurfArea(out area);
+                return area;
+            }
+        }
     }
 
     public class CurrentClumpMeshPrimitive : CurrentClumpPrimitive
