@@ -182,7 +182,7 @@ namespace Yuno.Cad
             return CurrentDocument.Instance;
         }
 
-        public bool IsMirroed => MC.IsCurPriMirrored();
+        public bool IsMirrored => MC.IsCurPriMirrored();
         public bool IsReadOnlyInstance => MC.IsCurPrimReadonly() == M.Primitive.ReadOnly;
         public bool IsSelected => MC.IsCurPriSelected();
 
