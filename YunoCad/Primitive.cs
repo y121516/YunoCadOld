@@ -169,6 +169,18 @@ namespace Yuno.Cad
         public void Move(MC.Vector from, MC.Vector moveTo, bool copy = false, double byScale = 1, double radianRotation = 0)
             => MC.CurPriMove(copy, from, moveTo, byScale, radianRotation);
 
+        const string DefaultPhasesStatusEHVI = "";
+
+        public int PhasesWith(int[] phases, int maxPhases, string statusEHVI = DefaultPhasesStatusEHVI)
+        {
+            return MC.GetCurPriPhases(statusEHVI, maxPhases, phases);
+        }
+
+        public int PhasesWith(int[] phases, string statusEHVI = DefaultPhasesStatusEHVI)
+        {
+            return PhasesWith(phases, phases.Length, statusEHVI);
+        }
+
         public void Rotate(MC.Vector radianOrient) => MC.CurPriRotate(radianOrient);
 
         public CurrentDocument Reset()
