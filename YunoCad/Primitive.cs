@@ -125,6 +125,20 @@ namespace Yuno.Cad
             set { MC.CurPriLinestyle(value); }
         }
 
+        // TODO: 呼び出すAPIの仕様の確認が必要
+        public string Style
+        {
+            // プリミティブの種類（線、テキスト、クランプ）に応じて、カレントのプリミティブの線種、文字種、マテリアルのいずれかを設定します。
+            get
+            {
+                string style;
+                MC.GetCurPriStyle(out style);
+                return style;
+            }
+            // カレントのプリミティブに設定されている、線種、文字種、マテリアルのいずれかを返します。
+            set { MC.CurPriStyle(value); }
+        }
+
         /// <summary>
         /// 次のいずれか。
         /// "CLUMP MESH", "CLUMP SOLID", "TEXT", "LINE", "OLE", "PHOTO", "RASTER", "NONE", "UNKNOWN"
@@ -175,6 +189,7 @@ namespace Yuno.Cad
             => MC.SelectRemove();
     }
 
+    // 線、フォト、ラスター、OLE
     public class CurrentLineOrPhotePrimitive : CurrentPrimitive
     {
         public void Polyline(int nPoints, MC.Vector[] pointArray)
@@ -242,11 +257,9 @@ namespace Yuno.Cad
             => MC.VertexMove(vertex, pos, redraw);
     }
 
-    public class CurrentClumpMeshPrimitive : CurrentPrimitive
+    public class CurrentClumpPrimitive : CurrentPrimitive
     {
-        internal new static CurrentClumpMeshPrimitive Instance { get; } = new CurrentClumpMeshPrimitive();
-
-        CurrentClumpMeshPrimitive() { }
+        protected CurrentClumpPrimitive() { }
 
         public double Smooth
         {
@@ -260,7 +273,14 @@ namespace Yuno.Cad
         }
     }
 
-    public class CurrentClumpSolidPrimitive : CurrentPrimitive
+    public class CurrentClumpMeshPrimitive : CurrentClumpPrimitive
+    {
+        internal new static CurrentClumpMeshPrimitive Instance { get; } = new CurrentClumpMeshPrimitive();
+
+        CurrentClumpMeshPrimitive() { }
+    }
+
+    public class CurrentClumpSolidPrimitive : CurrentClumpPrimitive
     {
         internal new static CurrentClumpSolidPrimitive Instance { get; } = new CurrentClumpSolidPrimitive();
 
