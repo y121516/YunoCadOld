@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aliases.cs" />
-    <Compile Include="Colour.cs" />
+    <Compile Include="Color.cs" />
     <Compile Include="ConversingSession.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="InfoBar.cs" />
@@ -55,6 +55,7 @@
     <Compile Include="Mnemonic.cs" />
     <Compile Include="Object.cs" />
     <Compile Include="Phase.cs" />
+    <Compile Include="Preference.cs" />
     <Compile Include="Primitive.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Session.cs" />
