@@ -103,6 +103,16 @@ namespace Yuno.Cad
         public int ObjectLink => MC.GetCurObjLink();
         public int PrimitiveLink => MC.GetCurPriLink();
 
+        public Tuple<MC.Vector, MC.Vector> Extent3D
+        {
+            get
+            {
+                MC.Vector pt1, pt2;
+                MC.GetCurPri3DExtent(out pt1, out pt2);
+                return Tuple.Create(pt1, pt2);
+            }
+        }
+
         // 閉じたプリミティブ
         public double Area
         {
