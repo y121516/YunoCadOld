@@ -164,20 +164,6 @@ namespace Yuno.Cad
             return CurrentDocument.Instance;
         }
 
-
-
-        // todo: text primitive only?
-        public double Wrap
-        {
-            get
-            {
-                double wrap;
-                MC.GetCurPriWrap(out wrap);
-                return wrap;
-            }
-            set { MC.CurPriWrap(value); }
-        }
-
         public bool IsMirroed => MC.IsCurPriMirrored();
         public bool IsReadOnlyInstance => MC.IsCurPrimReadonly() == M.Primitive.ReadOnly;
         public bool IsSelected => MC.IsCurPriSelected();
@@ -382,6 +368,20 @@ namespace Yuno.Cad
         public void TextProperty(string options)
         {
             MC.CurPriTextProperty(options);
+        }
+
+        /// <summary>
+        /// カレントのテキストプリミティブの1行のサイズ。サイズが設定されていない場合は、0。
+        /// </summary>
+        public double Wrap
+        {
+            get
+            {
+                double wrap;
+                MC.GetCurPriWrap(out wrap);
+                return wrap;
+            }
+            set { MC.CurPriWrap(value); }
         }
     }
 
