@@ -372,38 +372,8 @@ namespace Yuno.Cad
             set { MC.CurPriTextAxes(value.Item1, value.Item2); }
         }
 
-        public string TextPropertyDirection()
-        {
-            var value = "";
-            MC.GetCurPriTextProperty("DIRECTION", out value);
-            return value;
-        }
+        public TextProperty TextProperty { get; } = TextProperty.Instance;
 
-        public string TextPropertyLinestyle()
-        {
-            var value = "";
-            MC.GetCurPriTextProperty("LINESTYLE", out value);
-            return value;
-        }
-
-        public string TextPropertyPoint()
-        {
-            var value = "";
-            MC.GetCurPriTextProperty("POINT", out value);
-            return value;
-        }
-
-        public string TextPropertyJustification()
-        {
-            var value = "";
-            MC.GetCurPriTextProperty("JUSTIFICATION", out value);
-            return value;
-        }
-
-        public void TextProperty(string options)
-        {
-            MC.CurPriTextProperty(options);
-        }
 
         /// <summary>
         /// カレントのテキストプリミティブの1行のサイズ。サイズが設定されていない場合は、0。
@@ -417,6 +387,86 @@ namespace Yuno.Cad
                 return wrap;
             }
             set { MC.CurPriWrap(value); }
+        }
+    }
+
+    public class TextProperty
+    {
+        internal static TextProperty Instance { get; } = new TextProperty();
+        private TextProperty() { }
+
+        public string this[string index]
+        {
+            get
+            {
+                string value;
+                MC.GetCurPriTextProperty(index, out value);
+                return value;
+            }
+            set { MC.CurPriTextProperty($"{index}={value}"); }
+        }
+
+        /// <summary>
+        /// 次のいずれか。
+        /// "Horizontal" (横書き), "VerticalRightToLeft" (縦書き・右から左へ), "VerticalLeftToRight" (縦書き・左から右へ)
+        /// </summary>
+        public string Direction
+        {
+            get
+            {
+                return this["DIRECTION"];
+            }
+            set
+            {
+                this["DIRECTION"] = value;
+            }
+        }
+
+        /// <summary>
+        /// テキストの囲み線の線種。空白の文字列を指定すると、線種は設定されません。
+        /// </summary>
+        public string LineStyle
+        {
+            get
+            {
+                return this["LINESTYLE"];
+            }
+            set
+            {
+                this["LINESTYLE"] = value;
+            }
+        }
+
+        /// <summary>
+        /// 調整点のみをスナップできるようにするかどうかの設定。YesあるいはNo
+        /// </summary>
+        public string Point
+        {
+            get
+            {
+                return this["POINT"];
+            }
+            set
+            {
+                this["POINT"] = value;
+            }
+        }
+
+        /// <summary>
+        /// 調整点は、垂直方向の調整点と水平方向の調整点の位置を示す２文字で表されます。
+        /// 最初の文字 T（Top）、C（Centre）、B（Bottom）のいずれか
+        /// ２番目の文字 L（Left）、C（Centre）、R（Right）のいずれか
+        /// </summary>
+        public string Justification
+        {
+            get
+            {
+                return this["JUSTIFICATION"];
+            }
+            set
+            {
+                this["JUSTIFICATION"] = value;
+            }
         }
     }
 
