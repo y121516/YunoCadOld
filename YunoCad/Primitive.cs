@@ -59,29 +59,20 @@ namespace Yuno.Cad
         }
     }
 
-
-
     public class Primitives
     {
         internal static Primitives Instance { get; } = new Primitives();
 
         Primitives() { }
 
-        const string DefaultScanEH = "E";
+        public int[] Links => MC.GetPriLinks();
 
-        //カレントのレイヤ、オブジェクトは変更されません。カレントオブジェクトがアセンブリオブジェクトの場合は、プリミティブは返されません。
-        public IEnumerable<CurrentPrimitive> Scan(string scanEH = DefaultScanEH)
-        {
-            if (MC.PrimScan(scanEH))
-            {
-                do
-                {
-                    yield return Primitive.GetCurrentPrimitive();
-                } while (MC.PrimNext());
-            }
-        }
+        public int GetLinks(int[] links, int maxLinks)
+            => MC.GetPriLinks(links, maxLinks);
+        public int GetLinks(int[] links)
+            => GetLinks(links, links.Length);
 
-        public int Count => MC.GetPriCount();
+        public int Length => MC.GetPriCount();
     }
 
     public class CurrentPrimitive
@@ -375,7 +366,7 @@ namespace Yuno.Cad
         }
 
         public TextProperty TextProperty { get; } = TextProperty.Instance;
-        
+
 
         /// <summary>
         /// カレントのテキストプリミティブの1行のサイズ。サイズが設定されていない場合は、0。

@@ -50,6 +50,20 @@ namespace Yuno.Cad
 
         public Primitives Primitives { get; } = Primitives.Instance;
 
+        const string DefaultScanEH = "E";
+
+        //カレントのレイヤ、オブジェクトは変更されません。カレントオブジェクトがアセンブリオブジェクトの場合は、プリミティブは返されません。
+        public IEnumerable<CurrentPrimitive> Scan(string scanEH = DefaultScanEH)
+        {
+            if (MC.PrimScan(scanEH))
+            {
+                do
+                {
+                    yield return Primitive.GetCurrentPrimitive();
+                } while (MC.PrimNext());
+            }
+        }
+
         public void ResetObject()
         {
             MC.ResetObject();
