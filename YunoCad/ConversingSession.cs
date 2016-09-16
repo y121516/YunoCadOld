@@ -30,5 +30,10 @@ namespace Yuno.Cad
                 return title;
             }
         }
+
+        public M.ScreenUpdate ScreenUpdateMode
+        {
+            set { MC.ScreenUpdateMode(value); }
+        }
     }
 }
