@@ -72,7 +72,7 @@ namespace Yuno.Cad
         public int GetLinks(int[] links)
             => GetLinks(links, links.Length);
 
-        public int Length => MC.GetPriCount();
+        public int Count => MC.GetPriCount();
     }
 
     public class CurrentPrimitive
