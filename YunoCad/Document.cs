@@ -238,6 +238,15 @@ namespace Yuno.Cad
             }
             set { MC.SetUnits(value.Item1, value.Item2); }
         }
+
+        /// <summary>
+        /// カーソルのリソースが含まれているファイル名（絶対パス）。
+        /// 空の文字列を指定すると、ユーザー定義のカーソルはすべて削除されます。
+        /// </summary>
+        public string CursorFullPath
+        {
+            set { MC.SetCursorFromFile(value); }
+        }
     }
 
     /// <summary>
