@@ -247,6 +247,20 @@ namespace Yuno.Cad
         {
             set { MC.SetCursorFromFile(value); }
         }
+
+        const string StylePathSeparator = ";";
+        public string[] StylePaths
+        {
+            get
+            {
+                string paths;
+                MC.GetStylePath(out paths);
+                return string.IsNullOrEmpty(paths?.Trim().Trim(StylePathSeparator[0]))
+                    ? new string[0]
+                    : paths.Split(StylePathSeparator[0]);
+            }
+            set { MC.StylePath(string.Join(StylePathSeparator, value)); }
+        }
     }
 
     /// <summary>
