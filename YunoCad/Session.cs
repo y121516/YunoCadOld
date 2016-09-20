@@ -18,7 +18,7 @@ namespace Yuno.Cad
 
         public int ID { get; }
 
-        public Session(int sessionID)
+        internal Session(int sessionID)
         {
             ID = sessionID;
         }

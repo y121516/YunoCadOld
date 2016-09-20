@@ -28,8 +28,6 @@ namespace YunoCadTest
         public void IDTest()
         {
             Assert.AreEqual(Sessions.Any.ID, MGDS.Conversation.AnySession);
-            Assert.AreEqual(new Session(1).ID, 1);
-            Assert.AreEqual(new Session(2).ID, 2);
         }
 
         public void EqualsSessionTest(Session x, Session y, Session z)
@@ -62,113 +60,6 @@ namespace YunoCadTest
         {
             EqualsSessionTest(x, y, z);
             EqualsObjectTest(x, y, z);
-        }
-
-        [TestMethod]
-        public void EqualsTest()
-        {
-            var x = new Session(1);
-            {
-                var y = x;
-                {
-                    var z = x;
-                    EqualsTest(x, y, z);
-                }
-                {
-                    var z = new Session(1);
-                    EqualsTest(x, y, z);
-                }
-                {
-                    var z = new Session(2);
-                    EqualsTest(x, y, z);
-                }
-            }
-            {
-                var y = new Session(1);
-                {
-                    var z = x;
-                    EqualsTest(x, y, z);
-                }
-                {
-                    var z = y;
-                    EqualsTest(x, y, z);
-                }
-                {
-                    var z = new Session(1);
-                    EqualsTest(x, y, z);
-                }
-                {
-                    var z = new Session(2);
-                    EqualsTest(x, y, z);
-                }
-            }
-            {
-                var y = new Session(2);
-                {
-                    var z = x;
-                    EqualsTest(x, y, z);
-                }
-                {
-                    var z = y;
-                    EqualsTest(x, y, z);
-                }
-                {
-                    var z = new Session(1);
-                    EqualsTest(x, y, z);
-                }
-                {
-                    var z = new Session(2);
-                    EqualsTest(x, y, z);
-                }
-            }
-        }
-
-        [TestMethod]
-        public void OperatorEqualTest()
-        {
-            {
-                var a = (Session)null;
-                {
-                    var b = (Session)null;
-                    Assert.IsTrue(a == b);
-                    Assert.IsFalse(a != b);
-                }
-                {
-                    var b = new Session(1);
-                    Assert.IsFalse(a == b);
-                    Assert.IsTrue(a != b);
-                }
-            }
-            {
-                var a = new Session(1);
-                {
-                    var b = (Session)null;
-                    Assert.IsFalse(a == b);
-                    Assert.IsTrue(a != b);
-                }
-                {
-                    var b = new Session(1);
-                    Assert.IsTrue(a == b);
-                    Assert.IsFalse(a != b);
-                }
-                {
-                    var b = new Session(2);
-                    Assert.IsFalse(a == b);
-                    Assert.IsTrue(a != b);
-                }
-            }
-        }
-
-        [TestMethod]
-        public void GetHashCodeTest()
-        {
-            var a = new Session(1);
-            var b = a;
-            Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
-            b = new Session(1);
-            Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
-            b = new Session(2);
-            Assert.AreNotEqual(a.GetHashCode(), b.GetHashCode());
         }
 
         [TestMethod]
