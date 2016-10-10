@@ -49,6 +49,7 @@
     <Compile Include="Color.cs" />
     <Compile Include="ConversingSession.cs" />
     <Compile Include="Document.cs" />
+    <Compile Include="File.cs" />
     <Compile Include="InfoBar.cs" />
     <Compile Include="Layer.cs" />
     <Compile Include="Menu.cs" />
