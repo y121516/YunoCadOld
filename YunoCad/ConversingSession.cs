@@ -36,5 +36,22 @@ namespace Yuno.Cad
         {
             set { MC.ScreenUpdateMode(value); }
         }
+
+        public SystemVersion Version
+        {
+            get
+            {
+                SystemVersion v;
+                v.SystemType = MC.GetSystemType(out v.Major, out v.Minor);
+                return v;
+            }
+        }
+    }
+
+    public struct SystemVersion
+    {
+        public int Major;
+        public int Minor;
+        public M.Sys SystemType;
     }
 }
