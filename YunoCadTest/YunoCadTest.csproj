@@ -35,9 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MGDSNet, Version=8.0.3385.22965, Culture=neutral, PublicKeyToken=331b4a25733fc606, processorArchitecture=MSIL">
+    <Reference Include="MGDSNet, Version=8.0.4920.0, Culture=neutral, PublicKeyToken=331b4a25733fc606, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Informatix\MicroGDS 11.3\Assemblies\MGDSNet.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files\Informatix\MicroGDS 11.3\Assemblies\MGDSNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
