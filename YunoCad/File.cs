@@ -13,14 +13,34 @@ namespace Yuno.Cad
         internal static File Instance { get; } = new File();
         private File() { }
 
-        public void OpenMan(string manFile, bool isReadOnly = false)
-        {
-            MC.OpenMANFile(manFile, isReadOnly);
-        }
-
         public void Close(M.Save drawing = M.Save.Prompt)
         {
             MC.CloseFile(drawing);
+        }
+
+        public void Create()
+        {
+            MC.CreateFile();
+        }
+
+        public void CreateMan()
+        {
+            MC.CreateMANFile();
+        }
+
+        public void Import(string fileName, M.ConfirmFileImport prompt)
+        {
+            MC.ImportFile(fileName, prompt);
+        }
+
+        public void Open(string fileName)
+        {
+            MC.OpenFile(fileName);
+        }
+
+        public void OpenMan(string manFile, bool isReadOnly = false)
+        {
+            MC.OpenMANFile(manFile, isReadOnly);
         }
     }
 }
