@@ -46,6 +46,8 @@ namespace Yuno.Cad
                 return v;
             }
         }
+
+        void KillInteractiveCommand() => MC.KillInteractiveCmd();
     }
 
     public struct SystemVersion
