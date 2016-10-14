@@ -261,6 +261,17 @@ namespace Yuno.Cad
             }
             set { MC.StylePath(string.Join(StylePathSeparator, value)); }
         }
+
+        // 実装場所は再考の必要あり
+        public void Paste()
+        {
+            MC.Paste();
+        }
+
+        public void Paste(M.PasteFormat desiredFormat)
+        {
+            MC.PasteSpecial(desiredFormat);
+        }
     }
 
     /// <summary>
