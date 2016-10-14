@@ -75,6 +75,16 @@ namespace Yuno.Cad
             }
         }
 
+        public Tuple<MC.Vector, MC.Vector> Extent3D
+        {
+            get
+            {
+                MC.Vector pt1, pt2;
+                MC.GetCurObj3DExtent(out pt1, out pt2);
+                return Tuple.Create(pt1, pt2);
+            }
+        }
+
         public void Flash() => MC.CurObjFlash();
 
         public MC.Vector Hook
