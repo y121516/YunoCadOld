@@ -94,9 +94,13 @@ namespace Yuno.Cad
         {
             get
             {
-                var name = "";
+                string name;
                 MC.GetCurObjName(out name);
                 return name;
+            }
+            set
+            {
+                MC.CurObjName(value);
             }
         }
 
