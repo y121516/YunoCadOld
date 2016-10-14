@@ -38,6 +38,16 @@ namespace Yuno.Cad
         public int LayerLink => MC.GetCurLayLink();
         public int ObjectLink => MC.GetCurObjLink();
 
+        public double Area
+        {
+            get
+            {
+                double area;
+                MC.GetCurObjArea(out area);
+                return area;
+            }
+        }
+
         /// <summary>
         /// オブジェクトの固有の座標軸を基準とした、オブジェクトの回転の向き。
         /// </summary>
