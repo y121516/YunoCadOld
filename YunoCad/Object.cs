@@ -65,6 +65,20 @@ namespace Yuno.Cad
             }
         }
 
+        public MC.Axes Axes
+        {
+            get
+            {
+                MC.Axes axes;
+                MC.GetObjectAxes(out axes);
+                return axes;
+            }
+            set
+            {
+                MC.ObjectAxes(ref value);
+            }
+        }
+
         public Tuple<double, double, double, double> Extent
         {
             get
