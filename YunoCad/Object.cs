@@ -156,6 +156,16 @@ namespace Yuno.Cad
             }
         }
 
+        public double SurfArea
+        {
+            get
+            {
+                double area;
+                MC.GetCurObjSurfArea(out area);
+                return area;
+            }
+        }
+
         public Primitives Primitives { get; } = Primitives.Instance;
 
         public void ResetObject()
