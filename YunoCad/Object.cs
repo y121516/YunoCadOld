@@ -104,6 +104,8 @@ namespace Yuno.Cad
             }
         }
 
+        public void Rotate(MC.Vector orient) => MC.CurObjRotate(orient);
+
         public Primitives Primitives { get; } = Primitives.Instance;
 
         public void ResetObject()
