@@ -41,6 +41,8 @@ namespace Yuno.Cad
         public void Move(MC.Vector from, MC.Vector moveTo, bool copy = false, double byScale = 1, double radianRotation = 0)
             => MC.CurObjMove(copy, from, moveTo, byScale, radianRotation);
 
+        public void Flash() => MC.CurObjFlash();
+
         /// <summary>
         /// オブジェクトの固有の座標軸を基準とした、オブジェクトの回転の向き。
         /// </summary>
