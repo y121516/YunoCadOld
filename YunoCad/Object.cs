@@ -65,7 +65,7 @@ namespace Yuno.Cad
             }
         }
 
-        public Tuple<double,double,double,double> Extent
+        public Tuple<double, double, double, double> Extent
         {
             get
             {
@@ -145,6 +145,16 @@ namespace Yuno.Cad
         }
 
         public void Rotate(MC.Vector orient) => MC.CurObjRotate(orient);
+
+        public double Scale
+        {
+            get
+            {
+                double scale;
+                MC.GetCurObjScale(out scale);
+                return scale;
+            }
+        }
 
         public Primitives Primitives { get; } = Primitives.Instance;
 
