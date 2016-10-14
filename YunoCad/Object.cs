@@ -166,6 +166,22 @@ namespace Yuno.Cad
             }
         }
 
+        /// <summary>
+        /// "Plain"（通常のオブジェクト）,
+        /// "Instance"（インスタンスオブジェクト）,
+        /// "Assembly"（アセンブリオブジェクト）,
+        /// "Instance Assembly"（インスタンスアセンブリオブジェクト）のいずれか。
+        /// </summary>
+        public string Type
+        {
+            get
+            {
+                string type;
+                MC.GetCurObjType(out type);
+                return type;
+            }
+        }
+
         public Primitives Primitives { get; } = Primitives.Instance;
 
         public void ResetObject()
