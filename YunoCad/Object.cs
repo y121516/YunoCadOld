@@ -71,6 +71,8 @@ namespace Yuno.Cad
             }
         }
 
+        public bool IsVirtual() => MC.CurObjIsVirtual();
+
         public void Move(MC.Vector from, MC.Vector moveTo, bool copy = false, double byScale = 1, double radianRotation = 0)
             => MC.CurObjMove(copy, from, moveTo, byScale, radianRotation);
 
