@@ -65,6 +65,16 @@ namespace Yuno.Cad
             }
         }
 
+        public Tuple<double,double,double,double> Extent
+        {
+            get
+            {
+                double xlo, ylo, xhi, yhi;
+                MC.GetCurObjExtent(out xlo, out ylo, out xhi, out yhi);
+                return Tuple.Create(xlo, ylo, xhi, yhi);
+            }
+        }
+
         public void Flash() => MC.CurObjFlash();
 
         public MC.Vector Hook
