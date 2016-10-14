@@ -182,6 +182,16 @@ namespace Yuno.Cad
             }
         }
 
+        public double Volume
+        {
+            get
+            {
+                double volume;
+                MC.GetCurObjVolume(out volume);
+                return volume;
+            }
+        }
+
         public Primitives Primitives { get; } = Primitives.Instance;
 
         public void ResetObject()
