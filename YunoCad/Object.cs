@@ -38,11 +38,6 @@ namespace Yuno.Cad
         public int LayerLink => MC.GetCurLayLink();
         public int ObjectLink => MC.GetCurObjLink();
 
-        public void Move(MC.Vector from, MC.Vector moveTo, bool copy = false, double byScale = 1, double radianRotation = 0)
-            => MC.CurObjMove(copy, from, moveTo, byScale, radianRotation);
-
-        public void Flash() => MC.CurObjFlash();
-
         /// <summary>
         /// オブジェクトの固有の座標軸を基準とした、オブジェクトの回転の向き。
         /// </summary>
@@ -59,6 +54,25 @@ namespace Yuno.Cad
                 MC.CurObjAxes(value);
             }
         }
+
+        public void Flash() => MC.CurObjFlash();
+
+        public MC.Vector Hook
+        {
+            get
+            {
+                MC.Vector hook;
+                MC.GetCurObjHook(out hook);
+                return hook;
+            }
+            set
+            {
+                MC.CurObjHook(value);
+            }
+        }
+
+        public void Move(MC.Vector from, MC.Vector moveTo, bool copy = false, double byScale = 1, double radianRotation = 0)
+            => MC.CurObjMove(copy, from, moveTo, byScale, radianRotation);
 
         public string Name
         {
