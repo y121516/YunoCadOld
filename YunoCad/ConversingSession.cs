@@ -18,6 +18,7 @@ namespace Yuno.Cad
         public InfoBar InfoBar { get; } = InfoBar.Instance;
         public Preference Preference { get; } = Preference.Instance;
         public File File { get; } = File.Instance;
+        public Printer Printer { get; } = Printer.Instance;
 
         public void Echo(string echoStr) => MC.Echo(echoStr);
         public void Prompt(string promptStr) => MC.Prompt(promptStr);
