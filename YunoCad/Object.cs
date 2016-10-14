@@ -73,6 +73,20 @@ namespace Yuno.Cad
 
         public bool IsVirtual() => MC.CurObjIsVirtual();
 
+        public string Light
+        {
+            get
+            {
+                string light;
+                MC.GetCurObjLight(out light);
+                return light;
+            }
+            set
+            {
+                MC.CurObjLight(value);
+            }
+        }
+
         public void Move(MC.Vector from, MC.Vector moveTo, bool copy = false, double byScale = 1, double radianRotation = 0)
             => MC.CurObjMove(copy, from, moveTo, byScale, radianRotation);
 
