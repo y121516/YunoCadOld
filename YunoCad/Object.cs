@@ -103,6 +103,16 @@ namespace Yuno.Cad
 
         public bool IsVirtual() => MC.CurObjIsVirtual();
 
+        public double Length
+        {
+            get
+            {
+                double length;
+                MC.GetCurObjLen(out length);
+                return length;
+            }
+        }
+
         public string Light
         {
             get
