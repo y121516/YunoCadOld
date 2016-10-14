@@ -38,6 +38,9 @@ namespace Yuno.Cad
         public int LayerLink => MC.GetCurLayLink();
         public int ObjectLink => MC.GetCurObjLink();
 
+        public void Move(MC.Vector from, MC.Vector moveTo, bool copy = false, double byScale = 1, double radianRotation = 0)
+            => MC.CurObjMove(copy, from, moveTo, byScale, radianRotation);
+
         public string Name
         {
             get
