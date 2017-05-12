@@ -332,6 +332,28 @@ namespace Yuno.Cad
                 } while (MC.DocNext(out docID));
             }
         }
+
+        public IEnumerable<ScanActiveDocument> ScanActivate()
+        {
+            if (MC.DocFirst(out string docID))
+            {
+                do
+                {
+                    yield return new ScanDocument(docID).Activate();
+                } while (MC.DocNext(out docID));
+            }
+        }
+
+        public IEnumerable<ScanCurrentDocument> ScanResynch()
+        {
+            if (MC.DocFirst(out string docID))
+            {
+                do
+                {
+                    yield return new ScanDocument(docID).Activate().Resynch();
+                } while (MC.DocNext(out docID));
+            }
+        }
     }
 
     class CurrentSetWnd
