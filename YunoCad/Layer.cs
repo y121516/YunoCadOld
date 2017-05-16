@@ -31,8 +31,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var label = "";
-                MC.GetCurLayLabel(out label);
+                MC.GetCurLayLabel(out string label);
                 return label;
             }
             set { MC.CurLayLabel(value); }
@@ -44,8 +43,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var name = "";
-                MC.GetCurLayName(out name);
+                MC.GetCurLayName(out string name);
                 return name;
             }
             set { MC.CurLayName(value); }
@@ -58,8 +56,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var type = "";
-                MC.GetCurLayType(out type);
+                MC.GetCurLayType(out string type);
                 return type;
             }
         }
@@ -243,8 +240,7 @@ namespace Yuno.Cad
 
         public Tuple<int, int> GetLayerOfParent(int layerLink)
         {
-            int objectLink;
-            var parentLayer = MC.GetLayerOfParent(layerLink, out objectLink);
+            var parentLayer = MC.GetLayerOfParent(layerLink, out int objectLink);
             return Tuple.Create(parentLayer, objectLink);
         }
 
@@ -252,8 +248,7 @@ namespace Yuno.Cad
 
         public string GetPathFromLink(int layerLink)
         {
-            var path = "";
-            MC.LayerPathFromLink(layerLink, out path);
+            MC.LayerPathFromLink(layerLink, out string path);
             return path;
         }
 
@@ -262,9 +257,7 @@ namespace Yuno.Cad
         /// </summary>
         public IEnumerable<Tuple<string, int>> Scan(string scanWild = defaultWildcard)
         {
-            var layerName = "";
-            int layerLink;
-            if (MC.LayerScanStart(scanWild, out layerName, out layerLink))
+            if (MC.LayerScanStart(scanWild, out string layerName, out int layerLink))
             {
                 do
                 {

@@ -27,8 +27,7 @@ namespace Yuno.Cad
         {
             get
             {
-                string title;
-                MC.GetTitle(out title);
+                MC.GetTitle(out string title);
                 return title;
             }
         }

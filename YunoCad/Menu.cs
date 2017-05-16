@@ -14,8 +14,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var fileName = "";
-                MC.GetPrefMenuCfg(out fileName);
+                MC.GetPrefMenuCfg(out string fileName);
                 return fileName;
             }
             set { MC.PrefMenuCfg(value); }
@@ -81,8 +80,7 @@ namespace Yuno.Cad
         {
             get
             {
-                bool isChecked;
-                MC.GetCheckMenuCommand(out isChecked, Name);
+                MC.GetCheckMenuCommand(out bool isChecked, Name);
                 return isChecked;
             }
             set { MC.SetCheckMenuCommand(Name, value); }

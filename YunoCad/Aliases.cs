@@ -13,9 +13,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var path = "";
-                bool expandable;
-                MC.GetAliasDefinition(alias.Type, alias.Name, out path, out expandable);
+                MC.GetAliasDefinition(alias.Type, alias.Name, out string path, out bool expandable);
                 return new AliasInfo(path, expandable);
             }
             set
@@ -45,8 +43,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var name = "";
-                MC.GetSetAlias(Type, out name);
+                MC.GetSetAlias(Type, out string name);
                 return name;
             }
             set { MC.SetAlias(Type, value); }

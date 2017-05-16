@@ -16,8 +16,7 @@ namespace Yuno.Cad
         {
             get
             {
-                string value;
-                MC.GetPrinterSetup(option, out value);
+                MC.GetPrinterSetup(option, out string value);
                 return value;
             }
             set

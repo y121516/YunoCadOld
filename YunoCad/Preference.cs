@@ -25,8 +25,7 @@ namespace Yuno.Cad
         {
             get
             {
-                string path;
-                MC.GetPrefBlankManFile(out path);
+                MC.GetPrefBlankManFile(out string path);
                 return path;
             }
             set { MC.PrefBlankManFile(value); }
@@ -36,8 +35,7 @@ namespace Yuno.Cad
         {
             get
             {
-                string path;
-                MC.GetPrefBmpDibEditor(out path);
+                MC.GetPrefBmpDibEditor(out string path);
                 return path;
             }
             set { MC.PrefBmpDibEditor(value); }
@@ -73,8 +71,7 @@ namespace Yuno.Cad
         {
             get
             {
-                int red, green, blue, alpha;
-                MC.GetPrefColourEx((int)index, out red, out green, out blue, out alpha);
+                MC.GetPrefColourEx((int)index, out int red, out int green, out int blue, out int alpha);
                 return new ColorRgba(red, green, blue, alpha);
             }
             set { MC.PrefColourEx((int)index, value.Red, value.Green, value.Blue, value.Alpha); }

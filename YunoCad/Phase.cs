@@ -15,8 +15,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var value = "";
-                MC.GetCurPhase("CHARSTYLE", out value);
+                MC.GetCurPhase("CHARSTYLE", out string value);
                 return value;
             }
             set { MC.CurPhase("CHARSTYLE", value); }
@@ -26,8 +25,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var value = "";
-                MC.GetCurPhase("COLOUR", out value);
+                MC.GetCurPhase("COLOUR", out string value);
                 return value;
             }
             set { MC.CurPhase("COLOUR", value); }
@@ -37,8 +35,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var value = "";
-                MC.GetCurPhase("INCLUSIONLIST", out value);
+                MC.GetCurPhase("INCLUSIONLIST", out string value);
                 return value;
             }
             set { MC.CurPhase("INCLUSIONLIST", value); }
@@ -48,8 +45,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var value = "";
-                MC.GetCurPhase("LABEL", out value);
+                MC.GetCurPhase("LABEL", out string value);
                 return value;
             }
             set { MC.CurPhase("LABEL", value); }
@@ -59,8 +55,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var value = "";
-                MC.GetCurPhase("LINESTYLE", out value);
+                MC.GetCurPhase("LINESTYLE", out string value);
                 return value;
             }
             set { MC.CurPhase("LINESTYLE", value); }
@@ -70,8 +65,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var value = "";
-                MC.GetCurPhase("MATERIAL", out value);
+                MC.GetCurPhase("MATERIAL", out string value);
                 return value;
             }
             set { MC.CurPhase("MATERIAL", value); }
@@ -81,8 +75,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var value = "";
-                MC.GetCurPhase("PEN", out value);
+                MC.GetCurPhase("PEN", out string value);
                 return value;
             }
             set { MC.CurPhase("PEN", value); }
@@ -92,8 +85,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var value = "";
-                MC.GetCurPhase("RESPECTSTYLECOLOURS", out value);
+                MC.GetCurPhase("RESPECTSTYLECOLOURS", out string value);
                 return value;
             }
             set { MC.CurPhase("RESPECTSTYLECOLOURS", value); }
@@ -103,8 +95,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var value = "";
-                MC.GetCurPhase("RESPECTPRIMITIVECOLOURS ", out value);
+                MC.GetCurPhase("RESPECTPRIMITIVECOLOURS ", out string value);
                 return value;
             }
             set { MC.CurPhase("RESPECTPRIMITIVECOLOURS ", value); }
@@ -114,8 +105,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var value = "";
-                MC.GetCurPhase("FADING", out value);
+                MC.GetCurPhase("FADING", out string value);
                 return value;
             }
             set { MC.CurPhase("FADING", value); }
@@ -125,8 +115,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var value = "";
-                MC.GetCurPhase("SCREENONLY", out value);
+                MC.GetCurPhase("SCREENONLY", out string value);
                 return value;
             }
             set { MC.CurPhase("SCREENONLY", value); }
@@ -136,8 +125,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var value = "";
-                MC.GetCurPhase("STATE", out value);
+                MC.GetCurPhase("STATE", out string value);
                 return value;
             }
             set { MC.CurPhase("STATE", value); }
@@ -152,8 +140,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var name = "";
-                MC.GetCurPhaseName(out name);
+                MC.GetCurPhaseName(out string name);
                 return name;
             }
         }

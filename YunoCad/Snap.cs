@@ -12,9 +12,8 @@ namespace Yuno.Cad
 
         public Tuple<M.Snapped, MC.Vector, string> GetArg(string prompt, M.Snap snapType)
         {
-            MC.Vector argPos;
             var snap = "";
-            var snapped = MC.GetArg(out argPos, ref snap, prompt, snapType);
+            var snapped = MC.GetArg(out MC.Vector argPos, ref snap, prompt, snapType);
             return Tuple.Create(snapped, argPos, snap);
         }
 
@@ -35,8 +34,7 @@ namespace Yuno.Cad
         /// <returns></returns>
         public R GetArg<R>(string prompt, string allowSnaps, SetEdit setEdit, Func<M.Snapped, R> byKeyboard, Func<M.Snapped, MC.Vector, string, CurrentPrimitive, R> byMouse)
         {
-            MC.Vector argPos;
-            var snapped = MC.GetArg(out argPos, ref allowSnaps, prompt, (M.Snap)setEdit);
+            var snapped = MC.GetArg(out MC.Vector argPos, ref allowSnaps, prompt, (M.Snap)setEdit);
             return snapped.IsByKey() ? byKeyboard(snapped)
                 : byMouse(snapped, argPos, allowSnaps, CurrentPrimitive.Instance);
         }
@@ -57,8 +55,7 @@ namespace Yuno.Cad
 
             void Get()
             {
-                MC.Vector argPos;
-                var snapped = MC.GetArg(out argPos, ref AllowSnaps, Prompt, (M.Snap)SetEdit);
+                var snapped = MC.GetArg(out MC.Vector argPos, ref AllowSnaps, Prompt, (M.Snap)SetEdit);
             }
         }
     }

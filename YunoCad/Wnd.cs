@@ -15,8 +15,7 @@ namespace Yuno.Cad
 
         public IEnumerable<string> ScanName(string wildcardName = defaultWildcardName)
         {
-            var name = "";
-            if (MC.WndScanStart(wildcardName, out name))
+            if (MC.WndScanStart(wildcardName, out string name))
             {
                 do
                 {
@@ -27,8 +26,7 @@ namespace Yuno.Cad
 
         public IEnumerable<SetWnd> Scan(string wildcardName = defaultWildcardName)
         {
-            var name = "";
-            if (MC.WndScanStart(wildcardName, out name))
+            if (MC.WndScanStart(wildcardName, out string name))
             {
                 do
                 {
@@ -59,8 +57,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var units = "";
-                var decimalPlace = MC.GetSetUnits(out units);
+                var decimalPlace = MC.GetSetUnits(out string units);
                 return Tuple.Create(units, decimalPlace);
             }
             set { MC.SetUnits(value.Item1, value.Item2); }

@@ -28,15 +28,13 @@ namespace Yuno.Cad
 
         static string Get(string mnemonicName)
         {
-            var attr = "";
-            MC.GetAttVal(mnemonicName, out attr);
+            MC.GetAttVal(mnemonicName, out string attr);
             return attr;
         }
 
         static string Get(Mnemonic mnemonic)
         {
-            var attr = "";
-            MC.GetAttVal(mnemonic.Name, out attr);
+            MC.GetAttVal(mnemonic.Name, out string attr);
             return attr;
         }
     }
@@ -175,8 +173,7 @@ namespace Yuno.Cad
 
         static string[] Mnemonics()
         {
-            var mnemonics = "";
-            MC.GetMnemonics(out mnemonics);
+            MC.GetMnemonics(out string mnemonics);
             return mnemonics.Split(',');
         }
 
@@ -240,8 +237,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var attr = "";
-                MC.GetAttVal(mnemonic.ToString(), out attr);
+                MC.GetAttVal(mnemonic.ToString(), out string attr);
                 return attr;
             }
             set

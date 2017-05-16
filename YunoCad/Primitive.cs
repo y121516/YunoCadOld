@@ -17,8 +17,7 @@ namespace Yuno.Cad
 
         public static CurrentPrimitive GetCurrentPrimitive()
         {
-            var priType = "";
-            MC.GetCurPriType(out priType);
+            MC.GetCurPriType(out string priType);
             switch (priType)
             {
                 case "CLUMP MESH": return CurrentClumpMeshPrimitive.Instance;
@@ -114,8 +113,7 @@ namespace Yuno.Cad
         {
             get
             {
-                MC.Vector pt1, pt2;
-                MC.GetCurPri3DExtent(out pt1, out pt2);
+                MC.GetCurPri3DExtent(out MC.Vector pt1, out MC.Vector pt2);
                 return Tuple.Create(pt1, pt2);
             }
         }
@@ -128,8 +126,7 @@ namespace Yuno.Cad
         {
             get
             {
-                double area;
-                MC.GetCurPriArea(out area);
+                MC.GetCurPriArea(out double area);
                 return area;
             }
         }
@@ -138,8 +135,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var lineStyle = "";
-                MC.GetCurPriLinestyle(out lineStyle);
+                MC.GetCurPriLinestyle(out string lineStyle);
                 return lineStyle;
             }
             set { MC.CurPriLinestyle(value); }
@@ -151,8 +147,7 @@ namespace Yuno.Cad
             // プリミティブの種類（線、テキスト、クランプ）に応じて、カレントのプリミティブの線種、文字種、マテリアルのいずれかを設定します。
             get
             {
-                string style;
-                MC.GetCurPriStyle(out style);
+                MC.GetCurPriStyle(out string style);
                 return style;
             }
             // カレントのプリミティブに設定されている、線種、文字種、マテリアルのいずれかを返します。
@@ -167,8 +162,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var type = "";
-                MC.GetCurPriType(out type);
+                MC.GetCurPriType(out string type);
                 return type;
             }
         }
@@ -225,9 +219,7 @@ namespace Yuno.Cad
 
         public Tuple<double, MC.Vector> GetBulge(int i)
         {
-            MC.Vector axis;
-            double bulge;
-            MC.GetCurPriBulge(i, out axis, out bulge);
+            MC.GetCurPriBulge(i, out MC.Vector axis, out double bulge);
             return Tuple.Create(bulge, axis);
         }
 
@@ -235,8 +227,7 @@ namespace Yuno.Cad
         {
             get
             {
-                double length;
-                MC.GetCurPriLen(out length);
+                MC.GetCurPriLen(out double length);
                 return length;
             }
         }
@@ -245,8 +236,7 @@ namespace Yuno.Cad
 
         public MC.Vector Pt(int i)
         {
-            MC.Vector vec;
-            MC.GetCurPriPt(i, out vec);
+            MC.GetCurPriPt(i, out MC.Vector vec);
             return vec;
         }
 
@@ -283,8 +273,7 @@ namespace Yuno.Cad
         {
             get
             {
-                double smooth;
-                MC.GetCurPriSmooth(out smooth);
+                MC.GetCurPriSmooth(out double smooth);
                 return smooth;
             }
             set { MC.CurPriSmooth(value); }
@@ -294,8 +283,7 @@ namespace Yuno.Cad
         {
             get
             {
-                double area;
-                MC.GetCurPriSurfArea(out area);
+                MC.GetCurPriSurfArea(out double area);
                 return area;
             }
         }
@@ -318,8 +306,7 @@ namespace Yuno.Cad
         {
             get
             {
-                double volume;
-                MC.GetCurPriVolume(out volume);
+                MC.GetCurPriVolume(out double volume);
                 return volume;
             }
         }
@@ -338,16 +325,14 @@ namespace Yuno.Cad
         {
             get
             {
-                var text = "";
-                MC.GetCurPriExpandedText(out text);
+                MC.GetCurPriExpandedText(out string text);
                 return text;
             }
         }
 
         public string FormattedText(string options = DefaultGetFormattedTextOptions)
         {
-            var text = "";
-            MC.GetCurPriFormattedText(out text, options);
+            MC.GetCurPriFormattedText(out string text, options);
             return text;
         }
 
@@ -360,8 +345,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var text = "";
-                MC.GetCurPriText(out text);
+                MC.GetCurPriText(out string text);
                 return text;
             }
             set { MC.CurPriText(value); }
@@ -371,9 +355,7 @@ namespace Yuno.Cad
         {
             get
             {
-                MC.Axes axes;
-                double yFactor;
-                MC.GetCurPriTextAxes(out axes, out yFactor);
+                MC.GetCurPriTextAxes(out MC.Axes axes, out double yFactor);
                 return Tuple.Create(axes, yFactor);
             }
             set { MC.CurPriTextAxes(value.Item1, value.Item2); }
@@ -389,8 +371,7 @@ namespace Yuno.Cad
         {
             get
             {
-                double wrap;
-                MC.GetCurPriWrap(out wrap);
+                MC.GetCurPriWrap(out double wrap);
                 return wrap;
             }
             set { MC.CurPriWrap(value); }
@@ -406,8 +387,7 @@ namespace Yuno.Cad
         {
             get
             {
-                string value;
-                MC.GetCurPriTextProperty(index, out value);
+                MC.GetCurPriTextProperty(index, out string value);
                 return value;
             }
             set { MC.CurPriTextProperty($"{index}={value}"); }

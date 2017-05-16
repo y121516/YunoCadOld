@@ -42,8 +42,7 @@ namespace Yuno.Cad
         {
             get
             {
-                double area;
-                MC.GetCurObjArea(out area);
+                MC.GetCurObjArea(out double area);
                 return area;
             }
         }
@@ -55,8 +54,7 @@ namespace Yuno.Cad
         {
             get
             {
-                MC.Vector orient;
-                MC.GetCurObjAxes(out orient);
+                MC.GetCurObjAxes(out MC.Vector orient);
                 return orient;
             }
             set
@@ -69,8 +67,7 @@ namespace Yuno.Cad
         {
             get
             {
-                MC.Axes axes;
-                MC.GetObjectAxes(out axes);
+                MC.GetObjectAxes(out MC.Axes axes);
                 return axes;
             }
             set
@@ -83,8 +80,7 @@ namespace Yuno.Cad
         {
             get
             {
-                double xlo, ylo, xhi, yhi;
-                MC.GetCurObjExtent(out xlo, out ylo, out xhi, out yhi);
+                MC.GetCurObjExtent(out double xlo, out double ylo, out double xhi, out double yhi);
                 return Tuple.Create(xlo, ylo, xhi, yhi);
             }
         }
@@ -93,8 +89,7 @@ namespace Yuno.Cad
         {
             get
             {
-                MC.Vector pt1, pt2;
-                MC.GetCurObj3DExtent(out pt1, out pt2);
+                MC.GetCurObj3DExtent(out MC.Vector pt1, out MC.Vector pt2);
                 return Tuple.Create(pt1, pt2);
             }
         }
@@ -105,8 +100,7 @@ namespace Yuno.Cad
         {
             get
             {
-                MC.Vector hook;
-                MC.GetCurObjHook(out hook);
+                MC.GetCurObjHook(out MC.Vector hook);
                 return hook;
             }
             set
@@ -121,8 +115,7 @@ namespace Yuno.Cad
         {
             get
             {
-                double length;
-                MC.GetCurObjLen(out length);
+                MC.GetCurObjLen(out double length);
                 return length;
             }
         }
@@ -131,8 +124,7 @@ namespace Yuno.Cad
         {
             get
             {
-                string light;
-                MC.GetCurObjLight(out light);
+                MC.GetCurObjLight(out string light);
                 return light;
             }
             set
@@ -148,8 +140,7 @@ namespace Yuno.Cad
         {
             get
             {
-                string name;
-                MC.GetCurObjName(out name);
+                MC.GetCurObjName(out string name);
                 return name;
             }
             set
@@ -164,8 +155,7 @@ namespace Yuno.Cad
         {
             get
             {
-                double scale;
-                MC.GetCurObjScale(out scale);
+                MC.GetCurObjScale(out double scale);
                 return scale;
             }
         }
@@ -174,8 +164,7 @@ namespace Yuno.Cad
         {
             get
             {
-                double area;
-                MC.GetCurObjSurfArea(out area);
+                MC.GetCurObjSurfArea(out double area);
                 return area;
             }
         }
@@ -190,8 +179,7 @@ namespace Yuno.Cad
         {
             get
             {
-                string type;
-                MC.GetCurObjType(out type);
+                MC.GetCurObjType(out string type);
                 return type;
             }
         }
@@ -200,8 +188,7 @@ namespace Yuno.Cad
         {
             get
             {
-                double volume;
-                MC.GetCurObjVolume(out volume);
+                MC.GetCurObjVolume(out double volume);
                 return volume;
             }
         }
@@ -260,8 +247,7 @@ namespace Yuno.Cad
 
             public IEnumerable<CurrentObject> ScanWildcard(string wildcard, string scanEH = DefaultScanEH)
             {
-                double extent;
-                MC.GetExtentSize(out extent);
+                MC.GetExtentSize(out double extent);
                 if (MC.ObjectScanArea(scanEH, wildcard, -extent, extent, extent, -extent))
                 {
                     do

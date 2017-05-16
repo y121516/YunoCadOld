@@ -63,15 +63,13 @@ namespace Yuno.Cad
 
         public virtual DocumentID GetID()
         {
-            var docID = "";
-            MC.DocGetID(out docID);
+            MC.DocGetID(out string docID);
             return new DocumentID(docID);
         }
 
         public virtual DocumentName GetName()
         {
-            var docName = "";
-            MC.DocGetName(out docName);
+            MC.DocGetName(out string docName);
             return new DocumentName(docName);
         }
     }
@@ -95,8 +93,7 @@ namespace Yuno.Cad
         /// <returns></returns>
         public ScanActiveDocument Activate()
         {
-            var docName = "";
-            MC.DocActivate(out docName);
+            MC.DocActivate(out string docName);
             return new ScanActiveDocument(ID, docName);
         }
     }
@@ -172,15 +169,13 @@ namespace Yuno.Cad
 
         public override DocumentID GetID()
         {
-            var docID = "";
-            MC.DocGetCurID(out docID);
+            MC.DocGetCurID(out string docID);
             return new DocumentID(docID);
         }
 
         public override DocumentName GetName()
         {
-            var docName = "";
-            MC.DocGetCurName(out docName);
+            MC.DocGetCurName(out string docName);
             return new DocumentName(docName);
         }
 
@@ -188,8 +183,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var docID = "";
-                MC.DocGetCurID(out docID);
+                MC.DocGetCurID(out string docID);
                 return new DocumentID(docID);
             }
         }
@@ -198,8 +192,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var docName = "";
-                MC.DocGetCurName(out docName);
+                MC.DocGetCurName(out string docName);
                 return docName;
             }
         }
@@ -216,8 +209,7 @@ namespace Yuno.Cad
         {
             get
             {
-                int colourIndex, red, green, blue, alpha;
-                MC.GetSetColourEx(out colourIndex, out red, out green, out blue, out alpha);
+                MC.GetSetColourEx(out int colourIndex, out int red, out int green, out int blue, out int alpha);
                 return Tuple.Create(colourIndex, red, green, blue, alpha);
             }
             set
@@ -232,8 +224,7 @@ namespace Yuno.Cad
         {
             get
             {
-                var units = "";
-                var decimalPlace = MC.GetSetUnits(out units);
+                var decimalPlace = MC.GetSetUnits(out string units);
                 return Tuple.Create(units, decimalPlace);
             }
             set { MC.SetUnits(value.Item1, value.Item2); }
@@ -253,8 +244,7 @@ namespace Yuno.Cad
         {
             get
             {
-                string paths;
-                MC.GetStylePath(out paths);
+                MC.GetStylePath(out string paths);
                 return string.IsNullOrEmpty(paths?.Trim().Trim(StylePathSeparator[0]))
                     ? new string[0]
                     : paths.Split(StylePathSeparator[0]);
@@ -308,9 +298,8 @@ namespace Yuno.Cad
         {
             get
             {
-                var docID = "";
                 int n = 0;
-                if (MC.DocFirst(out docID))
+                if (MC.DocFirst(out string docID))
                 {
                     do
                     {
@@ -323,8 +312,7 @@ namespace Yuno.Cad
 
         public IEnumerable<ScanDocument> Scan()
         {
-            var docID = "";
-            if (MC.DocFirst(out docID))
+            if (MC.DocFirst(out string docID))
             {
                 do
                 {
@@ -384,8 +372,7 @@ namespace Yuno.Cad
                 // ViewTypeのチェックが必要かも。ビューが無い場合
                 if (MC.DocGetViewType() != M.DocViewType.Drawing) yield break;
 
-                int viewID;
-                if (MC.DocViewFirst(out viewID))
+                if (MC.DocViewFirst(out int viewID))
                 {
                     do
                     {
