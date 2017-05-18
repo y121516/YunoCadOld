@@ -13,7 +13,7 @@ namespace Yuno.Cad
         {
             get
             {
-                MC.GetAliasDefinition(alias.Type, alias.Name, out string path, out bool expandable);
+                MC.GetAliasDefinition(alias.AliasType, alias.Name, out string path, out bool expandable);
                 return new AliasInfo(path, expandable);
             }
             set
@@ -23,43 +23,43 @@ namespace Yuno.Cad
         }
 
         public void Add(Alias alias, AliasInfo info)
-            => MC.AliasDefinition(alias.Type, alias.Name, info.Path, info.Expandable);
+            => MC.AliasDefinition(alias.AliasType, alias.Name, info.Path, info.Expandable);
 
-        public void Delete(Alias alias) => MC.DeleteAliasDefinition(alias.Type, alias.Name);
+        public void Delete(Alias alias) => MC.DeleteAliasDefinition(alias.AliasType, alias.Name);
 
         public DefaultAlias DefaultAlias(AliasType type) => new DefaultAlias(type);
     }
 
     public class DefaultAlias
     {
-        public AliasType Type { get; }
+        public AliasType AliasType { get; }
 
         internal DefaultAlias(AliasType type)
         {
-            Type = type;
+            AliasType = type;
         }
 
         public string Name
         {
             get
             {
-                MC.GetSetAlias(Type, out string name);
+                MC.GetSetAlias(AliasType, out string name);
                 return name;
             }
-            set { MC.SetAlias(Type, value); }
+            set { MC.SetAlias(AliasType, value); }
         }
 
-        public void Reset() => MC.ResetAlias(Type);
+        public void Reset() => MC.ResetAlias(AliasType);
     }
 
     public class Alias
     {
-        public AliasType Type { get; }
+        public AliasType AliasType { get; }
         public string Name { get; } = "";
 
         public Alias(AliasType type, string name)
         {
-            Type = type;
+            AliasType = type;
             Name = name;
         }
     }

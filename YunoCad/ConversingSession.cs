@@ -32,28 +32,31 @@ namespace Yuno.Cad
             }
         }
 
-        public M.ScreenUpdate ScreenUpdateMode
-        {
-            set { MC.ScreenUpdateMode(value); }
-        }
-
+        public void ScreenUpdateMode(M.ScreenUpdate updateMode) => MC.ScreenUpdateMode(updateMode);
+        
         public SystemVersion Version
         {
             get
             {
-                SystemVersion v;
-                v.SystemType = MC.GetSystemType(out v.Major, out v.Minor);
-                return v;
+                var systemType = MC.GetSystemType(out int majVer, out int minVer);
+                return new SystemVersion(majVer, minVer, systemType);
             }
         }
 
-        void KillInteractiveCommand() => MC.KillInteractiveCmd();
+        public void KillInteractiveCommand() => MC.KillInteractiveCmd();
     }
 
     public struct SystemVersion
     {
-        public int Major;
-        public int Minor;
-        public M.Sys SystemType;
+        public int Major { get; set; }
+        public int Minor { get; set; }
+        public M.Sys SystemType { get; set; }
+
+        public SystemVersion(int major, int minor, M.Sys systemType)
+        {
+            Major = major;
+            Minor = minor;
+            SystemType = systemType;
+        }
     }
 }

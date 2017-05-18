@@ -38,11 +38,11 @@ namespace Yuno.Cad
     /// <summary>
     /// ドキュメントの ID を表すクラス。
     /// </summary>
-    public class DocumentID : IDocumentFindable
+    public class DocumentId : IDocumentFindable
     {
         string ID { get; }
 
-        internal DocumentID(string docID) { ID = docID; }
+        internal DocumentId(string docID) { ID = docID; }
 
         public override string ToString() => ID;
 
@@ -61,10 +61,10 @@ namespace Yuno.Cad
     {
         internal ScanDocumentBase() { }
 
-        public virtual DocumentID GetID()
+        public virtual DocumentId GetID()
         {
             MC.DocGetID(out string docID);
-            return new DocumentID(docID);
+            return new DocumentId(docID);
         }
 
         public virtual DocumentName GetName()
@@ -80,11 +80,11 @@ namespace Yuno.Cad
     /// </summary>
     public class ScanDocument : ScanDocumentBase
     {
-        public DocumentID ID { get; }
+        public DocumentId ID { get; }
 
         internal ScanDocument(string docID)
         {
-            ID = new DocumentID(docID);
+            ID = new DocumentId(docID);
         }
 
         /// <summary>
@@ -136,10 +136,10 @@ namespace Yuno.Cad
     /// </summary>
     public class ScanActiveDocument : ActiveDocument
     {
-        public DocumentID ID { get; }
+        public DocumentId ID { get; }
         public DocumentName Name { get; }
 
-        internal ScanActiveDocument(DocumentID docID, string docName)
+        internal ScanActiveDocument(DocumentId docID, string docName)
         {
             ID = docID;
             Name = new DocumentName(docName);
@@ -167,10 +167,10 @@ namespace Yuno.Cad
 
         internal CurrentDocument() { }
 
-        public override DocumentID GetID()
+        public override DocumentId GetID()
         {
             MC.DocGetCurID(out string docID);
-            return new DocumentID(docID);
+            return new DocumentId(docID);
         }
 
         public override DocumentName GetName()
@@ -179,12 +179,12 @@ namespace Yuno.Cad
             return new DocumentName(docName);
         }
 
-        DocumentID CurID
+        DocumentId CurID
         {
             get
             {
                 MC.DocGetCurID(out string docID);
-                return new DocumentID(docID);
+                return new DocumentId(docID);
             }
         }
 
@@ -271,10 +271,10 @@ namespace Yuno.Cad
     /// </summary>
     public class ScanCurrentDocument : CurrentDocument
     {
-        public DocumentID ID { get; }
+        public DocumentId ID { get; }
         public DocumentName Name { get; }
 
-        internal ScanCurrentDocument(DocumentID docID, DocumentName docName)
+        internal ScanCurrentDocument(DocumentId docID, DocumentName docName)
         {
             ID = docID;
             Name = docName;

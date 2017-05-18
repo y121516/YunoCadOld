@@ -15,8 +15,7 @@ namespace MGDSNetDllTest
         /// <param name="action">void action(string docID)</param>
         public static void ForEachDoc(Action<string> action)
         {
-            var docID = "";
-            if (DocFirst(out docID)) do action(docID); while (DocNext(out docID));
+            if (DocFirst(out string docID)) do action(docID); while (DocNext(out docID));
         }
 
         /// <summary>
@@ -25,8 +24,7 @@ namespace MGDSNetDllTest
         /// <param name="action">void action(string docID, string docName)</param>
         public static void ForEachDocActive(Action<string, string> action)
         {
-            var docID = "";
-            if (DocFirst(out docID))
+            if (DocFirst(out string docID))
             {
                 var docName = "";
                 do
@@ -43,8 +41,7 @@ namespace MGDSNetDllTest
         /// <param name="action">void action(string docID, string docName)</param>
         public static void ForEachDocResynch(Action<string, string> action)
         {
-            var docID = "";
-            if (DocFirst(out docID))
+            if (DocFirst(out string docID))
             {
                 var docName = "";
                 do
@@ -67,7 +64,7 @@ namespace MGDSNetDllTest
         }
     }
 
-    public class TemporaryDocument : IDisposable
+    public sealed class TemporaryDocument : IDisposable
     {
         public TemporaryDocument()
         {
@@ -189,8 +186,7 @@ namespace MGDSNetDllTest
                         ThrowsCadException(InvalidParameter, () =>
                             ForEachDocResynch((docID, docName) =>
                             {
-                                var path = ""; bool expandable;
-                                GetAliasDefinition(AliasName.Raster, "", out path, out expandable);
+                                GetAliasDefinition(AliasName.Raster, "", out string path, out bool expandable);
                             })
                         );
                     }
@@ -207,8 +203,7 @@ namespace MGDSNetDllTest
                         ThrowsCadException(InvalidParameter, () =>
                             ForEachDocResynch((docID, docName) =>
                             {
-                                var path = ""; bool expandable;
-                                GetAliasDefinition(AliasName.Raster, "", out path, out expandable);
+                                GetAliasDefinition(AliasName.Raster, "", out string path, out bool expandable);
                             })
                         );
                     }
@@ -225,8 +220,7 @@ namespace MGDSNetDllTest
                         });
                         ForEachDocResynch((docID, docName) =>
                         {
-                            var path = ""; bool expandable;
-                            GetAliasDefinition(AliasName.Raster, "", out path, out expandable);
+                            GetAliasDefinition(AliasName.Raster, "", out string path, out bool expandable);
                             Assert.AreEqual(@"C:\test", path);
                             Assert.AreEqual(false, expandable);
                             GetAliasDefinition(AliasName.Raster, "RasterTestAlias", out path, out expandable);
@@ -547,8 +541,10 @@ namespace MGDSNetDllTest
                 ThrowsCadException(RequiresDocument, AxesResynch);
                 CreateFile();
                 CreateLayer("default", null);
-                var axes = new Axes();
-                axes.origin = new Vector(1000, 0, 0);
+                var axes = new Axes()
+                {
+                    origin = new Vector(1000, 0, 0)
+                };
                 axes.xAxis.x = 1;
                 axes.yAxis.y = 1;
                 axes.zAxis.z = 1;
@@ -570,8 +566,7 @@ namespace MGDSNetDllTest
                 };
                 Echo(f().ToString());
 
-                var wndName = "";
-                if (WndScanStart("**", out wndName))
+                if (WndScanStart("**", out string wndName))
                 {
                     do
                     {
