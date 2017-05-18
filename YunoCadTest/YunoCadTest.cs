@@ -15,13 +15,13 @@ namespace YunoCadTest
         [TestInitialize]
         public void Initialize()
         {
-            prevSessions = YunoCad.Sessions;
+            prevSessions = Yuno.Cad.YunoCad.Sessions;
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            foreach (var session in YunoCad.Sessions.Except(prevSessions)) session.DontSaveExit();
+            foreach (var session in Yuno.Cad.YunoCad.Sessions.Except(prevSessions)) session.DontSaveExit();
         }
 
         [TestMethod]
@@ -97,7 +97,7 @@ namespace YunoCadTest
                 Session.Start(timeoutMillisecond: 50 * 1000),
                 Session.Start(MGDS.StartFileType.DWG, 50 * 1000)
             };
-            CollectionAssert.IsSubsetOf(sessions, YunoCad.Sessions.ToArray());
+            CollectionAssert.IsSubsetOf(sessions, Yuno.Cad.YunoCad.Sessions.ToArray());
         }
     }
 
@@ -300,7 +300,7 @@ namespace YunoCadTest
         {
             Sessions.Any.Converse(cs =>
             {
-                foreach(var nameAndLink in cs.Documents.Scan().Select(d => d.Activate().Resynch())
+                foreach (var nameAndLink in cs.Documents.Scan().Select(d => d.Activate().Resynch())
                     .SelectMany(d => d.Layers.Scan()))
                 {
                     var name = nameAndLink.Item1;

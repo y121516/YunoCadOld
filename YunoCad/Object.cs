@@ -199,8 +199,6 @@ namespace Yuno.Cad
         {
             MC.ResetObject();
         }
-
-        public CurrentObjectAttribute Attribute { get; } = CurrentObjectAttribute.Instance;
     }
 
     public struct Object
